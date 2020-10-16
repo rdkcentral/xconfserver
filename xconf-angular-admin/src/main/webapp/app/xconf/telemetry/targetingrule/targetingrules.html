@@ -1,0 +1,125 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-2">
+            Targeting Rules
+        </div>
+        <div class="col-md-7">
+            <div class="form-inline">
+                <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button id="createEntity" type="button" class="btn btn-success"
+                            ui-sref="targetingrule-edit"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <i class="ri-add-fill ri-sm"></i> Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                            <a ui-sref="targetingrule-import" style="cursor: pointer">
+                                 Import
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-default" ng-show="vm.rules.length > 0" id="exportAll" ng-click="vm.exportAll()" title="Export All">
+                    Export All
+                </button>
+            </div>
+        </div>
+    </div>
+</h1>
+
+<div class="row">
+    <div class="col-md-12" style="padding-top: 1em">
+        <div ng-hide="vm.rules.length === 0" class="panel-default panel">
+            <table class="table">
+                <colgroup width="25%" />
+                <colgroup />
+                <colgroup width="145"/>
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Rule</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="rule in vm.rules">
+                    <td style="width: 30em">
+                        <span style="font-weight: bolder">Name: </span><span class="telemetry-rule-name-value break-word-inline">{{rule.name}}</span><br>
+                        <span style="font-weight: bolder">Profile: </span><span class="break-word-inline">{{rule.boundTelemetryId | profileName: vm.profiles}}</span>
+                    </td>
+                    <td>
+                        <div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <ruleview-directive data="rule"></ruleview-directive>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default editEntity"
+                                    title="Edit"
+                                    ui-sref="targetingrule-edit({ruleId: rule.id})"
+                                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                                <i class=ri-pencil-fill></i>
+                            </button>
+                            <button type="button" class="btn btn-default deleteEntity"
+                                    title="Delete"
+                                    ng-click="vm.deleteRule(rule)"
+                                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                                <i class=ri-delete-bin-7-line></i>
+                            </button>
+                            <button type="button" class="btn btn-default exportEntity" ng-click="vm.exportOne(rule.id)" title="Export one">
+                                <i class=ri-download-2-line></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-show="vm.rules.length === 0" class="ads-no-results">
+            <h4>No results found</h4>
+        </div>
+        <div class="row ads-pagination-align" ng-show="vm.startParse()">
+            <xconf-pagination ng-if="vm.startParse()"
+                              page-size="vm.pageSize"
+                              page-number="vm.pageNumber"
+                              pagination-storage-key="vm.paginationStorageKey"
+                              get-general-items-number="vm.getGeneralItemsNumber()"
+                              get-page="vm.getRules()">
+            </xconf-pagination>
+        </div>
+    </div>
+</div>

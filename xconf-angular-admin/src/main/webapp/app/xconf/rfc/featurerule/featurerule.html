@@ -1,0 +1,128 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-3">
+            Feature Rule
+        </div>
+        <div class="col-md-5">
+            <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button id="createEntity" type="button" class="btn btn-success"
+                            ui-sref="featurerule-edit({featureRulesSize: vm.featureRulesSize})"
+                            ng-show="authUtils.canWriteDcmByApplication($root.applicationType)">
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteDcmByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-show="authUtils.canWriteDcmByApplication($root.applicationType)">
+                            <a ui-sref="featurerule-import" style="cursor: pointer">
+                                 Import
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button id="exportAll" type="button" class="btn btn-default" title="Export All"
+                        ng-if="vm.wrappedFeatureRules.length > 1"
+                        ng-click="vm.exportAllFeatureRules()">
+                    Export All
+                </button>
+            </div>
+        </div>
+    </div>
+</h1>
+<div>
+    <br />
+    <div class="row">
+        <div ng-hide="vm.wrappedFeatureRules === null || vm.wrappedFeatureRules.length === 0">
+            <div class="row cols-bottom menu-title">
+                <div class="col-md-1 pull-center">
+                    View
+                </div>
+                <div class="col-md-2 shift-right">
+                    Name
+                </div>
+                <div class="col-md-2 shift-right">
+                    Priority
+                </div>
+                <div class="col-md-4 shift-right">
+                    Rule
+                </div>
+            </div>
+            <div class="row border-top" ng-repeat="wrappedFeatureRule in vm.wrappedFeatureRules">
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-default" ng-click="vm.viewFeatureRule(wrappedFeatureRule)">
+                        <i class=ri-eye-fill></i>
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <span class="break-word-inline" ng-bind="wrappedFeatureRule.name"></span>
+                </div>
+                <div class="col-md-2">
+                    <select style="display: inline; width: 80px"
+                            class="form-control input-sm"
+                            ng-model="wrappedFeatureRule.priority"
+                            ng-options= "priority for priority in vm.availablePriorities"
+                            ng-change="vm.changePriority(wrappedFeatureRule.id, wrappedFeatureRule.priority)"
+                            ng-disabled="!authUtils.canWriteDcmByApplication($root.applicationType)"></select>
+                </div>
+                <div class="col-md-4">
+                    <ruleview-directive data="wrappedFeatureRule.rule"></ruleview-directive>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default editEntity"
+                            ui-sref="featurerule-edit({featureRuleId: wrappedFeatureRule.id, featureRulesSize: vm.featureRulesSize})"
+                            ng-show="authUtils.canWriteDcmByApplication($root.applicationType)"
+                            title="Edit Feature Rule">
+                        <i class=ri-pencil-fill></i>
+                    </button>
+                    <button type="button" class="btn btn-default deleteEntity"
+                            ng-click="vm.deleteFeatureRule(wrappedFeatureRule)"
+                            ng-show="authUtils.canWriteDcmByApplication($root.applicationType)"
+                            title="Delete Feature Rule">
+                        <i class=ri-delete-bin-7-line></i>
+                    </button>
+                    <button type="button" class="btn btn-default exportEntity"
+                            ng-click="vm.exportFeatureRule(wrappedFeatureRule.id)"
+                            title="Export Feature Rule">
+                        <i class=ri-download-2-line></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <xconf-pagination ng-if="vm.startParse()"
+                          page-size="vm.pageSize"
+                          page-number="vm.pageNumber"
+                          pagination-storage-key="vm.paginationStorageKey"
+                          get-general-items-number="vm.generalItemsNumber"
+                          get-page="vm.getFeatureRules()">
+        </xconf-pagination>
+        <div id="notFoundResults" class="ads-no-results"
+             ng-show="vm.wrappedFeatureRules === null || vm.wrappedFeatureRules.length === 0"><h4>No results found</h4></div>
+    </div>
+</div>

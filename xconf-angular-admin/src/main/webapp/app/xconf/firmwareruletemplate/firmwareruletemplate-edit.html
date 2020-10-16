@@ -1,0 +1,115 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header"><span ng-if="vm.isNewEntity">Add</span><span ng-if="!vm.isNewEntity">Edit</span> Firmware Rule Template</h1>
+
+        <form name="form" class="form-horizontal" ng-show="vm.selectedActionType" novalidate>
+            <h2>Rule</h2>
+            <div class="form-group" ng-class="{'has-error' : form.name.$invalid && (form.$submitted || form.name.$touched)}">
+                <label for="id" class="col-sm-2 control-label">ID</label>
+                <div class="col-sm-10">
+                    <input title="id" type="text" class="form-control" id="id" name="id" ng-model="vm.data.id" ng-disabled="!vm.isNewEntity" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="priority" class="col-sm-2 control-label">Priority</label>
+                <div class="col-sm-10">
+                    <select id="priority" class="form-control input-sm" ng-model="vm.data.priority" ng-options= "item for item in vm.availablePriorities"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Conditions</label>
+                <div class="col-sm-10">
+                    <ruleview-editor-directive
+                            is-valid-condition="vm.isValidCondition"
+                            data="vm.data.rule"></ruleview-editor-directive>
+                    <rule-builder-directive
+                            is-valid-condition="vm.isValidCondition"
+                            data="vm.data.rule"
+                            representation="vm.representation"
+                            namespaced-list-data="vm.namespacedListData"
+                            firmware-configs-description="vm.firmwareConfigsDescription"
+                            free-arg-autocomplete-values="vm.freeArgAutocompleteValues"
+                            percent-free-arg-name="vm.percentFreeArgName"
+                            operations="vm.operations"
+                            validation-function="vm.validationFunction"
+                            fixed-arg-required="false"></rule-builder-directive>
+                </div>
+            </div>
+            <div class="form-group" ng-if="authUtils.hasPermission(PERMISSION.WRITE_FIRMWARE_RULE_TEMPLATES)">
+                <div class="form-inline">
+                    <label class="col-sm-2 control-label">Is editable</label>
+                    <div class="col-sm-10">
+                        <input type="checkbox" class="checkbox" ng-model="vm.data.editable"/>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            <h2>Action</h2>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Action Type</label>
+                <div class="col-sm-10">
+                    <div class="form-control-static" ng-bind="vm.selectedActionType.name"></div>
+                </div>
+            </div>
+            <div class="form-group" ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES_TEMPLATE">
+                <label for="bypassFilters" class="col-sm-2 control-label">Bypass Filters </label>
+                <div class="col-sm-3" id="bypassFilters">
+                    <dropdown-multiselect  class="input-group"
+                                           model="vm.data.applicableAction.byPassFilters" options="vm.blockingFilterTemplates"
+                                           value-property="id"
+                                           label-property="id">
+                    </dropdown-multiselect>
+                </div>
+                <div class="col-sm-7">
+                    <ul class="xconf-list">
+                        <li class="ads-list-item ads-list-item-horizontal ads-list-item-sm ads-list-item-dark-grey"  ng-repeat="id in vm.data.applicableAction.byPassFilters">
+                            <span ng-bind="id"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="properties" ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES_TEMPLATE">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Properties</label>
+                    <div class="col-sm-10">
+                        <firmwareruletemplate-define-properties-editor-directive data="vm.editedData"></firmwareruletemplate-define-properties-editor-directive>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="pull-right">
+                        <br/>
+                        <button type="button" class="btn btn-success"
+                                ng-click="vm.saveFirmwareRuleTemplate()"
+                                ng-disabled="form.$invalid"
+                                title="Save">Save</button>
+                        <button type="button" class="btn btn-default" ui-sref="firmwareruletemplates({actionType: vm.data.applicableAction.actionType})">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

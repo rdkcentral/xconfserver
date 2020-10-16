@@ -1,0 +1,187 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="container">
+    <h1 class="page-header">Log</h1>
+    <div class="col-md-12">
+        <form class="col-md-5 input-group" ng-class="{'has-error': vm.hasError}">
+            <input id="macAddress" type="text" class="form-control" ng-model="vm.macAddress" ng-change="vm.validateMacAddress(vm.macAddress)" placeholder="MAC address"/>
+            <span class="input-group-addon xconf-input-group-addon"><button title="Test" id="test" type="submit" class="btn btn-success input-group-addon-button" ng-click="vm.getLogs()" ng-disabled="vm.hasError || vm.macAddress === null">Test</button></span>
+
+        </form>
+    </div>
+    <div class="col-md-12" ng-show="!vm.logs.lastConfigLog && vm.logs !== null" style="margin-top: 1.5em">
+        <div class="col-md-5 form-group">
+            <div class="alert alert-info" style="text-align: center">
+                <span>No result</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10" style="margin-top: 1em">
+        <div id="lastConfigLog" ng-show="vm.logs !== null && vm.logs.lastConfigLog">
+            <h4>Last request/response</h4>
+            <div class="panel panel-default" style="margin-top: 1.5em">
+                <div class="panel-heading log-panel">
+                    Request <span ng-bind="vm.logs.lastConfigLog.input.time"></span>
+                </div>
+                <div class="panel-body">
+                    <div class="alert log-alert-info">
+                        <table class="table log-table">
+                            <tr>
+                                <th>IP address</th><td><span class="log-page-ip-address" ng-bind="vm.logs.lastConfigLog.input.ipAddress"></span></td>
+                            </tr>
+                            <tr>
+                                <th>estbMac</th><td><span class="log-page-estb-mac" ng-bind="vm.logs.lastConfigLog.input.estbMac"></span></td>
+                            </tr>
+                            <tr>
+                                <th>env:model</th><td><span class="log-page-env" ng-bind="vm.logs.lastConfigLog.input.env"></span>:<span class="log-page-model" ng-bind="vm.logs.lastConfigLog.input.model"></span></td>
+                            </tr>
+                            <tr>
+                                <th>firmwareVersion</th><td><span class="log-page-request-firmware-version" ng-bind="vm.logs.lastConfigLog.input.firmwareVersion"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="alert log-alert-info">
+                        <table class="table log-table">
+                            <caption class="log-table-caption">Response</caption>
+                            <tr>
+                                <th>firmwareVersion</th><td><span class="log-page-response-firmware-version" ng-bind="vm.logs.lastConfigLog.config.firmwareVersion"></span></td>
+                            </tr>
+                            <tr>
+                                <th>fileName</th><td><span class="log-page-file-name" ng-bind="vm.logs.lastConfigLog.config.firmwareFilename"></span></td>
+                            </tr>
+                            <tr>
+                                <th>protocol:locaiton</th><td><span class="log-page-protocol" ng-bind="vm.logs.lastConfigLog.config.firmwareDownloadProtocol"></span>:<span class="log-page-location" ng-bind="vm.logs.lastConfigLog.config.firmwareLocation"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="alert log-alert-info">
+                        <table class="table log-table">
+                            <caption class="log-table-caption">Rule</caption>
+                            <tr>
+                                <th>type</th><td><span class="log-page-rule-type" ng-bind="vm.logs.lastConfigLog.rule.type"></span></td>
+                            </tr>
+                            <tr>
+                                <th>id</th><td><span class="log-page-rule-id" ng-bind="vm.logs.lastConfigLog.rule.id"></span></td>
+                            </tr>
+                            <tr>
+                                <th>name</th><td><span class="log-page-rule-name" ng-bind="vm.logs.lastConfigLog.rule.name"></span></td>
+                            </tr>
+                            <tr>
+                                <th>noop</th><td><span class="log-page-rule-noop" ng-bind="vm.logs.lastConfigLog.rule.noop"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="alert log-alert-info">
+                        <table class="table log-table" ng-repeat="filter in vm.logs.lastConfigLog.filters">
+                            <caption class="log-table-caption">Filter</caption>
+                            <tr>
+                                <th>type</th><td><span ng-bind="filter.type"></span></td>
+                            </tr>
+                            <tr>
+                                <th>id</th><td><span ng-bind="filter.id"></span></td>
+                            </tr>
+                            <tr>
+                                <th>name</th><td><span ng-bind="filter.name"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10" ng-show="vm.logs.configChangeLog.length > 0">
+        <hr/>
+
+        <h4 style="padding-top: 1em; padding-bottom: 1em">Firmware Version Change History</h4>
+        <div id="changeConfigLog" class="panel panel-default" ng-repeat="changeLog in vm.logs.configChangeLog">
+            <div class="panel-heading log-panel">
+                Request <span ng-bind="changeLog.input.time"></span>
+            </div>
+            <div class="panel-body">
+                <div class="alert log-alert-info">
+                    <table class="table log-table">
+                        <tr>
+                            <th>IP address</th><td><span class="log-page-ip-address" ng-bind="changeLog.input.ipAddress"></span></td>
+                        </tr>
+                        <tr>
+                            <th>estbMac</th><td><span class="log-page-estb-mac" ng-bind="changeLog.input.estbMac"></span></td>
+                        </tr>
+                        <tr>
+                            <th>env:model</th><td><span class="log-page-env" ng-bind="changeLog.input.env"></span>:<span class="log-page-model" ng-bind="vm.logs.lastConfigLog.input.model"></span></td>
+                        </tr>
+                        <tr>
+                            <th>firmwareVersion</th><td><span class="log-page-request-firmware-version" ng-bind="changeLog.input.firmwareVersion"></span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="alert log-alert-info">
+                    <table class="table log-table">
+                        <caption class="log-table-caption">Response</caption>
+                        <tr>
+                            <th>firmwareVersion</th><td><span class="log-page-response-firmware-version" ng-bind="changeLog.config.firmwareVersion"></span></td>
+                        </tr>
+                        <tr>
+                            <th>fileName</th><td><span class="log-page-file-name" ng-bind="changeLog.config.firmwareFilename"></span></td>
+                        </tr>
+                        <tr>
+                            <th>protocol:locaiton</th><td><span class="log-page-protocol" ng-bind="changeLog.config.firmwareDownloadProtocol"></span>:<span class="log-page-location" ng-bind="changeLog.config.firmwareLocation"></span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="alert log-alert-info">
+                    <table class="table log-table">
+                        <caption class="log-table-caption">Rule</caption>
+                        <tr>
+                            <th>type</th><td><span class="log-page-rule-type" ng-bind="changeLog.rule.type"></span></td>
+                        </tr>
+                        <tr>
+                            <th>id</th><td><span class="log-page-rule-id" ng-bind="changeLog.rule.id"></span></td>
+                        </tr>
+                        <tr>
+                            <th>name</th><td><span class="log-page-rule-name" ng-bind="changeLog.rule.name"></span></td>
+                        </tr>
+                        <tr>
+                            <th>noop</th><td><span class="log-page-rule-noop" ng-bind="changeLog.rule.noop"></span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="alert log-alert-info">
+                    <table class="table log-table" ng-repeat="filter in changeLog.filters">
+                        <caption class="log-table-caption">Filter</caption>
+                        <tr>
+                            <th>type</th><td><span ng-bind="filter.type"></span></td>
+                        </tr>
+                        <tr>
+                            <th>id</th><td><span ng-bind="filter.id"></span></td>
+                        </tr>
+                        <tr>
+                            <th>name</th><td><span ng-bind="filter.name"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

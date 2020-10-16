@@ -1,0 +1,124 @@
+<!--
+ If not stated otherwise in this file or this component's LICENSE file the
+ following copyright and licenses apply:
+
+ Copyright 2018 RDK Management
+
+ Licensed under the Apache License, Version 2.0 (the License);
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-4">
+            <span>Activation Versions</span>
+        </div>
+        <div class="col-md-5">
+            <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+        </div>
+        <div class="col-md-3">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success"
+                            ui-sref="activation-version-edit"
+                            ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                            title="Create">
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu"
+                        ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                        <li>
+                            <a ui-sref="activation-version-import" style="cursor: pointer">
+                                Import
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button"
+                        class="btn btn-default"
+                        id="exportAll"
+                        ng-show="vm.activationVersions.length > 0"
+                        ng-click="vm.exportAll()" title="Export All">
+                    Export All
+                </button>
+            </div>
+        </div>
+    </div>
+</h1>
+<div ng-hide="vm.activationVersions.length === 0" class="panel-default panel">
+    <table class="table">
+        <colgroup width="100"/>
+        <colgroup width="100"/>
+        <colgroup width="150"/>
+        <colgroup width="300"/>
+        <colgroup width="300"/>
+        <colgroup width="145"/>
+        <thead>
+        <tr>
+            <th>Description</th>
+            <th>Model</th>
+            <th>Partner</th>
+            <th>Firmware Versions</th>
+            <th>Regular expressions</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="activationVersion in vm.activationVersions">
+            <td class="break-word config-description">{{activationVersion.description}}</td>
+            <td class="break-word">{{activationVersion.model}}</td>
+            <td class="break-word">{{activationVersion.partnerId}}</td>
+            <td class="break-word">
+                <span class="break-word-inline" ng-repeat="version in activationVersion.firmwareVersions">
+                    <p>{{version}}<span ng-hide="$last">, &nbsp;</span></p>
+                </span>
+            </td>
+            <td class="break-word">
+                <span class="break-word-inline" ng-repeat="expression in activationVersion.regularExpressions">
+                    <p>{{expression}}<span ng-hide="$last">, &nbsp;</span></p>
+                </span></td>
+            <td>
+                <button class="btn btn-default" type="button"
+                        ui-sref="activation-version-edit({id: activationVersion.id})"
+                        ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                        title="Edit">
+                    <i class=ri-pencil-fill></i>
+                </button>
+                <button class="btn btn-default" type="button"
+                        ng-click="vm.deleteOne(activationVersion)"
+                        ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                        title="Delete">
+                    <i class=ri-delete-bin-7-line></i>
+                </button>
+                <button class="btn btn-default" type="button" ng-click="vm.exportOne(activationVersion.id)" title="Export one">
+                    <i class=ri-download-2-line></i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div ng-show="vm.activationVersions.length === 0" class="ads-no-results" id="notFoundResults">
+    <h4>No results found</h4>
+</div>
+<xconf-pagination ng-if="vm.startParse()"
+                  page-size="vm.pageSize"
+                  page-number="vm.pageNumber"
+                  pagination-storage-key="vm.paginationStorageKey"
+                  get-general-items-number="vm.getGeneralItemsNumber()"
+                  get-page="vm.getActivationVersions()">
+</xconf-pagination>

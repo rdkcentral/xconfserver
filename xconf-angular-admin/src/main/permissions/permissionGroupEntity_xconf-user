@@ -1,0 +1,12 @@
+[
+    {
+        "permGroupId": "xconf-user",
+        "permTemplateId": "XConfTemplate",
+        "permValues": [
+            "read-telemetry",
+            "read-dcm",
+            "read-firmware",
+            "read-common"
+        ]
+    }
+]

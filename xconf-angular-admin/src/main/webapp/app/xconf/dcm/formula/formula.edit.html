@@ -1,0 +1,223 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    <span ng-if="vm.currentEditMode === vm.EDIT_MODE.CREATE">Create</span>
+    <span ng-if="vm.currentEditMode === vm.EDIT_MODE.UPDATE">Edit</span> Formula</h1>
+<form name="formulasForm" role="form" novalidate>
+    <div class="panel panel-default">
+        <div class="panel-heading"><label>Properties</label></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div ng-class="{'has-error' : formulasForm.name.$dirty && !vm.formulaValidationService.validateName(vm.formula.rule.name, vm.usedNames).isValid}">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Name</span>
+                                <input id="name" class="form-control"
+                                       ng-model="vm.formula.rule.name"
+                                       placeholder="Type here"
+                                        name="name"/>
+                            </div>
+                        </div>
+                        <p class="help-block" ng-show="formulasForm.name.$dirty && !vm.formulaValidationService.validateName(vm.formula.rule.name, vm.usedNames).isValid"
+                           ng-bind="vm.formulaValidationService.validateName(vm.formula.rule.name, vm.usedNames).message"></p>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">Description</span>
+                        <input id="description" class="form-control" ng-model="vm.formula.rule.description" placeholder="Type here"/>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div ng-class="{'has-error' : formulasForm.percentage.$dirty && !vm.formulaValidationService.validatePercentage(vm.formula.rule.percentage).isValid}">
+                                <div class="form-group">
+                                    <div class="input-group ">
+                                        <span class="input-group-addon">Percentage</span>
+                                        <input id="percentage" class="form-control" ng-model="vm.formula.rule.percentage"
+                                               placeholder="Type here"
+                                               name="percentage"/>
+                                    </div>
+                                </div>
+                                <p class="help-block" ng-show="formulasForm.percentage.$dirty && !vm.formulaValidationService.validatePercentage(vm.formula.rule.percentage).isValid"
+                                   ng-bind="vm.formulaValidationService.validatePercentage(vm.formula.rule.percentage).message"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group is-default-formula">
+                                <span class="input-group-addon" style="background-color: white;">Default formula:
+                                    <i class="ri-check-line" ng-show="vm.formula.rule.percentage == 100"></i>
+                                    <i class="ri-close-line" ng-show="vm.formula.rule.percentage != 100"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Priority</span>
+                                <select id="priority" class="form-control input-sm" ng-model="vm.formula.rule.priority" ng-options= "item for item in vm.availablePriorities"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><label>Percentage of responses with level one/two/three logs</label></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div ng-class="{'has-error' : formulasForm.percentageL1.$dirty && !vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL1).isValid}">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">L1 percentage</span>
+                                <input id="l1Percentage" class="form-control"
+                                       ng-model="vm.formula.rule.percentageL1"
+                                       placeholder="Type here"
+                                       name="percentageL1"/>
+                            </div>
+                        </div>
+                        <p class="help-block" ng-show="formulasForm.percentageL1.$dirty && !vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL1).isValid"
+                           ng-bind="vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL1).message"></p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div ng-class="{'has-error' : formulasForm.percentageL2.$dirty && !vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL2).isValid}">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">L2 percentage</span>
+                                <input id="l2Percentage" class="form-control"
+                                       ng-model="vm.formula.rule.percentageL2"
+                                       placeholder="Type here"
+                                       name="percentageL2"/>
+                            </div>
+                        </div>
+                        <p class="help-block" ng-show="formulasForm.percentageL2.$dirty && !vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL2).isValid"
+                           ng-bind="vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL2).message"></p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div ng-class="{'has-error' : formulasForm.percentageL3.$dirty && !vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL3).isValid}">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">L3 percentage</span>
+                                <input id="l3Percentage" class="form-control"
+                                       ng-model="vm.formula.rule.percentageL3"
+                                       placeholder="Type here"
+                                       name="percentageL3"/>
+                            </div>
+                        </div>
+                        <p class="help-block" ng-show="formulasForm.percentageL3.$dirty && !vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL3).isValid"
+                           ng-bind="vm.formulaValidationService.validateLevelPercentage(vm.formula.rule, vm.formula.rule.percentageL3).message"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default" ng-show="vm.formula.rule.id">
+        <div class="panel-heading"><label>Define settings</label></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <button id="editDeviceSettings" type="button" class="btn btn-primary"
+                            ng-show="vm.isSettingsAvailable[vm.formula.rule.id][vm.SETTINGS_AVAILABILITY_KEYS.DEVICE_SETTINGS]"
+                            ng-click="vm.editDeviceSettings(vm.formula.rule.id)" style="margin-top: 1em">Edit Device settings</button>
+                    <button id="createDeviceSettings" type="button" class="btn btn-success"
+                            ng-show="!vm.isSettingsAvailable[vm.formula.rule.id][vm.SETTINGS_AVAILABILITY_KEYS.DEVICE_SETTINGS]"
+                            ng-click="vm.createDeviceSettings(vm.formula.rule.id)" style="margin-top: 1em">Create Device settings</button>
+                </div>
+                <div class="col-md-3">
+                    <button id="editLogUploadSettings" type="button" class="btn btn-primary"
+                            ng-show="vm.isSettingsAvailable[vm.formula.rule.id][vm.SETTINGS_AVAILABILITY_KEYS.LOG_UPLOAD_SETTINGS]"
+                            ng-click="vm.editLogUploadSettings(vm.formula.rule.id)" style="margin-top: 1em">Edit Log Upload settings</button>
+                    <button id="createLogUploadSettings" type="button" class="btn btn-success"
+                            ng-show="!vm.isSettingsAvailable[vm.formula.rule.id][vm.SETTINGS_AVAILABILITY_KEYS.LOG_UPLOAD_SETTINGS]"
+                            ng-click="vm.createLogUploadSettings(vm.formula.rule.id)" style="margin-top: 1em">Create Log Upload settings</button>
+                </div>
+                <div class="col-md-3">
+                    <button id="editVodSettings" type="button" class="btn btn-primary"
+                            ng-show="vm.isSettingsAvailable[vm.formula.rule.id][vm.SETTINGS_AVAILABILITY_KEYS.VOD_SETTINGS]"
+                            ng-click="vm.editVodSettings(vm.formula.rule.id)" style="margin-top: 1em">Edit VOD settings</button>
+                    <button id="createVodSettings" type="button" class="btn btn-success"
+                            ng-show="!vm.isSettingsAvailable[vm.formula.rule.id][vm.SETTINGS_AVAILABILITY_KEYS.VOD_SETTINGS]"
+                            ng-click="vm.createVodSettings(vm.formula.rule.id)" style="margin-top: 1em">Create VOD settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><label>Build condition</label></div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="block" style="padding: 10px 15px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ruleview-editor-directive is-valid-condition="vm.isValidCondition"
+                                                       data="vm.formula.rule"></ruleview-editor-directive>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12 pull-left">
+                                <rule-builder-directive data="vm.formula.rule"
+                                                        is-valid-condition="vm.isValidCondition"
+                                                        namespaced-list-data="vm.namespacedListData"
+                                                        free-arg-autocomplete-values="vm.freeArgAutocompleteValues"
+                                                        validation-function="vm.validationFunction"
+                                                        percent-free-arg-name="vm.percentFreeArgName"
+                                                        representation="vm.representation"
+                                                        fixed-arg-required="true"></rule-builder-directive>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9 alert alert-info formula-alert-info" style="margin-top: 2em">
+                            For <b>LIKE</b> operation regex comparison is used. Use it if you know how java works with regex expressions. <br>
+                            For <b>MATCH</b> operation wildcard comparison is used (* - few characters, ? - one character). <br>
+                            Examples:<br>
+                            firmwareVersion MATCH 13.14.*<br>
+                            estbMacAddress MATCH AA:AA:AA:AA:AA:*<br>
+                            ecmMacAddress MATCH ??:??:??:AA:FF<br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <br>
+                            <div class="pull-left" style="padding-right: 1em">
+                                <button id="saveEntity" type="button" class="btn btn-success" ng-click="vm.saveFormula()"
+                                        ng-disabled="!vm.formulaValidationService.validateAll(vm.formula.rule, vm.usedNames)">Save</button>
+                                <button type="button" class="btn btn-default" ui-sref="formulas">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>

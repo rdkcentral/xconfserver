@@ -1,0 +1,93 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <span>
+                Import<small> Feature Rule</small>
+            </span>
+            <div class="pull-right">
+                <button type="button" class="btn btn-danger" ng-click="vm.importAllFeatureRules()" ng-hide="vm.wrappedFeatureRules === null || vm.wrappedFeatureRules.length < 2">
+                     Import <b>All</b>
+                </button>
+            </div>
+        </h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <file-select on-change="vm.retrieveFile"></file-select>
+            </div>
+        </div>
+        <custom-progressbar control="vm.progressBarControl" ></custom-progressbar>
+        <br />
+        <br />
+        <div ng-hide="vm.wrappedFeatureRules === null || vm.wrappedFeatureRules.length === 0">
+            <div class="row cols-bottom menu-title">
+                <div class="col-md-1 pull-center">
+                    View
+                </div>
+                <div class="col-md-3 shift-right">
+                    Name
+                </div>
+                <div class="col-md-5 shift-right">
+                    Rule
+                </div>
+                <div class="col-md-1 text-nowrap">
+                    <span ng-hide="vm.wrappedFeatureRules === null || vm.wrappedFeatureRules.length < 2">
+                        <input type="checkbox" id="overwriteAll" class="check-box inline" ng-model="vm.isOverwritten" ng-click="vm.overwriteAll()"/>
+                    </span>
+                    Overwrite
+                </div>
+            </div>
+            <div class="row border-top" ng-repeat="wrappedFeatureRule in vm.wrappedFeatureRules" ng-if="$index >= vm.startIndex && $index < vm.endIndex">
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-default" ng-click="vm.viewFeatureRule(wrappedFeatureRule.entity)">
+                        <i class=ri-eye-fill></i>
+                    </button>
+                </div>
+                <div class="col-md-3 shift-right">
+                    <span class="break-word-inline">{{wrappedFeatureRule.entity.name}}</span>
+                </div>
+                <div class="col-md-5">
+                    <ruleview-directive data="wrappedFeatureRule.entity.rule"></ruleview-directive>
+                </div>
+                <div class="col-md-1 text-center">
+                    <input type="checkbox" ng-model="wrappedFeatureRule.overwrite"/>
+                </div>
+                <div class="col-md-2">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-danger" ng-click="vm.importFeatureRule(wrappedFeatureRule)">
+                             Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-success" ng-show="vm.wrappedFeatureRules.length == 0">
+            All FeatureRules have been imported. You can select another file.
+        </div>
+    </div>
+    <xconf-pagination page-size="vm.pageSize"
+                      page-number="vm.pageNumber"
+                      pagination-storage-key="vm.paginationStorageKey"
+                      get-general-items-number="vm.getGeneralItemsNumber()"
+                      get-page="vm.selectPage()">
+    </xconf-pagination>
+</div>

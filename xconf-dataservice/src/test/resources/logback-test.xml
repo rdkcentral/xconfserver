@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    If not stated otherwise in this file or this component's Licenses.txt file the
+    following copyright and licenses apply:
+   
+    Copyright 2018 RDK Management
+   
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<configuration scan="true" scanPeriod="20 seconds">
+
+	<appender name="fileAppender"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+		<File>target/app.log</File>
+		<encoder>
+			<pattern>%n%level %date{MM/dd hh:mm:ss.SSS a} %relative %thread %logger{50} %M\(%L\)  %n%message%n%exception</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>10</maxIndex>
+			<FileNamePattern>target/app.log.%i
+			</FileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>10MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<logger name="org.hibernate.tool.hbm2ddl" level="trace" />
+
+	<!-- Set SQL to debug to show SQL -->
+	<logger name="org.hibernate.SQL" level="debug" />
+
+	<!-- Set BasicBinder to trace to show query param values -->
+	<logger name="org.hibernate.type.descriptor.sql.BasicBinder"
+		level="trace" />
+
+	<!-- Set hbm2ddl to debug to show DDL -->
+	<logger name="org.hibernate.tool.hbm2ddl" level="debug" />
+	<logger name="org.hibernate.transaction" level="debug" />
+
+	<logger name="com.comcast" level="info" />
+
+  <logger name="org.springframework" level="debug" />
+
+	<root level="warn">
+		<appender-ref ref="fileAppender" />
+	</root>
+
+</configuration>
+

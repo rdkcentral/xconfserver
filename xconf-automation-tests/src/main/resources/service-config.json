@@ -1,0 +1,46 @@
+{
+    "domainClassesBasePackage": "com.comcast.xconf",
+    "validatorsBasePackage" : "com.comcast.hydra.appdiscovery.validation",
+    "bindersBasePackage" : "com.comcast.xconf.bindery",
+    "autoGenerateSchema" : true,
+
+    "keyspaces": {
+        "ApplicationsDiscoveryDataService": {
+            "replicationFactor": 3
+        }
+    },
+    "connectionPools": {
+        "SharedConnectionPool": {
+            "seeds": [ "localhost:19160" ],
+            "autoDiscoverHosts": false,
+            "keyspaceName": "ApplicationsDiscoveryDataService",
+            "localDatacenter": "",
+            "maxConnsPerHost": 15,
+            "useConnectionPoolMonitor": true
+        }
+    },
+    "columnFamilies": {
+        "defaults": {
+            "connectionPoolName": "SharedConnectionPool",
+            "keyspaceName": "ApplicationsDiscoveryDataService",
+            "pageSize": 256
+        }
+    },
+    "endpoints": {
+        "defaults": {
+            "maxResults": "300"
+        }
+    },
+    "cacheConfiguration": {
+        "tickDuration": 60000,
+        "retryCountUntilFullRefresh": 10,
+        "changedKeysTimeWindowSize": 900000,
+        "reloadCacheEntries": false,
+        "reloadCacheEntriesTimeout": 1,
+        "reloadCacheEntriesTimeUnit": "DAYS",
+        "numberOfEntriesToProcessSequentially": 10000,
+        "keysetChunkSizeForMassCacheLoad": 500
+    },
+    "specific": {
+    }
+}

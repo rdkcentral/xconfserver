@@ -1,0 +1,471 @@
+<?xml version="1.0"?>
+<!--
+    If not stated otherwise in this file or this component's Licenses.txt file the
+    following copyright and licenses apply:
+   
+    Copyright 2018 RDK Management
+   
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.comcast.coast.xconf.oss</groupId>
+		<artifactId>xconf</artifactId>
+		<version>1.1.16-SNAPSHOT</version>
+	</parent>
+
+	<name>xconf-dataservice</name>
+	<artifactId>xconf-dataservice</artifactId>
+	<packaging>war</packaging>
+
+	<properties>
+		<maven.test.failure.ignore>true</maven.test.failure.ignore>
+		<maven.build.timestamp.format>M/d/yyyy h:mm a</maven.build.timestamp.format>
+		<!-- should not need timestamp property, should just be able to reference 
+			maven.build.timestamp in my version.properties, but there's a maven bug: 
+			http://jira.codehaus.org/browse/MRESOURCES-99 -->
+		<timestamp>${maven.build.timestamp}</timestamp>
+	</properties>
+	<repositories>
+		<!-- For most stuff this is the standard maven repo -->
+		<repository>
+			<id>m2</id>
+			<name>Maven 2</name>
+			<url>http://repo2.maven.org/maven2</url>
+		</repository>
+		<!-- For recent versions of spring -->
+		<repository>
+			<id>spring</id>
+			<name>spring</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository>
+	</repositories>
+	<dependencies>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+		</dependency>
+
+		<dependency>
+            <groupId>com.comcast.coast.xconf.oss</groupId>
+            <artifactId>ruleengine-common</artifactId>            
+        </dependency>
+		
+		<dependency>
+			<groupId>com.comcast.coast.xconf.oss</groupId>
+			<artifactId>xconf-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>			
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			 <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>			
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>			
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>			
+		</dependency>
+		<!-- Support for testing Spring applications with tools such as JUnit and 
+			TestNG This artifact is generally always defined with a 'test' scope for 
+			the integration testing framework and unit testing stubs -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Need spring-aspects and aspectjrt for AspectJ support -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk16</artifactId>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>			
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.6.6.Final</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>	
+			<exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>		
+		</dependency>
+		<dependency>
+			<groupId>org.cassandraunit</groupId>
+			<artifactId>cassandra-unit</artifactId>
+			<version>${cassandra-unit.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-handler</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpasyncclient</artifactId>			
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>git-build</id>
+			<activation>
+				<file>
+					<missing>.svn</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven-antrun-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>git-info</id>
+								<phase>process-resources</phase>
+								<configuration>
+									<tasks>
+										<exec dir="${basedir}" executable="bash" osfamily="unix" output="${project.build.outputDirectory}/dataservice.version.properties" failonerror="false" append="true">
+											<arg line="-c &quot;git log -1 | sed -e 's/^commit /git.commit.id=/' -e 's/Date: */git.commit.time=/' |grep ^git &quot;" />
+										</exec>
+										<exec dir="${basedir}" executable="bash" osfamily="unix" output="${project.build.outputDirectory}/dataservice.version.properties" failonerror="false" append="true">
+											<arg line="-c &quot;git branch | grep '^*' | sed -e 's/^\* /git.branch=/' &quot;" />
+										</exec>
+										<exec dir="${basedir}" executable="cmd" osfamily="windows" output="${project.build.outputDirectory}/dataservice.version.properties" failonerror="false" append="true">
+											<arg line="-c &quot;git log -1 | sed -e 's/^commit /git.commit.id=/' -e 's/Date: */git.commit.time=/' |grep ^git &quot;" />
+										</exec>
+										<exec dir="${basedir}" executable="cmd" osfamily="windows" output="${project.build.outputDirectory}/dataservice.version.properties" failonerror="false" append="true">
+											<arg line="-c &quot;git branch | grep '^*' | sed -e 's/^\* /git.branch=/' &quot;" />
+										</exec>
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>svn-build</id>
+			<activation>
+				<file>
+					<exists>.svn</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven-antrun-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>get-svn-info</id>
+								<phase>process-resources</phase>
+								<configuration>
+									<tasks>
+										<exec dir="${basedir}" executable="svn" output="${project.build.outputDirectory}/dataservice.version.properties" failonerror="false" append="true">
+											<arg line="info" />
+										</exec>
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+		<finalName>xconf-dataservice</finalName>
+		<!-- token filters all files in src/main/resources for now we just use 
+			this to get the project version to display at /management/version -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven-antrun-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>get-mvn-vars</id>
+						<phase>process-resources</phase>
+						<configuration>
+							<tasks>
+								<echo file="${project.build.outputDirectory}/dataservice.version.properties" append="true">
+									ProjectName=${project.name}
+									ProjectVersion=${project.version}
+									git.build.time=${git.build.time}
+									${line.separator}
+								</echo>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Allows you to do mvn eclipse:eclipse which creates .classpath and 
+				some other necessary files for eclipse. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>${maven-eclipse-plugin.version}</version>
+				<configuration>
+					<ajdtVersion>2.2</ajdtVersion>
+				</configuration>
+			</plugin>
+
+			<!-- Runs unit tests on build. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+					<forkMode>always</forkMode>
+					<testFailureIgnore>false</testFailureIgnore>
+					<excludes>
+						<exclude>**/PercentFilterTest.java</exclude>
+						<exclude>**/LogUploaderControllerTest.java</exclude>
+						<exclude>**/TelemetryProfileServiceTest.java</exclude>
+						<exclude>**/EstbFirmwareRuleBaseTest.java</exclude>
+						<exclude>**/EstbFirmwareControllerTest.java</exclude>
+						<exclude>**/ConfigChangeLogServiceTest.java</exclude>
+						<exclude>**/TelemetryProfileControllerTest.java</exclude>
+						<exclude>**/queries/controllers/*.java</exclude>
+						<exclude>**/estbfirmware/legacy/MacRuleLegacyConverterTest.java</exclude>
+						<exclude>**/estbfirmware/legacy/IpFilterLegacyConverterTest.java</exclude>
+						<exclude>**/estbfirmware/legacy/TimeFilterLegacyConverterTest.java</exclude>
+						<exclude>**/estbfirmware/legacy/RebootImmediatelyLegacyConverterTest.java</exclude>
+						<exclude>**/estbfirmware/evaluation/percentfilter/*.java</exclude>
+						<exclude>**/estbfirmware/converter/*.java</exclude>
+						<exclude>**/DcmRuleConverterTest.java</exclude>
+						<exclude>**/EnvironmentServiceTest.java</exclude>
+						<exclude>**/PercentFilterServiceTest.java</exclude>
+						<exclude>**/FeatureControlSettingTest.java</exclude>
+						<exclude>**/aspect/**</exclude>
+						<exclude>**/formula/**</exclude>
+						<exclude>**/filter/**</exclude>
+						<exclude>**/NgRuleConverterTest.java</exclude>
+						<exclude>**/MigrationControllerTest.java</exclude>
+                        <exclude>**/validators/firmware/*.java</exclude>
+                        <exclude>**/service/**</exclude>
+					</excludes>
+					<includes>
+						<include>**/*.java</include>
+						<include>**/CompleteTestSuite.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>				
+				<configuration>
+					<source>${source}</source>
+					<target>${source}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<webApp>
+						<contextPath>/</contextPath>
+					</webApp>
+					<httpConnector>
+						<port>9092</port>
+					</httpConnector>
+					<contextXml>jetty-context.xml</contextXml>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,128 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <span ng-bind="'Mac Lists'" ng-show="vm.currentType === vm.NAMESPACED_LIST_TYPE.MAC_LIST"></span>
+                <span ng-bind="'Ip Lists'" ng-show="vm.currentType === vm.NAMESPACED_LIST_TYPE.IP_LIST"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group pull-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" title="Create NamespacedList" id="createEntity"
+                            ui-sref="namespacedlist-edit({type: vm.currentType, editMode: vm.EDIT_MODE.CREATE})"
+                            ng-show="authUtils.hasPermission(PERMISSION.WRITE_COMMON)">
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.hasPermission(PERMISSION.WRITE_COMMON)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-show="authUtils.hasPermission(PERMISSION.WRITE_COMMON)">
+                            <a ui-sref="namespacedlist-import({type: vm.currentType})">
+                                <i class="ri-upload-2-line"></i> Import</a>
+                        </li>
+                    </ul>
+                </div>
+                <button id="exportAll" type="button" class="btn btn-default" title="Export All"
+                        ng-show="vm.namespacedLists.length > 0"
+                        ng-click="vm.exportAllNamespacedLists(vm.currentType)">
+                    Export All
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+</h1>
+
+<div ng-show="vm.namespacedLists.length > 0" class="panel panel-default">
+    <table class="table">
+        <colgroup width="50" />
+        <colgroup width="25%" />
+        <colgroup />
+        <colgroup width="270" />
+        <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Size</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="namespacedList in vm.namespacedLists">
+            <td>
+                <button type="button" class="btn btn-default viewEntity" ng-click="vm.viewNamespacedList(namespacedList.id, vm.currentType)">
+                    <i class="ri-eye-fill"></i>
+                </button>
+            </td>
+            <td class="break-word" ng-bind="namespacedList.id"></td>
+            <td ng-bind="namespacedList.data.length"></td>
+            <td>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default editEntity"
+                            ui-sref="namespacedlist-edit({id:namespacedList.id, editMode: vm.EDIT_MODE.UPDATE, type: vm.currentType})"
+                            ng-show="authUtils.hasPermission(PERMISSION.WRITE_COMMON)"
+                            title="Edit Namespaced List">
+                        <i class="ri-pencil-fill"></i>
+                    </button>
+                    <button type="button" class="btn btn-default deleteEntity"
+                            ng-click="vm.deleteNamespacedList(namespacedList, vm.currentType)"
+                            ng-show="authUtils.hasPermission(PERMISSION.WRITE_COMMON)"
+                            title="Delete Namespaced List">
+                        <i class="ri-delete-bin-7-line"></i>
+                    </button>
+                    <button type="button" class="btn btn-default bulkDeleteEntity"
+                            ng-click="vm.bulkDelete(namespacedList.id)"
+                            title="Bulk delete"
+                            ng-show="authUtils.hasPermission(PERMISSION.WRITE_COMMON)">
+                        <i class="ri-close-circle-line"></i>
+                    </button>
+                    <button type="button" class="btn btn-default exportEntity"
+                            ng-click="vm.exportNamespacedList(namespacedList.id)"
+                            title="Export Namespaced List">
+                        <i class="ri-download-2-line"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<xconf-pagination ng-if="vm.startParse()"
+                  page-size="vm.pageSize"
+                  page-number="vm.pageNumber"
+                  pagination-storage-key="vm.paginationStorageKey"
+                  get-general-items-number="vm.getGeneralItemsNumber()"
+                  get-page="vm.getNamespacedLists()">
+</xconf-pagination>
+<div id="notFoundResults" ng-show="vm.namespacedLists.length === 0" class="ads-no-results">
+    <h4>No results found</h4>
+</div>

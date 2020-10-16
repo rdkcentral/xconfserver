@@ -1,0 +1,126 @@
+<!--
+/* 
+ * If not stated otherwise in this file or this component's Licenses.txt file the 
+ * following copyright and licenses apply:
+ *
+ * Copyright 2018 RDK Management
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+  ~
+  ~  Author: mdolina
+  ~  Created: 11/9/15 6:34 PM
+  -->
+
+<h1 class="page-header">
+    Download Location Round Robin Filter
+    <div class="pull-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-success editEntity"
+                    ui-sref="roundrobinfilter-edit"
+                    ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                    title="Edit Dowload Location Filter">
+                Edit
+            </button>
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                    ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                    <a ui-sref="roundrobinfilter-import" style="cursor: pointer">
+                        Import
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button id="exportAll" type="button" class="btn btn-default" ng-click="vm.exportFilter($root.applicationType)">
+            Export
+        </button>
+    </div>
+</h1>
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span>HTTP</span>
+        </div>
+        <div class="panel-body">
+            <div class="alert alert-info location-alert-info">
+                <ul>
+                    <li>An HTTP location will be returned by default to all devices</li>
+                    <li>Devices that send supportsFullHttpUrl capability will get back a full URL location, others will get back the FQDN location</li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Location (FQDN)</span>
+                    <input id="httpLocation" class="form-control" ng-value="vm.filter.httpLocation" disabled readonly/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Location (full URL)</span>
+                    <input id="httpFullUrlLocation" class="form-control" ng-value="vm.filter.httpFullUrlLocation" disabled readonly/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12" style="padding-top: 1em">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span>TFTP</span>
+        </div>
+        <div class="panel-body">
+            <div class="alert alert-info location-alert-info">
+                <span>
+                    For where TFTP applies, a device will get back one of the locations below based on the percent listed for the location. So if location 1.1.1.1 has a percent of 10, then 10% of requests will be told to use location 1.1.1.1.
+                </span>
+            </div>
+            <div id="ipv4Locations" class="form-group" ng-show="vm.filter.locations.length > 0">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>IPv4 locations:</label>
+                    </div>
+                </div>
+                <div class="row" ng-repeat="location in vm.filter.locations">
+                    <div class="col-md-3 form-group ipv4-percentage-view-width">
+                        <div class="input-group">
+                            <span class="input-group-addon location-ip" ng-bind="location.locationIp"></span>
+                            <input class="form-control location-percentage" disabled ng-value="location.percentage"/>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ipv6Locations" ng-show="vm.filter.ipv6locations.length > 0">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label>IPv6 locations:</label>
+                    </div>
+                </div>
+                <div class="row" ng-repeat="location in vm.filter.ipv6locations">
+                    <div class="form-group col-md-5 ipv6-percentage-view-width">
+                        <div class="input-group">
+                            <span class="input-group-addon location-ip" ng-bind="location.locationIp"></span>
+                            <input class="form-control location-percentage" disabled ng-value="location.percentage"/>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,60 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <div class="row">
+                <div class="col-md-5">
+                    Report page
+                </div>
+                <div class="pull-right">
+                    <button title="Check All" id="checkAll" class="btn btn-default" ng-click="vm.checkAll()">
+                        Check All
+                    </button>
+                    <button title="Uncheck All" id="uncheckAll" class="btn btn-default" ng-click="vm.uncheckAll()">
+                        Uncheck All
+                    </button>
+                    <button title="Get report" id="getReport" class="btn btn-success" ng-click="vm.getReport()" ng-disabled="!vm.atLeastOneChecked()">
+                        Get Report
+                    </button>
+                </div>
+            </div>
+        </h1>
+        <div class="row" ng-show="vm.macRulesNamesForCheckbox.length > 0">
+            <div class="col-md-4" ng-repeat="row in vm.macRuleNameRows">
+                    <div style="margin-bottom: -10px !important;" ng-repeat="ruleForCheckbox in row">
+                        <ul class="xconf-list">
+                            <li class="ads-list-item ads-list-item-lg  ads-list-item-edit list-item-dark-grey"
+                                ng-class="{'ads-list-item-green' : ruleForCheckbox.isChecked, 'list-item-dark-grey' : !ruleForCheckbox.isChecked}"
+                                ng-click="ruleForCheckbox.isChecked = !ruleForCheckbox.isChecked"
+                                style="cursor: pointer">
+                                <span ng-bind="ruleForCheckbox.ruleName"></span>
+                                <button type="button" class="close" ng-show="ruleForCheckbox.isChecked"></button>
+                            </li>
+                        </ul>
+                    </div>
+            </div>
+        </div>
+        <div ng-show="vm.macRulesNamesForCheckbox.length <= 0" class="ads-no-results">
+            <h4>No MacRules</h4>
+        </div>
+    </div>
+</div>

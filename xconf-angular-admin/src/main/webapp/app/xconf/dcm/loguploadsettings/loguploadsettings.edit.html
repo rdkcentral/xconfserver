@@ -1,0 +1,244 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span ng-if="vm.currentEditMode === vm.EDIT_MODE.CREATE">Create</span>
+        <span ng-if="vm.currentEditMode === vm.EDIT_MODE.UPDATE">Edit</span>
+        <span> Log Upload Settings</span>
+        <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+            <span>&times;</span>
+        </button>
+    </h3>
+</div>
+<div class="modal-body">
+    <form name="logUploadSettingsForm" role="form" novalidate>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Settings
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div ng-class="{'has-error' : logUploadSettingsForm.name.$dirty && !vm.logUploadSettingsValidationService.validateName(vm.logUploadSettings.name, vm.usedNames).isValid}">
+                            <div class="form-group">
+                                <div class="input-group ">
+                                    <span class="input-group-addon">Name</span>
+                                    <input id="logUploadSettingsName" type="text" class="form-control"
+                                           ng-model="vm.logUploadSettings.name"
+                                           name="name"/>
+                                </div>
+                            </div>
+                            <p class="help-block" ng-show="logUploadSettingsForm.name.$dirty && !vm.logUploadSettingsValidationService.validateName(vm.logUploadSettings.name, vm.usedNames).isValid"
+                               ng-bind="vm.logUploadSettingsValidationService.validateName(vm.logUploadSettings.name, vm.usedNames).message"></p>
+                        </div>
+                        <br>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">Upload On Reboot</span>
+                            <select id="uploadOnReboot" class="form-control" ng-model="vm.logUploadSettings.uploadOnReboot" ng-options= "item for item in [true, false]"></select>
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div ng-class="{'has-error' : logUploadSettingsForm.numberOfDays.$dirty && !vm.logUploadSettingsValidationService.validateNonNegativeNumber(vm.logUploadSettings.numberOfDays).isValid}">
+                            <div class="form-group">
+                                <div class="input-group ">
+                                    <span class="input-group-addon">Number Of Days</span>
+                                    <input id="numberOfDays" type="text" class="form-control"
+                                           ng-model="vm.logUploadSettings.numberOfDays"
+                                           name="numberOfDays"/>
+                                </div>
+                            </div>
+                            <p class="help-block" ng-show="logUploadSettingsForm.numberOfDays.$dirty && !vm.logUploadSettingsValidationService.validateNonNegativeNumber(vm.logUploadSettings.numberOfDays).isValid"
+                               ng-bind="vm.logUploadSettingsValidationService.validateNonNegativeNumber(vm.logUploadSettings.numberOfDays).message"></p>
+                        </div>
+                        <br>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">Are Settings Active</span>
+                            <select id="settingsAreActive" class="form-control" ng-model="vm.logUploadSettings.areSettingsActive" ng-options= "item for item in [true, false]"></select>
+                        </div>
+                        <br>
+
+                        <div ng-class="{'has-error' : !vm.logUploadSettingsValidationService.validateUploadRepositoryId(vm.logUploadSettings.uploadRepositoryId).isValid}">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Upload repository</span>
+                                    <select id="uploadRepository" class="form-control"
+                                            ng-model="vm.logUploadSettings.uploadRepositoryId"
+                                            name="uploadRepositoryId"
+                                            ng-disabled="!vm.logUploadSettingsValidationService.validateUploadRepositoryId(vm.logUploadSettings.uploadRepositoryId).isValid"
+                                            ng-options="repo.id as repo.name for repo in vm.uploadRepositories" label-length>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="help-block" ng-show="!vm.logUploadSettingsValidationService.validateUploadRepositoryId(vm.logUploadSettings.uploadRepositoryId).isValid"
+                               ng-bind="vm.logUploadSettingsValidationService.validateUploadRepositoryId(vm.logUploadSettings.uploadRepositoryId).message"></p>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Schedule
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Type</span>
+                                <select id="scheduleType" class="form-control" ng-model="vm.logUploadSettings.schedule.type" ng-options= "val as val for (key, val) in vm.SCHEDULE_TYPE"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group ">
+                                            <span class="input-group-addon">Cron Expression</span>
+                                            <input id="cronExpression" type="text" class="form-control"
+                                                   ng-model="vm.logUploadSettings.schedule.expression"
+                                                   name="expression"
+                                                   ng-disabled="vm.logUploadSettings.schedule.type === vm.SCHEDULE_TYPE.WHOLE_DAY_RANDOMIZED" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error' : logUploadSettingsForm.minutes.$dirty && !vm.logUploadSettingsValidationService.validateCronMinutes(vm.cronFields.minutes).isValid}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Minutes</span>
+                                            <input type="text" name="minutes" id="minutes" class="form-control" ng-model="vm.cronFields.minutes"/>
+                                        </div>
+                                        <p class="help-block" ng-show="logUploadSettingsForm.minutes.$dirty && !vm.logUploadSettingsValidationService.validateCronHours(vm.cronFields.minutes).isValid"
+                                           ng-bind="vm.logUploadSettingsValidationService.validateCronMinutes(vm.cronFields.minutes).message"></p>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error' : logUploadSettingsForm.hours.$dirty && !vm.logUploadSettingsValidationService.validateCronHours(vm.cronFields.hours).isValid}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Hours</span>
+                                            <input type="text" name="hours" id="hours" class="form-control" ng-model="vm.cronFields.hours"/>
+                                        </div>
+                                        <p class="help-block" ng-show="logUploadSettingsForm.hours.$dirty && !vm.logUploadSettingsValidationService.validateCronHours(vm.cronFields.hours).isValid"
+                                           ng-bind="vm.logUploadSettingsValidationService.validateCronHours(vm.cronFields.hours).message"></p>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error' : logUploadSettingsForm.dayOfMonth.$dirty && !vm.logUploadSettingsValidationService.validateCronDayOfMonth(vm.cronFields.dayOfMonth).isValid}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Day of month</span>
+                                            <input type="text" name="dayOfMonth" id="dayOfMonth" class="form-control" ng-model="vm.cronFields.dayOfMonth"/>
+                                        </div>
+                                        <p class="help-block" ng-show="logUploadSettingsForm.dayOfMonth.$dirty && !vm.logUploadSettingsValidationService.validateCronDayOfMonth(vm.cronFields.dayOfMonth).isValid"
+                                           ng-bind="vm.logUploadSettingsValidationService.validateCronDayOfMonth(vm.cronFields.dayOfMonth).message"></p>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error' : logUploadSettingsForm.month.$dirty && !vm.logUploadSettingsValidationService.validateCronMonth(vm.cronFields.month).isValid}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Month</span>
+                                            <input type="text" name="month" id="month" class="form-control" ng-model="vm.cronFields.month"/>
+                                        </div>
+                                        <p class="help-block" ng-show="logUploadSettingsForm.month.$dirty && !vm.logUploadSettingsValidationService.validateCronDayOfMonth(vm.cronFields.month).isValid"
+                                           ng-bind="vm.logUploadSettingsValidationService.validateCronMonth(vm.cronFields.month).message"></p>
+                                    </div>
+                                    <div class="form-group" ng-class="{'has-error' : logUploadSettingsForm.dayOfWeek.$dirty && !vm.logUploadSettingsValidationService.validateCronDayOfWeek(vm.cronFields.dayOfWeek).isValid}">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">dayOfWeek</span>
+                                            <input type="text" name="dayOfWeek" id="dayOfWeek" class="form-control" ng-model="vm.cronFields.dayOfWeek"/>
+                                        </div>
+                                        <p class="help-block" ng-show="logUploadSettingsForm.dayOfWeek.$dirty && !vm.logUploadSettingsValidationService.validateDayOfWeek(vm.cronFields.dayOfWeek).isValid"
+                                           ng-bind="vm.logUploadSettingsValidationService.validateCronDayOfWeek(vm.cronFields.dayOfWeek).message"></p>
+                                    </div>
+                        <br>
+
+                        <div ng-class="{'has-error' : logUploadSettingsForm.timeWindowMinutes.$dirty && !vm.logUploadSettingsValidationService.validateTimeWindowMinutes(vm.logUploadSettings.schedule.timeWindowMinutes, vm.logUploadSettings.schedule.type).isValid}">
+                            <div class="form-group">
+                                <div class="input-group ">
+                                    <span class="input-group-addon">Time Window (minutes)</span>
+                                    <input id="timeWindow" type="text" class="form-control"
+                                           ng-model="vm.logUploadSettings.schedule.timeWindowMinutes"
+                                           name="timeWindowMinutes"
+                                           ng-disabled="vm.logUploadSettings.schedule.type === vm.SCHEDULE_TYPE.WHOLE_DAY_RANDOMIZED"/>
+                                </div>
+                            </div>
+                            <p class="help-block" ng-show="logUploadSettingsForm.timeWindowMinutes.$dirty && !vm.logUploadSettingsValidationService.validateTimeWindowMinutes(vm.logUploadSettings.schedule.timeWindowMinutes, vm.logUploadSettings.schedule.type).isValid"
+                               ng-bind="vm.logUploadSettingsValidationService.validateTimeWindowMinutes(vm.logUploadSettings.schedule.timeWindowMinutes, vm.logUploadSettings.schedule.type).message"></p>
+                        </div>
+                        <br>
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Time zone</span>
+                                <select class="form-control"
+                                        ng-options="timeZone for timeZone in vm.schedulerTimeZones"
+                                        ng-model="vm.logUploadSettings.schedule.timeZone"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group ">
+                                <span class="input-group-addon">ExpressionL1</span>
+                                <input id="expressionL1" type="text" class="form-control"
+                                       ng-model="vm.logUploadSettings.schedule.expressionL1"
+                                       name="expressionL1"
+                                       ng-disabled="vm.logUploadSettings.schedule.type === vm.SCHEDULE_TYPE.WHOLE_DAY_RANDOMIZED"/>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="form-group">
+                            <div class="input-group ">
+                                <span class="input-group-addon">ExpressionL2</span>
+                                <input id="expressionL2" type="text" class="form-control"
+                                       ng-model="vm.logUploadSettings.schedule.expressionL2"
+                                       name="expressionL2"
+                                       ng-disabled="vm.logUploadSettings.schedule.type === vm.SCHEDULE_TYPE.WHOLE_DAY_RANDOMIZED"/>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="form-group">
+                            <div class="input-group ">
+                                <span class="input-group-addon">ExpressionL3</span>
+                                <input id="expressionL3" type="text" class="form-control"
+                                       ng-model="vm.logUploadSettings.schedule.expressionL3"
+                                       name="expressionL3"
+                                       ng-disabled="vm.logUploadSettings.schedule.type === vm.SCHEDULE_TYPE.WHOLE_DAY_RANDOMIZED"/>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+<div class="modal-footer">
+    <button id="modalSaveEntity" class="btn btn-success" ng-click="vm.saveLogUploadSettings()"
+            ng-disabled="!vm.logUploadSettingsValidationService.validateAll(vm.logUploadSettings, vm.usedNames, vm.cronFields)">
+        Save
+    </button>
+    <button class="btn btn-default" ng-click="vm.dismiss()">Cancel</button>
+</div>

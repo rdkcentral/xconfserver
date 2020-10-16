@@ -1,0 +1,329 @@
+/* 
+ * If not stated otherwise in this file or this component's Licenses.txt file the 
+ * following copyright and licenses apply:
+ *
+ * Copyright 2018 RDK Management
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Author: rdolomansky
+ * Created: 5/22/15  2:31 PM
+ */
+
+.ads-feature-rules {
+    margin: 0;
+    padding: 0;
+}
+
+.ads-feature-rules > li {
+    display: block;
+    list-style: none;
+    margin-top: 5px;
+    border: 1px;
+}
+
+.ads-feature-rules > li > .ads-block {
+    padding: 10px;
+}
+
+
+
+.rule-relation {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 20px;
+    border: 1px solid #d3d3d3;
+    box-shadow: 2px 2px 2px gray;
+}
+
+
+
+.rule-builder {
+    display: table;
+}
+
+.rule-builder-relation {
+    float: left;
+    padding: 0;
+    margin: 5px 0 0;
+    cursor: pointer;
+}
+
+.rule-builder-relation li {
+    float: left;
+    list-style: none;
+    margin-right: 5px;
+}
+
+.rule-builder-relation-active {
+    background-color: #ff9999;
+    border: 1px solid #e27d7d !important;
+}
+
+.rule-builder-container {
+    float: left;
+    border-radius: 25px;
+    border: 1px solid #d3d3d3;
+    box-shadow: 1px 1px 1px gray;
+    padding: 5px 5px 5px 0;
+}
+
+@media screen and (min-width: 700px) {
+    .rule-builder-container {
+        margin-left: 5px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .rule-builder-container {
+        margin-top: 5px;
+        padding-left: 5px;
+    }
+}
+
+.rule-builder-negated,
+.rule-builder-argument,
+.rule-builder-operation,
+.rule-builder-value,
+.rule-builder-add {
+    float: left;
+}
+
+@media screen and (min-width: 700px) {
+    .rule-builder-negated,
+    .rule-builder-argument,
+    .rule-builder-operation,
+    .rule-builder-value,
+    .rule-builder-add {
+        margin-left: 5px;
+    }
+}
+
+.rule-builder-negated,
+.rule-builder-argument,
+.rule-builder-operation,
+.rule-builder-value {
+    margin-top: 3px;
+}
+
+.rule-builder-negated {
+    margin-left: 10px;
+    width: 70px;
+}
+
+.rule-builder-negated .checkbox {
+    margin-top: 7px;
+    margin-bottom: 0;
+}
+
+
+@media screen and (min-width: 700px) {
+    .rule-builder-operation {
+        width: 120px;
+    }
+
+    .rule-builder-argument,
+    .rule-builder-value {
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .rule-builder-argument,
+    .rule-builder-value {
+        width: 100%;
+    }
+
+    .rule-builder-operation {
+        width: 100%;
+    }
+}
+
+.rule-builder-add {
+    color: red;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 700px) {
+    .rule-builder-add {
+        margin-top: 5px;
+    }
+}
+
+
+.ruleview-editor-rule-active {
+    background-color: #e27d7d;
+}
+
+.ruleview-editor-rule-remove {
+    position: absolute;
+    top: -5px;
+    right: -22px;
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    fonxt-size: 10px;
+    color: white;
+    border-radius: 20px;
+    visibility: hidden;
+}
+
+
+/*.ads-ruleview-rule:hover .ruleview-editor-rule-remove,*/
+.ruleview-editor-rule-active .ruleview-editor-rule-remove {
+    visibility: visible;
+}
+
+.ads-btn-small {
+    display: block;
+    background-color: red;
+    color: black;
+    width: 20px;
+    height: 20px;
+}
+
+
+
+.featurerule-input-autocomplete > ul.dropdown-menu {
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+.featurerule-view-container {
+    cursor: pointer;
+}
+
+.featurerule-appliableaction-view {
+    overflow: hidden;
+    height: 100%;
+    padding-bottom: 10px;
+}
+
+.featurerule-blur {
+    background: rgba(237,237,237,0.05);
+    background: -moz-linear-gradient(top, rgba(237,237,237,0.05) 0%, rgba(246,246,246,0.55) 53%, rgba(255,255,255,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(237,237,237,0.05) 0%, rgba(246,246,246,0.55) 53%, rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(top, rgba(237,237,237,0.05) 0%, rgba(246,246,246,0.55) 53%, rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(top, rgba(237,237,237,0.05) 0%, rgba(246,246,246,0.55) 53%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(to bottom, rgba(237,237,237,0.05) 0%, rgba(246,246,246,0.55) 53%, rgba(255,255,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff', GradientType=0 );
+
+    height: 40px;
+    width: 100%;
+    /*margin-top: -30px;*/
+    position: absolute;
+    bottom: 0;
+    z-index: 100;
+}
+
+.featurerule-blurred-ovewflow {
+    position: relative;
+    height: 100%;
+}
+
+.featurerule-list-item {
+    display: flex;
+    align-items: baseline;
+    width: 100%;
+    overflow: hidden;
+    color: #333;
+    padding: 0.5em;
+    text-align: left;
+    position: relative;
+    margin-top: 0.1em;
+}
+
+.featurerule-list-item:hover {
+    background-color: #e1e1e1;
+}
+
+.featurerule-prop-name {
+    font-size: 0.9em;
+    font-style: italic;
+    width: 30%;
+    float: left;
+}
+
+.featurerule-property {
+    width: 70%;
+    float: left;
+    word-wrap: break-word;
+}
+
+.featurerule-hidden-text-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.featurerule-properties-header {
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.featurerule-header-row .input-group-btn {
+    width: auto;
+}
+
+.featurerule-header-row {
+    position: relative;
+}
+
+.featurerule-no-results {
+    height: 300px;
+    display: table;
+    text-align: center;
+    width: 100%;
+}
+
+.featurerule-no-results h4 {
+    display: table-cell;
+    vertical-align: middle;
+    color: #d3d3d3;
+}
+
+.featurerule-context-panel {
+    background-color: #eeeeee;
+    margin-bottom: 0.7em;
+}
+
+.setting-rule .form-group {
+    margin:10px 5px !important;
+}
+
+.setting-no-profile {
+    color: red;
+}
+
+.matched-rules {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+}
+
+.no-firmwarerule-template {
+    color: #888888;
+}
+
+.no-firmwarerule-template .checked-in-list {
+    background-color: #EFEFEF;
+    border-color: #c2c2c2 !important;
+    color: #878787 !important;
+}

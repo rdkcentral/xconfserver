@@ -1,0 +1,103 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="col-md-12">
+    <h1 class="page-header">
+        Import <small> Formulas</small>
+        <div class="pull-right">
+            <button type="button" class="btn btn-danger" ng-click="vm.importAllFormulas()" ng-hide="vm.wrappedFormulasWithSettings === null || vm.wrappedFormulasWithSettings.length < 2">
+                 Import <b>All</b>
+            </button>
+        </div>
+    </h1>
+    <div class="row">
+        <div class="col-lg-4">
+            <file-select on-change="vm.retrieveFile"></file-select>
+        </div>
+    </div>
+    <custom-progressbar control="vm.progressBarControl" ></custom-progressbar>
+    <br />
+    <div ng-hide="vm.wrappedFormulasWithSettings === null || vm.wrappedFormulasWithSettings.length === 0" class="panelD panel-default">
+        <div class="row cols-bottom row-title">
+            <div class="col-md-3"></div>
+            <div class="col-md-1">
+                Is Default
+            </div>
+            <div class="col-md-1">
+                Priority
+            </div>
+            <div class="col-md-3">
+                Conditions
+            </div>
+            <div class="col-md-1 text-nowrap">
+                    <span ng-hide="vm.wrappedFirmwareConfigs === null || vm.wrappedFirmwareConfigs.length < 2">
+                        <input type="checkbox" id="overwriteAll" class="check-box inline" ng-model="vm.isOverwritten" ng-click="vm.overwriteAll()"/>
+                    </span>
+                Overwrite
+            </div>
+            <div class="col-md-2">
+                View Settings
+            </div>
+        </div>
+        <div class="row border-top" ng-repeat="wrappedFormulaWithSettings in vm.wrappedFormulasWithSettings" ng-if="$index >= vm.startIndex && $index < vm.endIndex">
+            <div class="col-md-3">
+                <span class="break-word-inline"><b>Name:</b> {{wrappedFormulaWithSettings.entity.formula.name}}</span><br />
+                <b>Percentage: </b><span ng-bind="wrappedFormulaWithSettings.entity.formula.percentage"></span>
+            </div>
+            <div class="col-md-1 text-center">
+                <i class="ri-check-line" ng-show="wrappedFormulaWithSettings.entity.formula.percentage == 100"></i>
+            </div>
+            <div class="col-md-1">
+                <select style="display: inline; width: 80px"
+                        class="form-control input-sm"
+                        ng-model="wrappedFormulaWithSettings.entity.formula.priority"
+                        ng-options= "item for item in [wrappedFormulaWithSettings.entity.formula.priority]"
+                        disabled></select>
+            </div>
+            <div class="col-md-3">
+                <ruleview-directive data="wrappedFormulaWithSettings.entity.formula"></ruleview-directive>
+            </div>
+            <div class="col-md-1 text-left">
+                <input type="checkbox" ng-model="wrappedFormulaWithSettings.overwrite"/>
+            </div>
+            <div class="col-md-2 text-left">
+                <button type="button" class="btn btn-default" ng-show="wrappedFormulaWithSettings.entity.deviceSettings" ng-click="vm.viewDeviceSettings(wrappedFormulaWithSettings.entity.deviceSettings)">Device</button>
+                <button type="button" class="btn btn-default" ng-show="wrappedFormulaWithSettings.entity.vodSettings" ng-click="vm.viewVodSettings(wrappedFormulaWithSettings.entity.vodSettings)">VOD</button>
+                <button type="button" class="btn btn-default" ng-show="wrappedFormulaWithSettings.entity.logUploadSettings" ng-click="vm.viewLogUploadSettings(wrappedFormulaWithSettings.entity.logUploadSettings)">LogUpload</button>
+            </div>
+            <div class="col-md-1 pull-right">
+                <button type="button" class="btn btn-danger" ng-click="vm.importFormula(wrappedFormulaWithSettings)">
+                    Import
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="alert alert-success" ng-show="vm.wrappedFormulasWithSettings.length <= 0">All Formulas are imported. You can select another file.</div>
+    <div class="row ads-pagination-align" ng-show="vm.wrappedFormulasWithSettings.length > 1">
+        <pagination ng-show="vm.numPages > 1" total-items="vm.wrappedFormulasWithSettings.length" items-per-page="vm.pageSize"
+                    ng-model="vm.pageNumber" max-size="10" class="pagination-sm pull-right"
+                    boundary-links="true" ng-change="vm.selectPage()" num-pages="vm.numPages"></pagination>
+        <div class="input-group" style="margin: 20px 0px">
+            <span class="ads-input-group-addon">Items per page:&nbsp;&nbsp;</span>
+            <select class="form-control input-sm" ng-model="vm.pageSizeModel" ng-change="vm.changePageSize(vm.pageSizeModel)" ng-options="option for option in vm.availablePageSizes">
+            </select>
+        </div>
+    </div>
+</div>

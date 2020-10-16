@@ -1,0 +1,289 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-4">
+            <span>Firmware Rules</span>
+        </div>
+        <div class="col-md-5">
+            <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+        </div>
+        <div class="col-md-3">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success"
+                            ui-sref="firmwarerule-add({actionType: vm.selectedActionType.name})"
+                            ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                            title="Create">
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                            <a ui-sref="firmwarerule-import">
+                                Import
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <button type="button" class="btn btn-default" id="allTypes"
+                        ng-show="vm.data.length <= 0 && vm.getSizeOfAllTypes() > 0"
+                        ng-click="vm.exportAllFirmwareRules()">
+                    Export All Types
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" title="Export All" id="exportAll"
+                            ng-show="vm.data.length > 0"
+                            ng-click="vm.exportAllFirmwareRulesByType(vm.selectedActionType.name)">
+                        Export All
+                    </button>
+                    <button type="button" class="btn btn-default dropdown-toggle" id="dropdownOfExportAll" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="vm.data.length > 0">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-show="vm.data.length > 0">
+                            <a href="" ng-click="vm.exportAllFirmwareRules()" id="exportAllTypes">Export All Types</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</h1>
+<div class="row">
+    <div class="col-md-8">
+        <div class="btn-group btn-group-justified xconf-btn-sections">
+            <div class="btn-group">
+                <a href="" class="btn"
+                   ng-class="{'btn-primary': vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.RULE,
+                        'btn-default': vm.selectedActionType !== vm.APPLICABLE_ACTION_TYPE.RULE}"
+                   ng-click="vm.reloadPageByActionType(vm.APPLICABLE_ACTION_TYPE.RULE)"
+                   id="ruleActions">
+                    <span class="pull-left">Rule Actions</span>
+                    <span class="badge pull-right" ng-bind="vm.getSizeByType(vm.APPLICABLE_ACTION_TYPE.RULE.name)"></span>
+                </a>
+            </div>
+            <div class="btn-group">
+                <a href="" class="btn"
+                   ng-class="{'btn-primary': vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES,
+                        'btn-default': vm.selectedActionType !== vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES}"
+                   ng-click="vm.reloadPageByActionType(vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES)"
+                   id="defineProperties">
+                    <span class="pull-left">Define properties</span>
+                    <span class="badge pull-right" ng-bind="vm.getSizeByType(vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES.name)"></span>
+                </a>
+            </div>
+            <div class="btn-group">
+                <a href="" class="btn"
+                   ng-class="{'btn-primary': vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.BLOCKING_FILTER,
+                        'btn-default': vm.selectedActionType !== vm.APPLICABLE_ACTION_TYPE.BLOCKING_FILTER}"
+                   ng-click="vm.reloadPageByActionType(vm.APPLICABLE_ACTION_TYPE.BLOCKING_FILTER)"
+                   id="blockingFilters">
+                    <span class="pull-left">Blocking Filters</span>
+                    <span class="badge pull-right" ng-bind="vm.getSizeByType(vm.APPLICABLE_ACTION_TYPE.BLOCKING_FILTER.name)"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Template:</div>
+                    <select class="form-control" ng-model="vm.firmwareRuleTemplateId" ng-change="vm.changeFirmwareRuleTemplateId()">
+                        <option ng-if="vm.firmwareRuleTemplateId" value=" " ng-bind=" "></option>
+                        <option ng-repeat="firmwareRuleTemplateId in vm.firmwareRuleTemplateIds"
+                                value="{{firmwareRuleTemplateId}}"
+                                ng-bind="firmwareRuleTemplateId"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<br/>
+<div class="firmwarerule-table">
+    <div ng-hide="vm.data.length === 0" class="panel-default panel">
+
+        <!--===ACTION RULE===-->
+        <div class="row cols-bottom row-title ads-tab" ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.RULE">
+            <div class="col-md-1 col-auto-width">
+                <div style="width:58px"></div>
+            </div>
+            <div class="col-md-2">
+                Name
+            </div>
+            <div class="col-md-4">
+                Rule
+            </div>
+            <div class="col-md-2">
+                Targeted Models
+            </div>
+            <div class="col-md-2">
+                Configuration
+            </div>
+        </div>
+
+        <!--===DEFINE PROPERTIES===-->
+        <div class="row cols-bottom row-title ads-tab" ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES">
+            <div class="col-md-1 col-auto-width">
+                <div style="width:58px"></div>
+            </div>
+            <div class="col-md-2">
+                Name
+            </div>
+            <div class="col-md-3">
+                Rule
+            </div>
+            <div class="col-md-2">
+                Bypass Filters
+            </div>
+            <div class="col-md-3">
+                Properties
+            </div>
+        </div>
+
+        <!--===BLOCKING FILTER===-->
+        <div class="row cols-bottom row-title ads-tab" ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.BLOCKING_FILTER">
+            <div class="col-md-4">
+                Name
+            </div>
+            <div class="col-md-6">
+                Rule
+            </div>
+        </div>
+
+        <custom-viewer-panel class="row table-row border-top ads-tab"
+                             bottom-shift="15"
+                             control="vm.viewerPanelControl"
+                             css-basic-columns="['#viewer-eye', '#actionButtons', '[rule-type=ruleview]']"
+                             css-second-columns="['.firmware-rule-name', '#targetedModels', '#firmwareConfiguration', '#byPassFilters', '#properties']"
+                             ng-class="{'no-firmwarerule-template': !vm.isFirmwareRuleTemplate(firmwareRule.type)}"
+                             ng-repeat="firmwareRule in vm.data">
+            <div id="viewer-eye" class="col-md-1 col-auto-width">
+                <button type="button" class="btn btn-default" ng-click="vm.viewFirmwareRule(firmwareRule.id); vm.viewerPanelControl.stopPropagation($event)" title="View">
+                    <i class=ri-eye-fill></i>
+                </button>
+            </div>
+
+            <!--===ACTION RULE===-->
+            <div ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.RULE"
+                 ng-init="firmwareConfig = vm.getConfigById(firmwareRule.applicableAction.configId)">
+                <div class="col-md-2">
+                    <div class="firmware-rule-name break-word-inline">
+                        <span ng-bind="firmwareRule.name"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <ruleview-directive data="firmwareRule.rule"></ruleview-directive>
+                </div>
+                <div id="targetedModels" class="col-md-2">
+                    <div ng-show="vm.isMac(firmwareRule.rule)"
+                         class="hide-overflow ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list checked-in-list cursor-default"
+                         ng-repeat="modelId in firmwareConfig.supportedModelIds">
+                        <span class="hide-overflow" ng-bind="modelId"></span>
+                    </div>
+                </div>
+                <div id="firmwareConfiguration" class="col-md-2">
+                    <div class="break-word-inline">
+                        <span ng-show="firmwareConfig.description" ng-bind="firmwareConfig.description"></span>
+                        <span ng-hide="firmwareConfig.description || firmwareRule.applicableAction.configEntries.length > 0">NoOp</span>
+                        <span ng-show="!firmwareConfig.description && firmwareRule.applicableAction.configEntries.length > 0">...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!--===DEFINE PROPERTIES===-->
+            <div ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES">
+                <div class="col-md-2">
+                    <div class="firmware-rule-name break-word-inline">
+                        <span ng-bind="firmwareRule.name"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <ruleview-directive data="firmwareRule.rule"></ruleview-directive>
+                </div>
+                <div id="byPassFilters" class="col-md-2">
+                    <div class="hide-overflow ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list checked-in-list cursor-default"
+                         ng-repeat="item in firmwareRule.applicableAction.byPassFilters">
+                        <span class="hide-overflow" ng-bind="item"></span>
+                    </div>
+                </div>
+                <div id="properties" class="col-md-3">
+                    <div class="break-word-inline" ng-repeat="(key, value) in firmwareRule.applicableAction.properties" ng-show="value">
+                        <i ng-bind="key"></i>: <span ng-bind="value"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!--===BLOCKING FILTER===-->
+            <div ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.BLOCKING_FILTER">
+                <div class="col-md-4">
+                    <div class="firmware-rule-name break-word-inline">
+                        <span ng-bind="firmwareRule.name"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <ruleview-directive data="firmwareRule.rule"></ruleview-directive>
+                </div>
+            </div>
+
+            <div id="actionButtons" class="col-md-1 ads-tab pull-right">
+                <button type="button" class="btn btn-default features-shadowed"
+                        ui-sref="firmwarerule-edit({id: firmwareRule.id})"
+                        ng-click="vm.viewerPanelControl.stopPropagation($event)"
+                        ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                        title="Edit">
+                    <i class=ri-pencil-fill></i>
+                </button>
+                <button type="button" class="btn btn-default"
+                        ng-click="vm.deleteFirmwareRule(firmwareRule); vm.viewerPanelControl.stopPropagation($event)"
+                        ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)"
+                        title="Delete">
+                    <i class=ri-delete-bin-7-line></i>
+                </button>
+                <button type="button" class="btn btn-default exportEntity"
+                        ng-click="vm.exportFirmwareRule(firmwareRule.id); vm.viewerPanelControl.stopPropagation($event)"
+                        title="Export One">
+                    <i class=ri-download-2-line></i>
+                </button>
+            </div>
+            <div id="blurBottom"></div>
+        </custom-viewer-panel>
+    </div>
+    <div ng-show="vm.data.length === 0" class="ads-no-results" id="notFoundResults">
+        <h4>No results found</h4>
+    </div>
+</div>
+<xconf-pagination ng-if="vm.startParse()"
+                  page-size="vm.pageSize"
+                  page-number="vm.pageNumber"
+                  pagination-storage-key="vm.paginationStorageKey"
+                  get-general-items-number="vm.getGeneralItemsNumber()"
+                  get-page="vm.getFirmwareRules()">
+</xconf-pagination>

@@ -1,0 +1,18 @@
+[
+    {
+        "permGroupId": "xconf-admin",
+        "permTemplateId": "XConfTemplate",
+        "permValues": [
+            "write-telemetry",
+            "read-telemetry",
+            "write-firmware",
+            "write-common",
+            "read-dcm",
+            "read-firmware-rule-templates",
+            "write-dcm",
+            "read-firmware",
+            "write-firmware-rule-templates",
+            "read-common"
+        ]
+    }
+]

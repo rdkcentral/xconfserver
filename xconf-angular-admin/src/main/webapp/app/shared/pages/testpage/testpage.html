@@ -1,0 +1,99 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="container">
+    <h1 class="page-header">Test page</h1>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group" style="font-size: 1.5em;">Parameters</div>
+            <div class="form-group">
+                <editable-map parameters="vm.parameters"
+                              auto-complete-values="vm.autoCompleteValues"></editable-map>
+            </div>
+            <div class="form-group" ng-if="vm.pageType === 'SETTINGS'">
+                <div class="input-group-btn">
+                    <dropdown-multiselect
+                            id="multiselectSettingTypeId"
+                            model="vm.selectedTypes"
+                            options="vm.settingsType"
+                            value-property="value"
+                            label-property="name"
+                            button-text="{{vm.selectedTypes.length ? vm.selectedTypes.join() : 'Setting Type'}}">
+                    </dropdown-multiselect>
+                </div>
+            </div>
+            <br />
+            <div style="padding-top: 1em;">
+                <button id="testButton" type="button" class="btn btn-primary"
+                        ng-disabled=""
+                        ng-click="vm.matchRule()">Test With Parameters</button>
+            </div>
+        </div>
+        <div class="col-md-7" ng-if="!vm.context">
+            <div class="form-group test-setting-heading">Tips</div>
+            <div class="alert alert-info">
+            <span>Enter context parameters like estbMacAddress or env/model. Hit 'Test with parameters' button to see results.
+            </span>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div ng-if="vm.context">
+                <div class="form-group test-setting-heading">Context</div>
+                <div class="alert alert-info break-word">
+                    {{vm.context}}
+                </div>
+            </div>
+            <div ng-hide="!vm.context">
+                <div class="form-group">
+                    <span class="test-setting-heading">Matched rules</span>
+                </div>
+                <div class="alert alert-info" style="text-align: center;" ng-hide="vm.hasMatchedRules()">
+                    <span>No rules matched</span>
+                </div>
+                <div>
+                    <table class="table table-striped" ng-show="vm.hasMatchedRules()">
+                        <tbody>
+                        <tr ng-repeat-start="(configName, ruleList) in vm.matchedRules"></tr>
+                        <tr ng-repeat-start="ruleObject in ruleList">
+                            <td>
+                                <span>Name: </span><span ng-bind="ruleObject.name"></span><br>
+                                <span ng-show="configName">Profile: </span><span ng-bind="configName"></span>
+                            </td>
+                            <td>
+                                <ruleview-directive data="ruleObject.rule ? ruleObject.rule : ruleObject"></ruleview-directive>
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end></tr>
+                        <tr ng-repeat-end></tr>
+                        </tbody>
+                    </table>
+                    <div class="form-group" ng-show="vm.featureControl">
+                        <div>
+                            <span class="test-setting-heading">FeatureControl</span>
+                        </div>
+                        <div>
+                            <pre ng-bind="vm.featureControl"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

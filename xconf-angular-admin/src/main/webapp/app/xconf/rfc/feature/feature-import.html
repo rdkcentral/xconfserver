@@ -1,0 +1,126 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <span>
+                Import<small> Feature</small>
+            </span>
+            <div class="pull-right">
+                <button type="button" class="btn btn-danger" ng-click="vm.importAllFeatures()" ng-hide="vm.wrappedFeatures === null || vm.wrappedFeatures.length < 2">
+                     Import<b>All</b>
+                </button>
+            </div>
+        </h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <file-select on-change="vm.retrieveFile"></file-select>
+            </div>
+        </div>
+        <custom-progressbar control="vm.progressBarControl" ></custom-progressbar>
+        <br />
+        <div class="row">
+            <div ng-hide="vm.wrappedFeatures === null || vm.wrappedFeatures.length === 0">
+                <div class="row cols-bottom menu-title">
+                    <div class="col-md-1 text-center">
+                        Feature Instance
+                    </div>
+                    <div class="col-md-1 text-center">
+                        Name
+                    </div>
+                    <div class="col-md-3 text-center">
+                        Config Data
+                    </div>
+                    <div class="col-md-1 text-center">
+                        Whitelisted
+                    </div>
+                    <div class="col-md-2 text-center">
+                        Namespacedlist
+                    </div>
+                    <div class="col-md-1 text-center">
+                        Effective immediate
+                    </div>
+                    <div class="col-md-1 text-center">
+                        Enable
+                    </div>
+                    <div class="col-md-1 text-nowrap text-left">
+                        <span ng-hide="vm.wrappedFeatures === null || vm.wrappedFeatures.length < 2">
+                            <input type="checkbox" id="overwriteAll" class="check-box inline" ng-model="vm.isOverwritten" ng-click="vm.overwriteAll()"/>
+                        </span>
+                        Overwrite
+                    </div>
+                </div>
+                <custom-viewer-panel class="row border-top ads-tab"
+                                     bottom-shift="70"
+                                     css-basic-columns="['#name', '#importButton']"
+                                     css-second-columns="['#featureName', '#configData', '#whitelisted', '#namespacedList', '#effectiveImmediate', '#enable', '#overwrite']"
+                                     ng-repeat="wrappedFeature in vm.wrappedFeatures"
+                                     ng-if="$index >= vm.startIndex && $index < vm.endIndex">
+                    <div id="featureName" class="col-md-1">
+                        <span class="break-word-inline" ng-bind="wrappedFeature.entity.featureInstance"></span>
+                    </div>
+                    <div id="name" class="col-md-1">
+                        <span class="break-word-inline" ng-bind="wrappedFeature.entity.name"></span>
+                    </div>
+                    <div id="configData" class="col-md-3">
+                        <div ng-repeat="(key, value) in wrappedFeature.entity.configData">
+                            <div class="break-word-inline">
+                                <div class="ads-list-item xconf-list-item xconf-list-item-grey edit-list checked-in-list cursor-default">
+                                    <span class="key" ng-bind="key"></span> <b> : </b> <span ng-bind="value"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center" id="whitelisted">
+                        <input class="checkbox" type="checkbox" class="checkbox" ng-model="wrappedFeature.entity.whitelisted" disabled/>
+                    </div>
+                    <div class="col-md-2 text-center" id="namespacedList">
+                        <span class="break-word-inline" ng-bind="wrappedFeature.entity.whitelistProperty.value"></span>
+                    </div>
+                    <div class="col-md-1 text-center" id="effectiveImmediate">
+                        <input class="env-model-active" type="checkbox" class="checkbox" ng-model="wrappedFeature.entity.effectiveImmediate" disabled/>
+                    </div>
+                    <div class="col-md-1 text-center" id="enable">
+                        <input class="env-model-active" type="checkbox" class="checkbox" ng-model="wrappedFeature.entity.enable" disabled/>
+                    </div>
+                    <div class="col-md-1 text-center" id="overwrite">
+                        <input type="checkbox" ng-model="wrappedFeature.overwrite"/>
+                    </div>
+                    <div id="importButton" class="col-md-1 pull-right">
+                        <button type="button" class="btn btn-danger" ng-click="vm.importFeature(wrappedFeature)">
+                             Import
+                        </button>
+                    </div>
+                    <div id="blurBottom"></div>
+                </custom-viewer-panel>
+            </div>
+            <div class="alert alert-success"
+                 ng-show="vm.wrappedFeatures.length == 0">
+                All Features have been imported. You can select another file.</div>
+        </div>
+        <xconf-pagination page-size="vm.pageSize"
+                          page-number="vm.pageNumber"
+                          pagination-storage-key="vm.paginationStorageKey"
+                          get-general-items-number="vm.getGeneralItemsNumber()"
+                          get-page="vm.selectPage()">
+        </xconf-pagination>
+    </div>
+</div>

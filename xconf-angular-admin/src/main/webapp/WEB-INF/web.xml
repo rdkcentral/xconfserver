@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    If not stated otherwise in this file or this component's Licenses.txt file the
+    following copyright and licenses apply:
+   
+    Copyright 2018 RDK Management
+   
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+   
+    http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+
+    <display-name>Archetype Created Web Application</display-name>
+
+    <context-param>
+        <param-name>spring.profiles.default</param-name>
+        <param-value>prod</param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>GzipFilter</filter-name>
+        <filter-class>org.eclipse.jetty.servlets.GzipFilter</filter-class>
+        <init-param>
+            <param-name>mimeTypes</param-name>
+            <param-value>text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,image/svg+xml</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>GzipFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>UpdateDeleteApiFilter</filter-name>
+        <filter-class>com.comcast.xconf.filter.UpdateDeleteApiFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UpdateDeleteApiFilter</filter-name>
+        <url-pattern>/queries/*</url-pattern>
+        <url-pattern>/updates/*</url-pattern>
+        <url-pattern>/delete/*</url-pattern>
+        <url-pattern>/dataService/queries/*</url-pattern>
+        <url-pattern>/dataService/updates/*</url-pattern>
+        <url-pattern>/dataService/delete/*</url-pattern>
+        <url-pattern>/dataService/firmwarerule/*</url-pattern>
+        <url-pattern>/dataService/firmwareruletemplate/*</url-pattern>
+        <url-pattern>/firmwarerule/*</url-pattern>
+        <url-pattern>/firmwareruletemplate/*</url-pattern>
+        <url-pattern>/amv/*</url-pattern>
+        <url-pattern>/feature/*</url-pattern>
+        <url-pattern>/featurerule/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>authTokenFilter</filter-name>
+        <filter-class>com.comcast.xconf.admin.filter.AuthTokenFilter</filter-class>
+        <init-param>
+            <param-name>loginUrl</param-name>
+            <param-value>/ux/loginForm</param-value>
+        </init-param>
+        <init-param>
+            <param-name>devProfile</param-name>
+            <param-value>dev</param-value>
+        </init-param>
+        <init-param>
+            <param-name>pathsToReturn401Unauthorized</param-name>
+            <param-value>
+                /ux/api/**;
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>pathsToInclude</param-name>
+            <param-value>
+                /ux/**;
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>pathsToExclude</param-name>
+            <param-value>
+                /ux/loginForm;
+                /ux/app/**;
+                /app/**;
+            </param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>authTokenFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>queriesLoggingFilter</filter-name>
+        <filter-class>com.comcast.xconf.SpringAccessLoggingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>queriesLoggingFilter</filter-name>
+        <url-pattern>/queries/*</url-pattern>
+        <url-pattern>/updates/*</url-pattern>
+        <url-pattern>/delete/*</url-pattern>
+        <url-pattern>/dataService/queries/*</url-pattern>
+        <url-pattern>/dataService/updates/*</url-pattern>
+        <url-pattern>/dataService/delete/*</url-pattern>
+        <url-pattern>/dataService/firmwarerule/*</url-pattern>
+        <url-pattern>/dataService/firmwareruletemplate/*</url-pattern>
+        <url-pattern>/firmwarerule/*</url-pattern>
+        <url-pattern>/firmwareruletemplate/*</url-pattern>
+        <url-pattern>/amv/*</url-pattern>
+        <url-pattern>/feature/*</url-pattern>
+        <url-pattern>/featurerule/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>xconfAdmin</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>com.comcast.xconf.admin.contextconfig.AdminWebConfig</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>xconfAdmin</servlet-name>
+        <url-pattern>/ux/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>com.comcast.xconf.contextconfig.RestWebConfig</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/dataService/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

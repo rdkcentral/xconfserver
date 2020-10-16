@@ -1,0 +1,91 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    Import <small>Round robin filter</small>
+    <button type="button" class="btn btn-danger pull-right" ng-click="vm.importFilter(vm.filter)" ng-show="vm.filter !== null">
+         Import
+    </button>
+</h1>
+<div class="row"><div class="col-lg-4"><file-select on-change="vm.retrieveFile"></file-select></div></div>
+<br />
+<div ng-show="vm.filter !== null">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span>HTTP</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Location (FQDN):</span>
+                        <span style="width: auto" class="form-control" ng-bind="vm.filter.httpLocation"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Location (full URL):</span>
+                        <span style="width: auto" class="form-control" ng-bind="vm.filter.httpFullUrlLocation"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" style="padding-top: 1em">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span>TFTP</span>
+            </div>
+            <div class="panel-body">
+                <div style="padding-bottom: 2em" ng-show="vm.filter.locations.length > 0">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>IPv4 locatoins:</label>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="location in vm.filter.locations">
+                        <div class="col-md-2">
+                            <span class="form-control" ng-bind="location.locationIp"></span>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="form-control" ng-bind-html="location.percentage + '%'"></span>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-bottom: 2em" ng-show="vm.filter.ipv6locations.length > 0">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>IPv6 locatoins:</label>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="location in vm.filter.ipv6locations">
+                        <div class="col-md-4">
+                            <span type="text" class="form-control" ng-bind="location.locationIp"></span>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="form-control" ng-bind-html="location.percentage + '%'"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

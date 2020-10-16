@@ -1,0 +1,158 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">Test page</h1>
+<div id="dcmTestPage">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group" style="font-size: 1.5em;">Parameters</div>
+            <editable-map parameters="vm.parameters"
+                          auto-complete-values="vm.autoCompleteValues"></editable-map>
+            <div style="padding-top: 1em;">
+                <button id="testButton" type="button" class="btn btn-primary"
+                        ng-disabled=""
+                        ng-click="vm.matchRule()">Test With Parameters</button>
+            </div>
+        </div>
+        <div class="col-md-7" ng-if="!vm.context">
+            <div class="form-group" style="font-size: 1.5em;">Tips</div>
+            <div class="alert alert-info">
+            <span>Enter context parameters like estbMacAddress or env/model. Hit 'Test with parameters' button to see results.
+            </span>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div ng-if="vm.context">
+                <div class="form-group" style="font-size: 1.5em;">Context</div>
+                <div class="alert alert-info break-word">
+                    {{vm.context}}
+                </div>
+            </div>
+            <div ng-show="vm.matchedRuleType || vm.matchedRuleIds.length > 0">
+                <label>Rule</label>
+                <table class="table">
+                    <tr ng-show="vm.matchedRuleType">
+                        <td>type</td>
+                        <td id="ruleType" ng-bind="vm.matchedRuleType"></td>
+                    </tr>
+                    <tr ng-show="vm.matchedRuleIds.length > 0">
+                        <td>matched rule ids</td>
+                        <td id="matchedRuleIds">
+                            <div ng-repeat="id in vm.matchedRuleIds">
+                                <span class="test-page-matched-rule-id" ng-bind="id"></span><br>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div ng-show="vm.context">
+                <div class="form-group" style="font-size: 1.5em;">Output(Settings)</div>
+                <table class="table">
+                    <tr>
+                        <td>urn:settings:GroupName</td>
+                        <td id="dsName" ng-bind="vm.matchedSettings['urn:settings:GroupName']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:CheckOnReboot</td>
+                        <td id="dsCheckOnReboot" ng-bind="vm.matchedSettings['urn:settings:CheckOnReboot']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:CheckSchedule:cron</td>
+                        <td id="dsCronExpression" ng-bind="vm.matchedSettings['urn:settings:CheckSchedule:cron']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:CheckSchedule:DurationMinutes</td>
+                        <td id="dsDurationMinutes" ng-bind="vm.matchedSettings['urn:settings:CheckSchedule:DurationMinutes']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:Name</td>
+                        <td id="lusName" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:Name']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:NumberOfDays</td>
+                        <td id="lusNumberOfDays" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:NumberOfDays']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadRepositoryName</td>
+                        <td id="lusUploadRepositoryName" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadRepositoryName']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:RepositoryURL</td>
+                        <td id="lusRepositoryUrl" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:RepositoryURL']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadRepository:URL</td>
+                        <td id="lusUploadRepositoryUrl" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadRepository:URL']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadRepository:uploadProtocol</td>
+                        <td id="lucUploadProtocol" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadRepository:uploadProtocol']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadOnReboot</td>
+                        <td id="lucUploadOnReboot" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadOnReboot']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:upload</td>
+                        <td id="lucUpload" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:upload']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadSchedule:cron</td>
+                        <td id="lucCronExpression" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadSchedule:cron']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadSchedule:levelone:cron</td>
+                        <td id="lucCronExpressionL1" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadSchedule:levelone:cron']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadSchedule:leveltwo:cron</td>
+                        <td id="lucCronExpressionL2" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadSchedule:leveltwo:cron']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadSchedule:levelthree:cron</td>
+                        <td id="lucCronExpressionL3" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadSchedule:levelthree:cron']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:LogUploadSettings:UploadSchedule:DurationMinutes</td>
+                        <td id="lucDurationMinutes" ng-bind="vm.matchedSettings['urn:settings:LogUploadSettings:UploadSchedule:DurationMinutes']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:VODSettings:Name</td>
+                        <td id="vsName" ng-bind="vm.matchedSettings['urn:settings:VODSettings:Name']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:VODSettings:LocationsURL</td>
+                        <td id="vsLocationsUrl" ng-bind="vm.matchedSettings['urn:settings:VODSettings:LocationsURL']"></td>
+                    </tr>
+                    <tr>
+                        <td>urn:settings:VODSettings:SRMIPList</td>
+                        <td id="vsSrmIpList">
+                            <div ng-repeat="(ipName, ipValue) in vm.matchedSettings['urn:settings:VODSettings:SRMIPList']">
+                                <span class="srm-name" ng-bind="ipName"></span>:&nbsp
+                                <span class="srm-ip" ng-bind="ipValue"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

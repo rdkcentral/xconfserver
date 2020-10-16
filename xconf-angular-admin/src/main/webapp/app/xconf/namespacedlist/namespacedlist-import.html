@@ -1,0 +1,103 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <span ng-show="vm.currentType === vm.NAMESPACED_LIST_TYPE.MAC_LIST">
+                Import <small>Mac Lists</small>
+            </span>
+            <span ng-show="vm.currentType === vm.NAMESPACED_LIST_TYPE.IP_LIST">
+                Import <small>Ip Lists</small>
+            </span>
+            <div class="pull-right">
+                <button type="button" class="btn btn-danger" ng-click="vm.importAllNamespacedLists(vm.currentType)" ng-hide="vm.wrappedNamespacedLists === null || vm.wrappedNamespacedLists.length < 2">
+                    Import <b>All</b>
+                </button>
+            </div>
+        </h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <file-select on-change="vm.retrieveFile"></file-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 has-error">
+                <span class="has-error help-block" ng-bind="vm.mainErrorMessage"></span>
+            </div>
+        </div>
+        <custom-progressbar control="vm.progressBarControl" ></custom-progressbar>
+        <br />
+        <div ng-hide="vm.wrappedNamespacedLists === null || vm.wrappedNamespacedLists.length === 0">
+            <div class="row cols-bottom row-title">
+                <div class="col-md-1 col-auto-width">
+                    <div style="width:58px"></div>
+                </div>
+                <div class="col-md-6">
+                    Name
+                </div>
+                <div class="col-md-3">
+                    Size
+                </div>
+                <div class="col-md-1 text-nowrap">
+                    <span ng-hide="vm.wrappedNamespacedLists === null || vm.wrappedNamespacedLists.length < 2">
+                        <input type="checkbox" id="overwriteAll" class="check-box inline" ng-model="vm.isOverwritten" ng-click="vm.overwriteAll()"/>
+                    </span>
+                    Overwrite
+                </div>
+            </div>
+            <div class="row border-top" ng-repeat="wrappedNamespacedList in vm.wrappedNamespacedLists" ng-if="$index >= vm.startIndex && $index < vm.endIndex">
+                <div class="row">
+                    <div class="col-md-1 col-auto-width">
+                        <button type="button" class="btn btn-default" ng-click="vm.viewNamespacedList(wrappedNamespacedList.entity)">
+                            <i class="ri-eye-fill"></i>
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="break-word-inline" ng-bind="wrappedNamespacedList.entity.id"></div>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="break-word-inline" ng-bind="wrappedNamespacedList.entity.data.length"></div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <input type="checkbox" ng-model="wrappedNamespacedList.overwrite"/>
+                    </div>
+                    <div class="col-md-1 pull-right">
+                        <button type="button" class="btn btn-danger" ng-click="vm.importNamespacedList(wrappedNamespacedList)">
+                            Import
+                        </button>
+                    </div>
+                </div>
+                <div class="row has-error" ng-if="vm.errorMessagesById[wrappedNamespacedList.entity.id]">
+                    <div class="col-md-12">
+                        <p class="has-error help-block" ng-bind="vm.errorMessagesById[wrappedNamespacedList.entity.id]"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-success" ng-show="vm.wrappedNamespacedLists.length == 0">All Namespaced Lists are imported. You can select another file.</div>
+    </div>
+    <xconf-pagination page-size="vm.pageSize"
+                      page-number="vm.pageNumber"
+                      pagination-storage-key="vm.paginationStorageKey"
+                      get-general-items-number="vm.getGeneralItemsNumber()"
+                      get-page="vm.selectPage()">
+    </xconf-pagination>
+</div>

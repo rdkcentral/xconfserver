@@ -1,0 +1,106 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row" style="margin-bottom: 10px;">
+    <div class="col-xs-3">
+        <input title="Key" type="text" class="form-control" ng-model="key" ng-disabled="isTemplate">
+    </div>
+    <div class="col-xs-4">
+        <div class="input-group">
+            <input title="Value" type="text" class="form-control" ng-model="value" ng-disabled="isTemplate && !rowDom">
+            <div class="input-group-btn">
+                <dropdown-multiselect
+                        class="input-group"
+                        model="selectedValidationTypes"
+                        options="options"
+                        value-property="id"
+                        label-property="value"
+                        button-text="Type">
+                </dropdown-multiselect>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-2">
+        <div class="checkbox">
+            <label>
+                <input title="Optional" type="checkbox" ng-model="optional"> Optional
+            </label>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <button type="button" class="btn btn-primary"
+                ng-click="saveRow()"
+                ng-switch="rowDom !== null"
+                ng-hide="isTemplate && !rowDom"
+                title="Add">
+            <span ng-switch-when="true">Change</span><span ng-switch-when="false">Add</span>
+        </button>
+        <button type="button" class="btn btn-default"
+                ng-click="clear()"
+                ng-switch="rowDom !== null"
+                ng-hide="isTemplate && !rowDom"
+                title="Clear">
+            <span ng-switch-when="true">Cancel</span><span ng-switch-when="false">Clear</span>
+        </button>
+    </div>
+</div>
+
+<table class="table table-condensed" ng-show="data.length > 0">
+    <colgroup width="20">
+    <colgroup width="35%">
+    <colgroup width="35%">
+    <colgroup width="20%">
+    <colgroup>
+    <thead>
+        <tr>
+            <th></th>
+            <th>Key</th>
+            <th>Value</th>
+            <th>ValidationTypes</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td><span ng-if="!item.value.optional">*</span></td>
+            <td class="break-word" ng-bind="item.key"></td>
+            <td class="break-word" ng-bind="item.value.value"></td>
+            <td>
+                <div style="width: 160px;">
+                    <span ng-repeat="type in item.value.validationTypes">
+                        <span ng-bind="type"></span><span ng-if="$index !== (item.value.validationTypes.length - 1)">,</span>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="pull-right">
+                    <a href="" class="btn btn-xs btn-primary" ng-click="editRow($event, item)"><i class=ri-pencil-fill></i></a>
+                    <a href="" class="btn btn-xs btn-danger" ng-click="removeRow(item)"
+                        ng-hide="isTemplate && !rowDom"><i class=ri-delete-bin-7-line></i></a>
+                </div>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+<p ng-show="data.length > 0"><span>*</span> - required field</p>
+<p class="alert alert-info" ng-show="data.length === 0">
+    There are no properties at the moment.
+</p>

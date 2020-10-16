@@ -1,0 +1,102 @@
+/*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+.filtered-select-scrollable-modal-window {
+    overflow-y: auto;
+}
+
+@media(max-height:499px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 70px;
+    }
+}
+@media(min-height:500px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 120px;
+    }
+}
+@media(min-height:600px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 170px;
+    }
+}
+@media(min-height:700px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 270px;
+    }
+}
+@media(min-height:750px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 320px;
+    }
+}
+@media(min-height:800px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 370px;
+    }
+}
+@media(min-height:900px) {
+    .filtered-select-scrollable-modal-window {
+        max-height: 420px;
+    }
+}
+
+.filtered-select-scrollable-modal-window .nodes-list {
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.filtered-select-search-result {
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+    padding: 0.3em;
+}
+
+.filtered-select-light-shadowed {
+    -webkit-box-shadow: 1px 1px 2px rgba(4, 4, 4, 0.3);
+    -moz-box-shadow:    1px 1px 2px rgba(4, 4, 4, 0.3);
+    box-shadow:         1px 1px 2px rgba(4, 4, 4, 0.3);
+}
+
+.filtered-select-hidden-text-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-chosen {
+    background-color: #ff9999;
+    border: 1px solid #e27d7d !important;
+}
+
+.filtered-select-btn-clipboard-top-right {
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: inherit;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.filtered-select-btn-symbol > span {
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    text-shadow: 0 1px 0 #000;
+}

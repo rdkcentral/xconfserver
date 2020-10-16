@@ -1,0 +1,109 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <span ng-if="vm.currentEditMode === vm.EDIT_MODE.CREATE">Add </span>
+                    <span ng-if="vm.currentEditMode === vm.EDIT_MODE.UPDATE">Editing </span>
+                    <span ng-if="vm.currentType === vm.NAMESPACED_LIST_TYPE.IP_LIST">IP List</span>
+                    <span ng-if="vm.currentType === vm.NAMESPACED_LIST_TYPE.MAC_LIST">MAC List</span>
+                </div>
+                <div class="col-md-4 pull-right">
+                    <file-select on-change="vm.retrieveNamespacedListDataFromFile"></file-select>
+                </div>
+            </div>
+        </h1>
+        <form name="namespacedListForm" novalidate>
+            <div class="form-group" ng-if="vm.currentEditMode === vm.EDIT_MODE.CREATE">
+                <div ng-class="{'has-error' : (namespacedListForm.$submitted || namespacedListForm.id.$touched) && namespacedListForm.id.$invalid}">
+                    <label for="id" class="control-label">Name</label>
+                    <div>
+                        <input type="text" id="id" class="form-control" name="id" placeholder="Please enter Name"
+                               ng-model="vm.namespacedList.id" ng-disabled="vm.currentEditMode === vm.EDIT_MODE.UPDATE" required>
+                        <p class="help-block" ng-show="(namespacedListForm.$submitted || namespacedListForm.id.$touched) && namespacedListForm.id.$error.required">
+                            This field is required
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-if="vm.currentEditMode === vm.EDIT_MODE.UPDATE">
+                <label class="control-label">Name</label>
+                <div>
+                    <input type="text" id="newId" class="form-control" name="newId" placeholder="Please enter Name"
+                           ng-model="vm.newId" ng-disabled="vm.currentEditMode === vm.EDIT_MODE.CREATE">
+                    <p class="help-block" ng-show="(namespacedListForm.$submitted || namespacedListForm.id.$touched) && namespacedListForm.id.$error.required">
+                        This field is required
+                    </p>
+                </div>
+            </div>
+
+            <div ng-class="{'has-error' : vm.dataItemValueError !== '' || namespacedListForm.dataItemValue.$dirty && namespacedListForm.dataItemValue.$invalid}">
+                <div class="form-group">
+                    <label class="control-label">Data</label>
+                        <div class="input-group">
+                            <input id="dataItemValue" type="text" name="dataItemValue" class="form-control" placeholder="Please enter item"
+                                   ng-model="vm.dataItemValue"
+                                   ng-model-options="{debounce: 1000}"
+                                   ng-change="vm.validateDataItemValue(vm.dataItemValue)"/>
+                            <span class="input-group-btn">
+                                <button id="addItemToData" class="btn btn-primary" type="button"
+                                    ng-click="vm.addItemToData()"
+                                    ng-disabled="namespacedListForm.dataItemValue.$invalid || !vm.dataItemValue">
+                                    <i class="ri-add-fill ri-sm"></i>
+                                </button>
+                            </span>
+                            <span class="input-group-btn" ng-show="vm.dataFromFile.length > 0">
+                                <button type="button" class="btn btn-default" ng-click="vm.addDataFromFile()">Add</button>
+                            </span>
+                            <span class="input-group-btn" ng-show="vm.dataFromFile.length > 0">
+                                <button type="button" class="btn btn-default" ng-click="vm.replaceDataFromFile()">Replace</button>
+                            </span>
+                        </div>
+                </div>
+                <p class="has-error help-block" ng-show="vm.dataItemValueError !== ''" ng-bind="vm.dataItemValueError"></p>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="xconf-list" style="margin-top: 15px;">
+                        <li class="ads-list-item ads-list-item-lg ads-list-item-green ads-list-item-horizontal ads-list-item-edit" ng-class="{'ads-list-item-pink' : vm.isItemForRemoving(item), 'ads-list-item-grey' : vm.isNewlyAddedItem(item)}" ng-repeat="item in vm.namespacedList.data track by $index">
+                            <span ng-bind="item"></span>
+                            <button type="button" class="close remove-data-item" ng-hide="vm.isItemForRemoving(item)" ng-click="vm.removeOrMarkAsItemForRemoving(item)"><i class="ri-close-fill"></i></span></button>
+                            <button type="button" class="close restore-data-item" ng-show="vm.isItemForRemoving(item)" ng-click="vm.restore(item)"><i class="ri-repeat-line ri-xs"></i></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="pull-left">
+                        <button type="button" class="btn btn-success" title='Save'
+                                ng-click="vm.saveNamespacedList()"
+                                ng-disabled="namespacedListForm.$invalid || vm.namespacedList.data.length === 0 || vm.namespacedList.data.length === vm.itemsForRemoving.length">Save</button>
+                        <button type="button" class="btn btn-default" ui-sref="namespacedlist({type: vm.currentType})">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

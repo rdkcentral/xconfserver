@@ -1,0 +1,132 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="modal-header">
+    <h3 class="modal-title">
+        View firmware rule <span class="break-word-inline" ng-bind="vm.obj.name"></span>
+        <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+            <span>&times;</span>
+        </button>
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="id" class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Name</div>
+                    <input class="form-control rule-name cursor-default" ng-value="vm.obj.name" disabled readonly/>
+                </div>
+            </div>
+            <div id="rule" class="form-group">
+                <label>Rule</label>
+                <div>
+                    <ruleview-directive data="vm.obj.rule"></ruleview-directive>
+                </div>
+            </div>
+            <div id="actionType" class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Action Type</div>
+                    <input class="form-control rule-action-type cursor-default" ng-value="vm.obj.applicableAction.actionType" disabled readonly/>
+                </div>
+            </div>
+            <div class="form-group" ng-if="vm.obj.applicableAction.actionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES.name">
+                <label for="bypassFilters" class="control-label">Bypass Filters:</label>
+                <div id="bypassFilters">
+                    <ul class="xconf-list">
+                        <li class="ads-list-item ads-list-item-horizontal ads-list-item-sm ads-list-item-dark-grey"  ng-repeat="item in vm.blockingFilterTemplates | filter:{'checked' : true}">
+                            <span>{{::item.filter.id}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group" ng-if="vm.obj.applicableAction.actionType === vm.APPLICABLE_ACTION_TYPE.RULE.name">
+                <div ng-if="vm.obj.applicableAction.configId">
+                    <label class="">FirmwareConfig</label>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Id</div>
+                            <input class="form-control firmwareconfig-id cursor-default" ng-value="vm.obj.applicableAction.configId" disabled readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">Description</div>
+                            <input class="form-control firmwareconfig-description cursor-default" ng-value="vm.firmwareConfigs[vm.obj.applicableAction.configId].description" disabled readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">FileName</div>
+                            <input class="form-control firmwareconfig-filename cursor-default" ng-value="vm.firmwareConfigs[vm.obj.applicableAction.configId].firmwareFilename" disabled readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">FirmwareVersion</div>
+                            <input class="form-control firmwareconfig-version cursor-default" ng-value="vm.firmwareConfigs[vm.obj.applicableAction.configId].firmwareVersion" disabled readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="supportedModels">Supported models:</label>
+                        <ul id="supportedModels" class="xconf-list">
+                            <li class="ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list checked-in-list cursor-default"
+                                ng-repeat="modelId in vm.firmwareConfigs[vm.obj.applicableAction.configId].supportedModelIds"
+                                ng-bind="modelId"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="vm.obj.applicableAction.configEntries.length > 0">
+                    <label for="supportedModels">Firmware Distributions</label>
+                    <div class="input-group" ng-repeat="configEntry in vm.obj.applicableAction.configEntries">
+                        <span class="input-group-addon" ng-bind="vm.firmwareConfigs[configEntry.configId].description"></span>
+                        <input class="form-control" ng-value="configEntry.percentage" readonly/>
+                        <span class="input-group-addon">%</span>
+                    </div>
+                </div>
+                <p ng-if="!vm.obj.applicableAction.configId && (!vm.obj.applicableAction.configEntries || vm.obj.applicableAction.configEntries.length === 0)"><label>NoOp Rule</label></p>
+            </div>
+            <div class="form-group"
+                 ng-if="vm.obj.applicableAction.actionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES.name">
+                <label>Properties:</label>
+                <div>
+                    <div class="form-control-static">
+                        <table class="table">
+                            <colgroup width="50%" />
+                            <colgroup width="50%" />
+                            <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(key, value) in vm.obj.applicableAction.properties">
+                                <td title="key" class="break-word" ng-bind="key"></td>
+                                <td title="value" class="break-word" ng-bind="value"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

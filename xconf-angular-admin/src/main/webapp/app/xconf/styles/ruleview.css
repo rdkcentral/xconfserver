@@ -1,0 +1,145 @@
+/* 
+ * If not stated otherwise in this file or this component's Licenses.txt file the 
+ * following copyright and licenses apply:
+ *
+ * Copyright 2018 RDK Management
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Author: rdolomansky
+ * Created: 5/21/15  3:47 PM
+ */
+
+/* ads rule style */
+
+.ruleview-list {
+    margin: 0 0 0 30px;
+    padding: 0;
+}
+
+.ruleview-list > li,
+.ruleview {
+    display: block;
+    position: relative;
+    list-style: none;
+}
+
+.ruleview-rule {
+    position: relative;
+    display: table;
+
+
+/* background-color: #ff9999; */
+
+    border-radius: 20px;
+    margin-bottom: 7px;
+}
+
+.ruleview-list .ruleview-condition {
+    margin-left: 50px;
+}
+
+@media screen and (max-width: 700px) {
+    .ruleview-rule {
+        width: 100%;
+    }
+}
+
+.ruleview-condition {
+    position: relative;
+    border: 1px solid #d3d3d3;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+.ruleview-condition:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+.ruleview-argument,
+.ruleview-operation,
+.ruleview-value {
+    font-size: 12px;
+    padding: 5px;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+
+@media screen and (min-width: 700px) {
+    .ruleview-argument,
+    .ruleview-operation,
+    .ruleview-value {
+        float: left;
+    }
+}
+
+.ruleview-operation {
+    text-align: left;
+}
+
+@media screen and (min-width: 700px) {
+    .ruleview-operation {
+        padding-left: 8px;
+        padding-right: 8px;
+        text-align: center;
+    }
+}
+
+.ruleview-relation {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    /*float: left;*/
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 20px;
+    border: 1px solid #d3d3d3;
+    box-shadow: 2px 2px 2px gray;
+    margin-right: 10px;
+}
+
+.ruleview-condition,
+.ruleview-relation {
+    border: 1px solid #d3d3d3;
+    box-shadow: 2px 2px 2px gray;
+}
+
+.ruleview-negated {
+    position: absolute;
+    top: 0;
+    left: -7px;
+    background-color: red;
+    padding: 0 3px;
+    color: black;
+    font-size: 10px;
+    border-radius: 10px;
+    line-height: 20px;
+}
+
+.ruleview-condition-not {
+    border: 1px solid red !important;
+}
+
+/*
+* { border: 1px solid red; }
+*/

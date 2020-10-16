@@ -1,0 +1,149 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span ng-if="vm.currentEditMode === vm.EDIT_MODE.CREATE">Create</span>
+        <span ng-if="vm.currentEditMode === vm.EDIT_MODE.UPDATE">Edit</span>
+        <span> Device Settings</span>
+        <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+            <span>&times;</span>
+        </button>
+    </h3>
+</div>
+<div class="modal-body">
+    <form name="deviceSettingsForm" role="form" novalidate>
+        <div class="row">
+            <div class="col-md-4">
+                    <div class="form-group" ng-class="{'has-error' : deviceSettingsForm.name.$dirty && !vm.deviceSettingsValidationService.validateName(vm.devSettings.name, vm.usedNames).isValid}">
+                        <div class="input-group ">
+                            <span class="input-group-addon">Name</span>
+                            <input id="deviceSettingsName" type="text" class="form-control"
+                                   ng-model="vm.devSettings.name"
+                                   name="name"/>
+                        </div>
+                        <p class="help-block" ng-show="deviceSettingsForm.name.$dirty && !vm.deviceSettingsValidationService.validateName(vm.devSettings.name, vm.usedNames).isValid"
+                           ng-bind="vm.deviceSettingsValidationService.validateName(vm.devSettings.name, vm.usedNames).message"></p>
+                    </div>
+                <br>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">CheckOnReboot</span>
+                        <select id="checkOnReboot" class="form-control" ng-model="vm.devSettings.checkOnReboot" ng-options= "item for item in [true, false]"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Are active</span>
+                        <select id="settingsAreActive" class="form-control" ng-model="vm.devSettings.settingsAreActive" ng-options= "item for item in [true, false]"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Type</span>
+                        <select id="scheduleType" class="form-control" ng-model="vm.devSettings.schedule.type" ng-options= "item for item in vm.scheduleType"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Time zone</span>
+                        <select class="form-control font-size-14px"
+                                ng-options="timeZone for timeZone in vm.schedulerTimeZones"
+                                ng-model="vm.devSettings.schedule.timeZone"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div>
+                    <div class="form-group">
+                        <div class="input-group ">
+                            <span class="input-group-addon">Expression</span>
+                            <input id="expression" type="text" class="form-control"
+                                   ng-model="vm.devSettings.schedule.expression"
+                                   name="expression" ng-bind="" readonly/>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : deviceSettingsForm.minutes.$dirty && !vm.deviceSettingsValidationService.validateCronMinutes(vm.cronFields.minutes).isValid}">
+                        <div class="input-group">
+                            <span class="input-group-addon">Minutes</span>
+                            <input type="text" name="minutes" id="minutes" class="form-control" ng-model="vm.cronFields.minutes" required/>
+                        </div>
+                        <p class="help-block" ng-show="deviceSettingsForm.minutes.$dirty && !vm.deviceSettingsValidationService.validateCronMinutes(vm.cronFields.minutes).isValid"
+                           ng-bind="vm.deviceSettingsValidationService.validateCronMinutes(vm.cronFields.minutes).message"></p>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : deviceSettingsForm.hours.$dirty && !vm.deviceSettingsValidationService.validateCronHours(vm.cronFields.hours).isValid}">
+                        <div class="input-group">
+                            <span class="input-group-addon">Hours</span>
+                            <input type="text" name="hours" id="hours" class="form-control" ng-model="vm.cronFields.hours" required/>
+                        </div>
+                        <p class="help-block" ng-show="deviceSettingsForm.hours.$dirty && !vm.deviceSettingsValidationService.validateCronHours(vm.cronFields.hours).isValid"
+                           ng-bind="vm.deviceSettingsValidationService.validateCronHours(vm.cronFields.hours).message"></p>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : deviceSettingsForm.dayOfMonth.$dirty && !vm.deviceSettingsValidationService.validateCronDayOfMonth(vm.cronFields.dayOfMonth).isValid}">
+                        <div class="input-group">
+                            <span class="input-group-addon">Day of month</span>
+                            <input type="text" name="dayOfMonth" id="dayOfMonth" class="form-control" ng-model="vm.cronFields.dayOfMonth"/>
+                        </div>
+                        <p class="help-block" ng-show="deviceSettingsForm.dayOfMonth.$dirty && !vm.deviceSettingsValidationService.validateCronDayOfMonth(vm.cronFields.dayOfMonth).isValid"
+                           ng-bind="vm.deviceSettingsValidationService.validateCronDayOfMonth(vm.cronFields.dayOfMonth).message"></p>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : deviceSettingsForm.month.$dirty && !vm.deviceSettingsValidationService.validateCronMonth(vm.cronFields.month).isValid}">
+                        <div class="input-group">
+                            <span class="input-group-addon">Month</span>
+                            <input type="text" name="month" id="month" class="form-control" ng-model="vm.cronFields.month"/>
+                        </div>
+                        <p class="help-block" ng-show="deviceSettingsForm.month.$dirty && !vm.deviceSettingsValidationService.validateCronMonth(vm.cronFields.month).isValid"
+                           ng-bind="vm.deviceSettingsValidationService.validateCronMonth(vm.cronFields.month).message"></p>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : deviceSettingsForm.dayOfWeek.$dirty && !vm.deviceSettingsValidationService.validateCronDayOfWeek(vm.cronFields.dayOfWeek).isValid}">
+                        <div class="input-group">
+                            <span class="input-group-addon">dayOfWeek</span>
+                            <input type="text" name="dayOfWeek" id="dayOfWeek" class="form-control" ng-model="vm.cronFields.dayOfWeek"/>
+                        </div>
+                        <p class="help-block" ng-show="deviceSettingsForm.dayOfWeek.$dirty && !vm.deviceSettingsValidationService.validateCronDayOfWeek(vm.cronFields.dayOfWeek).isValid"
+                           ng-bind="vm.deviceSettingsValidationService.validateCronDayOfWeek(vm.cronFields.dayOfWeek).message"></p>
+                    </div>
+                </div>
+                <br>
+
+                <div ng-class="{'has-error' : deviceSettingsForm.timeWindowMinutes.$dirty && !vm.deviceSettingsValidationService.validateTimeWindow(vm.devSettings.schedule.timeWindowMinutes).isValid}">
+                    <div class="form-group">
+                        <div class="input-group ">
+                            <span class="input-group-addon">Time Window (minutes)</span>
+                            <input id="timeWindow" type="text" class="form-control"
+                                   ng-model="vm.devSettings.schedule.timeWindowMinutes"
+                                   name="timeWindowMinutes"/>
+                        </div>
+                    </div>
+                    <p class="help-block" ng-show="deviceSettingsForm.timeWindowMinutes.$dirty && !vm.deviceSettingsValidationService.validateTimeWindow(vm.devSettings.schedule.timeWindowMinutes).isValid"
+                       ng-bind="vm.deviceSettingsValidationService.validateTimeWindow(vm.devSettings.schedule.timeWindowMinutes).message"></p>
+                </div>
+                <br>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button title="Save Device Settings" id="modalSaveEntity" class="btn btn-success" ng-click="vm.saveDeviceSettings()"
+            ng-disabled="!vm.deviceSettingsValidationService.validateAll(vm.devSettings, vm.usedNames, vm.cronFields)">
+        Save
+    </button>
+    <button class="btn btn-default" ng-click="vm.dismiss()">Cancel</button>
+</div>

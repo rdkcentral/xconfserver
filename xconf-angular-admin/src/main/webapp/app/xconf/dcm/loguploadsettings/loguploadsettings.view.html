@@ -1,0 +1,156 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="modal-header">
+    <h3 class="modal-title">
+        <span>View Log Upload Settings</span>
+        <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+            <span>&times;</span>
+        </button>
+    </h3>
+</div>
+<div class="modal-body">
+    <form name="logUploadSettingsForm" role="form" novalidate>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Settings
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group ">
+                            <span class="input-group-addon">Name</span>
+                            <input id="logUploadSettingsName" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.name"
+                                   name="name"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">Upload On Reboot</span>
+                            <input id="uploadOnReboot" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.uploadOnReboot"
+                                   name="name"
+                                   disabled/>
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="input-group ">
+                            <span class="input-group-addon">Number of Days</span>
+                            <input id="numberOfDays" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.numberOfDays"
+                                   name="numberOfDays"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">Are Settings Active</span>
+                            <input id="settingsAreActive" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.areSettingsActive"
+                                   name="name"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div ng-repeat="repo in vm.uploadRepositories | filter:{'id': vm.logUploadSettings.uploadRepositoryId}:true" class="input-group">
+                            <span class="input-group-addon">Upload repository</span>
+                            <input id="uploadRepository" type="text" class="form-control"
+                                   ng-model="repo.name"
+                                   name="name"
+                                   disabled/>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Schedule
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Type</span>
+                            <input id="scheduleType" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.schedule.type"
+                                   name="name"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div class="input-group ">
+                            <span class="input-group-addon">Expression</span>
+                            <input id="cronExpression" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.schedule.expression"
+                                   name="expression"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div class="input-group ">
+                            <span class="input-group-addon">Time Window (minutes)</span>
+                            <input id="timeWindow" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.schedule.timeWindowMinutes"
+                                   name="timeWindowMinutes"
+                                   disabled/>
+                        </div>
+                        <br>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="input-group ">
+                            <span class="input-group-addon">ExpressionL1</span>
+                            <input id="expressionL1" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.schedule.expressionL1"
+                                   name="expressionl1"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div class="input-group ">
+                            <span class="input-group-addon">ExpressionL2</span>
+                            <input id="expressionL2" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.schedule.expressionL2"
+                                   name="expressionl2"
+                                   disabled/>
+                        </div>
+                        <br>
+
+                        <div class="input-group ">
+                            <span class="input-group-addon">ExpressionL3</span>
+                            <input id="expressionL3" type="text" class="form-control"
+                                   ng-model="vm.logUploadSettings.schedule.expressionL3"
+                                   name="expressionl3"
+                                   disabled/>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

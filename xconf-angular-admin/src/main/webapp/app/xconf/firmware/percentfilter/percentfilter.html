@@ -1,0 +1,230 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-3">
+            <span>Percent Filter</span>
+        </div>
+        <div class="col-md-5">
+            <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <button type="button" class="btn btn-success" ui-sref="percentfilter-import"
+                        ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                     Import
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" ng-click="vm.exportWholeFilter()"
+                            ng-show="authUtils.canReadFirmware()">
+                         Export
+                    </button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canReadFirmware()">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu"
+                        ng-show="authUtils.canReadFirmware()">
+                        <li>
+                            <a style="cursor: pointer" ng-click="vm.exportGlobalPercentage()">
+                                global percentage
+                            </a>
+                            <a style="cursor: pointer" ng-click="vm.exportGlobalPercentageAsRule()">
+                                global percent as rule
+                            </a>
+                            <a style="cursor: pointer" ng-click="vm.exportAllPercentageBeans()">
+                                env/model percentage beans
+                            </a>
+                            <a style="cursor: pointer" ng-click="vm.exportAllPercentageBeansAsRule()">
+                                env/model percentage as rules
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</h1>
+<div class="panel-default panel">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info formula-alert-info">
+                <span>
+                    Determines the percentage of requests (that would have resulted in firmware change) we will service.
+                    Zero says that we will never tell anyone to change their firmware. Ten says we will only service ten percent.
+                    One hundred says we will service all of them.
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-inline percentage-form-margin-left">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Percent</span>
+                        <input id="percent" type="text" class="form-control" ng-model="vm.filter.percentage" readonly/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Whitelist</span>
+                        <input id="whitelist" type="text" class="form-control" ng-model="vm.filter.whitelist" readonly/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button title="Edit Percent Filter" type="button" class="btn btn-default editEntity" ui-sref="percentfilter-edit"
+                            ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                        <i class="ri-pencil-fill ri-sm"></i>
+                    </button>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="alert alert-info formula-alert-info percentage-form-margin-left">
+                            The percentage of requests which will be processed for applied Environment/Model Rules.
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pull-right percentage percentage-form-margin-right"
+                             ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                            <button type="button" class="btn btn-success" ui-sref="percentagebean-edit">Create Rule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="vm.percentageBeans.length > 0">
+        <div class="col-md-12">
+            <table class="table">
+                <colgroup width="4%"/>
+                <colgroup width="15%"/>
+                <colgroup width="21%"/>
+                <colgroup width="15%"/>
+                <colgroup width="6%"/>
+                <colgroup width="15%"/>
+                <colgroup width="15%"/>
+                <colgroup width="9%"/>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Distributions</th>
+                    <th>Whitelist</th>
+                    <th>Active<br>MinCheck</th>
+                    <th>LKG</th>
+                    <th>IntermediateVersion</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="percentageBean in vm.percentageBeans">
+                    <td>
+                        <button class="btn btn-default env-model-percentage-view"
+                                ng-click="vm.viewPercentageBean(percentageBean)">
+                            <i class=ri-eye-fill></i>
+                        </button>
+                    </td>
+                    <td class="env-model-percentage-name break-word" ng-bind="percentageBean.name"></td>
+                    <td class="distributions">
+                        <div class="row" ng-repeat="distribution in percentageBean.distributions">
+                            <div class="col-md-8 distribution-version label label-success break-word-all" ng-bind="vm.firmwareConfigMap[distribution.configId].firmwareVersion"></div>
+                            <div class="col-md-4 distribution-percentage" ng-bind="distribution.startPercentRange + '% - ' + distribution.endPercentRange + '%'"></div>
+                        </div>
+                        <div class="row" ng-show="!(percentageBean.distributions.length || percentageBean.lastKnownGood || percentageBean.intermediateVersion)">
+                            <div class="label label-info">Noop</div>
+                        </div>
+                    </td>
+                    <td class="whitelist break-word">
+                        <span ng-bind="percentageBean.whitelist"></span>
+                    </td>
+                    <td>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <span class="fa fa-check" ng-if="percentageBean.active"></span>
+                                <span class="fa fa-times" ng-if="!percentageBean.active"></span>
+                            </div>
+                            <b>|</b>
+                            <div class="form-group">
+                                <span class="fa fa-check" ng-if="percentageBean.firmwareCheckRequired"></span>
+                                <span class="fa fa-times" ng-if="!percentageBean.firmwareCheckRequired"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="env-model-percentage-lkg break-word" ng-bind="vm.firmwareConfigMap[percentageBean.lastKnownGood].firmwareVersion"></td>
+                    <td class="env-model-percentage-iv break-word" ng-bind="vm.firmwareConfigMap[percentageBean.intermediateVersion].firmwareVersion"></td>
+                    <td class="pull-left">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default env-model-percentage-edit" ui-sref="percentagebean-edit({id: percentageBean.id})"
+                                    ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                                <i class=ri-pencil-fill></i>
+                            </button>
+                            <button type="button" class="btn btn-default env-model-percentage-delete"
+                                    ng-click="vm.deletePercentageBean(percentageBean)"
+                                    ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType)">
+                                <i class=ri-delete-bin-7-line></i>
+                            </button>
+
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default env-model-percentage-export"
+                                    ng-show="authUtils.canReadFirmware()"
+                                    ng-click="vm.exportPercentageBean(percentageBean.id)">
+                                <i class=ri-download-2-line></i>
+                            </button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                                    ng-show="authUtils.canReadFirmware()">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu"
+                                ng-show="authUtils.canReadFirmware()">
+                                <li>
+                                    <a style="cursor: pointer" ng-click="vm.exportPercentageBeanAsRule(percentageBean.id)">
+                                        <span class="fa fa-download fa-lg"></span>
+                                        Export as rule
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<xconf-pagination ng-if="vm.startParse()"
+                  page-size="vm.pageSize"
+                  page-number="vm.pageNumber"
+                  pagination-storage-key="vm.paginationStorageKey"
+                  get-general-items-number="vm.getGeneralItemsNumber()"
+                  get-page="vm.getPercentageBeans()">
+</xconf-pagination>

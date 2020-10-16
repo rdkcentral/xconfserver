@@ -1,0 +1,62 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="modal-header">
+    <h3 class="modal-title">
+        View feature rule <span class="break-word-inline" ng-bind="vm.obj.name"></span>
+        <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+            <span>&times;</span>
+        </button>
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="id" class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Name</div>
+                    <input class="form-control rule-name cursor-default" ng-value="vm.featureRule.name" disabled readonly/>
+                </div>
+            </div>
+            <div id="rule" class="form-group">
+                <label>Rule</label>
+                <div>
+                    <ruleview-directive data="vm.featureRule.rule"></ruleview-directive>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Priority</span>
+                    <input class="form-control" ng-model="vm.featureRule.priority" disabled/>
+                </div>
+            </div>
+            <div class="row" ng-show="vm.features.length > 0">
+                <div class="col-md-12" >
+                    <label>Features</label>
+                    <ul class="xconf-list" id="features">
+                        <li class="ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list checked-in-list"
+                            ng-repeat="feature in vm.features"
+                            ng-bind="feature.featureName"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

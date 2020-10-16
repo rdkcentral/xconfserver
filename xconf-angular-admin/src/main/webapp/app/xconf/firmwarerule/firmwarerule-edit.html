@@ -1,0 +1,222 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2018 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<h1 class="page-header"><span ng-if="vm.isNewEntity">Add</span><span ng-if="!vm.isNewEntity">Edit</span> Firmware Rule</h1>
+
+<div ng-if="vm.isNewEntity && !vm.selectedFirmwareRuleTemplate">
+    <h2 ng-if="vm.firmwareRuleTemplates.length > 0">Please Select a Template</h2>
+    <ul id="templatesList" class="list-group" ng-if="vm.firmwareRuleTemplates.length > 0">
+        <a href="" class="list-group-item"
+            ng-repeat="template in vm.firmwareRuleTemplates"
+            ng-bind="template.id"
+            ng-click="vm.selectTemplate(template.id)"></a>
+    </ul>
+    <div class="alert alert-info" ng-if="vm.firmwareRuleTemplates.length === 0">
+        There are no templates
+    </div>
+</div>
+
+<form name="form" ng-if="vm.selectedFirmwareRuleTemplate && vm.selectedActionType" novalidate>
+<div class="panel panel-default">
+    <div class="panel-heading"><label>PROPERTIES</label></div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group"
+                     ng-class="{'has-error' : form.name.$invalid && (form.$submitted || form.name.$touched)}">
+                    <div class="input-group">
+                        <span class="input-group-addon">Name</span>
+                        <input title="name" type="text" class="form-control" id="name" name="name"
+                               ng-model="vm.data.name"
+                               ng-disabled="!vm.isNewEntity && vm.data.type !== vm.FIRMWARE_RULE_TYPE.ENV_MODEL_RULE"
+                               required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Type</span>
+                        <input type="text" class="form-control"
+                               ng-model="vm.selectedFirmwareRuleTemplate.id"
+                               name="name"
+                               readonly/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><label>BUILD CONDITIONS</label></div>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-md-10">
+                <ruleview-editor-directive
+                        is-valid-condition="vm.isValidCondition"
+                        data="vm.data.rule"
+                        required-fields="vm.selectedFirmwareRuleTemplate.requiredFields"></ruleview-editor-directive>
+                <rule-builder-directive
+                        is-valid-condition="vm.isValidCondition"
+                        data="vm.data.rule"
+                        namespaced-list-data="vm.namespacedListData"
+                        representation="vm.representation"
+                        fixed-arg-required="true"
+                        free-arg-autocomplete-values="vm.freeArgAutocompleteValues"
+                        percent-free-arg-name="vm.percentFreeArgName"
+                        operations="vm.operations"
+                        validation-function="vm.validationFunction"></rule-builder-directive>
+                <div class="col-sm-10 alert alert-info formula-alert-info" style="margin-top: 2em">
+                    Please provide value for each condition in the rule:<br>
+                    click condition, enter fixedArg value, then click Plus button to save that condition.<br>
+                    <b>Note:</b> <u>Key</u> value in condition <u>can't</u> be modified. It's not allowed to add new conditions.<br>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-show="vm.selectedFirmwareRuleTemplate.requiredFields.length > 0">
+            <div class="col-md-12">
+                <span id="requiredFields" class="ads-list-item-horizontal"><b>Required fields:</b></span>
+                    <span ng-repeat="requiredField in vm.selectedFirmwareRuleTemplate.requiredFields">
+                    &nbsp;<span class=" ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey checked-in-list"
+                                ng-bind="requiredField"></span>
+                </span>
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-info formula-alert-info">
+                    FreeArgs that can or not be removed during FirmwareRule creation
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="vm.selectedFirmwareRuleTemplate.validationExpression">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon"><b>Validation expression</b></span>
+                    <input type="text" class="form-control"
+                           ng-model="vm.selectedFirmwareRuleTemplate.validationExpression" id="validationExpression"
+                           disabled/>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-info formula-alert-info firmware-rule-info">
+                    Expression is something like rule by which should be validated condition existence during
+                    FirmwareRule creation. Expression field is optional<br>
+                    For example expression: env AND model OR eStbMac OR ipAddress<br>
+                    Some of <b>valid</b> conditions: env and model; eStbMac; env and eStbMac; ipAddress<br>
+                    <b>Invalid</b> conditions: env; model
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><label>ACTION</label></div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">Action Type</span>
+                        <input type="text" class="form-control"
+                               ng-model="vm.selectedActionType.name"
+                               name="name"
+                               readonly/>
+                    </div>
+                </div>
+                <div class="form-group" ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.DEFINE_PROPERTIES">
+                    <div class="row">
+                        <!--<div class="col-sm-2">-->
+                            <label for="bypassFilters" class="col-sm-2 control-label">Bypass Filters </label>
+                        <!--</div>-->
+                        <div class="col-sm-3" id="bypassFilters">
+                            <dropdown-multiselect  class="input-group"
+                                                   model="vm.data.applicableAction.byPassFilters" options="vm.blockingFilterTemplates"
+                                                   value-property="id"
+                                                   label-property="id">
+                            </dropdown-multiselect>
+                        </div>
+                        <div class="col-sm-7">
+                            <ul class="xconf-list">
+                                <li class="ads-list-item ads-list-item-horizontal ads-list-item-sm ads-list-item-dark-grey"  ng-repeat="id in vm.data.applicableAction.byPassFilters">
+                                    <span ng-bind="id"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br/>
+                    <div id="properties" class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Properties</label>
+                            <div class="col-sm-10" ng-init="isTemplate = true;">
+                                <firmwarerule-define-properties-editor-directive
+                                        data="vm.editedData"
+                                        template-properties="vm.selectedFirmwareRuleTemplate.applicableAction.properties"
+                                        is-template="isTemplate"></firmwarerule-define-properties-editor-directive>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="vm.selectedActionType === vm.APPLICABLE_ACTION_TYPE.RULE">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">NoOp</span>
+                            <input type="text" class="form-control" ng-model="vm.isNoopRule" readonly>
+                                <span class="input-group-addon">
+                                    <input id="noopCheckBox" type="checkbox" ng-model="vm.isNoopRule" ng-change="vm.noopHasChanged()">
+                                </span>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{'has-error' : form.firmwareConfigId.$invalid && form.firmwareConfigId.$touched}">
+                        <div class="input-group">
+                            <span class="input-group-addon">Firmware Config</span>
+                            <select id="firmwareConfigId"
+                                    class="form-control"
+                                    ng-model="vm.ruleAction.data.configId"
+                                    ng-options="firmwareConfig.id as firmwareConfig.description for firmwareConfig in vm.firmwareConfigs" label-length
+                                    ng-disabled="vm.isNoopRule">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="firmwareDistribution" ng-show="vm.ruleAction.data.configEntries && vm.ruleAction.data.configEntries.length > 0">
+                            <div>
+                                <label class=" control-label">Firmware Distribution</label>
+                            </div>
+                            <div class="form-group" ng-repeat="configEntry in vm.ruleAction.data.configEntries" style="margin-bottom: 0.25em">
+                                <div class="input-group">
+                                    <div class="input-group-addon" ng-bind="vm.firmwareConfigMap[configEntry.configId].firmwareVersion"></div>
+                                    <span type="text" class="form-control" ng-bind="configEntry.percentage"></span>
+                                    <div class="input-group-addon">%</div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <button type="button" class="btn btn-success" ng-click="vm.saveFirmwareRule()"
+            ng-disabled="form.$invalid || vm.hasError()"
+            title="Save">Save</button>
+    <button type="button" class="btn btn-default" ng-click="vm.cancel()">Cancel</button>
+</div>
+</form>

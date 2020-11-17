@@ -347,7 +347,11 @@
 </head>
 <body>
     <div class="container">
-
+        <!--
+        Copyright (c) 2011-2020 Twitter, Inc.
+        Copyright (c) 2011-2020 The Bootstrap Authors
+        Licensed under the MIT license
+        -->
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container-flued">
                 <div class="navbar-header">

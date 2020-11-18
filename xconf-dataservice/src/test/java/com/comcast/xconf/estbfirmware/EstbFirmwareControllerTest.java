@@ -1003,7 +1003,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
     }
 
     @Test
-    public void getAppliedActivationVersionType() throws Exception {
+    public void appliedActivationAndMinimumVersionsAreTrueIfPercentRuleIsNotMatched() throws Exception {
         FirmwareConfig firmwareConfig = initActivationVersionAndReturnConfig(true, defaultPartnerId, new HashSet<String>(), Sets.newHashSet(".*Version"));
 
         Rule rule = createRule(null, MODEL, IS, defaultModelId.toUpperCase());
@@ -1011,14 +1011,132 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
 
         EstbFirmwareContext context = createDefaultContext();
         context.setPartnerId(defaultPartnerId);
-        RunningVersionInfo runningVersionInfo = new RunningVersionInfo();
-        runningVersionInfo.setHasActivationMinFW(true);
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(true, true);
 
         mockMvc.perform(postContext("/xconf/stb/runningFirmwareVersion/info", context))
                 .andExpect(status().isOk())
                 .andExpect(content().json(JsonUtil.toJson(runningVersionInfo)));
 
         firmwareRuleTemplateDao.deleteOne(firmwareRule.getType());
+    }
+
+    @Test
+    public void percentFilterIsMatchedAndFirmwareVersionIsNotAmvAndNotMinimumVersion() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        Environment env = createAndSaveEnvironment(defaultEnvironmentId.toUpperCase());
+
+        FirmwareConfig firmwareConfig = createDefaultFirmwareConfig();
+        save(firmwareConfig);
+
+        createAndSaveActivationVersion(defaultPartnerId, Sets.newHashSet(firmwareConfig.getFirmwareVersion()), new HashSet<>());
+        createAndSavePercentageBean("AMV_TEST", env.getId(), model.getId(), null, null, firmwareConfig.getFirmwareVersion(), STB);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setPartnerId(defaultPartnerId);
+        context.setFirmwareVersion("NOT_AMV_VERSION");
+
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(false, false);
+
+        mockMvc.perform(postContext("/xconf/stb/runningFirmwareVersion/info", context))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JsonUtil.toJson(runningVersionInfo)));
+    }
+
+    @Test
+    public void percentFilterIsMatchedAndFirmwareVersionIsInAmvAndNotInMinimumVersion() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        Environment env = createAndSaveEnvironment(defaultEnvironmentId.toUpperCase());
+
+        FirmwareConfig percentFilterConfig = createDefaultFirmwareConfig();
+        save(percentFilterConfig);
+
+        FirmwareConfig activationConfig = createAndSaveFirmwareConfig("ACTIVATION_VERSION", model.getId().toUpperCase(), FirmwareConfig.DownloadProtocol.http, STB);
+        createAndSaveActivationVersion(defaultPartnerId, Sets.newHashSet(activationConfig.getFirmwareVersion()), new HashSet<>());
+
+        createAndSavePercentageBean("AMV_TEST", env.getId(), model.getId(), null, null, percentFilterConfig.getFirmwareVersion(), STB);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setPartnerId(defaultPartnerId);
+        context.setFirmwareVersion(activationConfig.getFirmwareVersion());
+
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(true, false);
+
+        mockMvc.perform(postContext("/xconf/stb/runningFirmwareVersion/info", context))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JsonUtil.toJson(runningVersionInfo)));
+    }
+
+    @Test
+    public void percentFilterIsMatchedAndFirmwareVersionIsNotInAmvAndInMinimumVersion() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        Environment env = createAndSaveEnvironment(defaultEnvironmentId.toUpperCase());
+
+        FirmwareConfig percentFilterConfig = createDefaultFirmwareConfig();
+        save(percentFilterConfig);
+
+        FirmwareConfig activationConfig = createAndSaveFirmwareConfig("ACTIVATION_VERSION", model.getId().toUpperCase(), FirmwareConfig.DownloadProtocol.http, STB);
+        createAndSaveActivationVersion(defaultPartnerId, Sets.newHashSet(activationConfig.getFirmwareVersion()), new HashSet<>());
+
+        createAndSavePercentageBean("AMV_TEST", env.getId(), model.getId(), null, null, percentFilterConfig.getFirmwareVersion(), STB);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setPartnerId(defaultPartnerId);
+        context.setFirmwareVersion(percentFilterConfig.getFirmwareVersion());
+
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(false, true);
+
+        mockMvc.perform(postContext("/xconf/stb/runningFirmwareVersion/info", context))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JsonUtil.toJson(runningVersionInfo)));
+    }
+
+    @Test
+    public void percentFilterIsMatchedAndFirmwareVersionIsInAmvAndInMinimumVersion() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        Environment env = createAndSaveEnvironment(defaultEnvironmentId.toUpperCase());
+
+        FirmwareConfig percentFilterConfig = createDefaultFirmwareConfig();
+        save(percentFilterConfig);
+
+        createAndSaveActivationVersion(defaultPartnerId, Sets.newHashSet(percentFilterConfig.getFirmwareVersion()), new HashSet<>());
+
+        createAndSavePercentageBean("AMV_TEST", env.getId(), model.getId(), null, null, percentFilterConfig.getFirmwareVersion(), STB);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setPartnerId(defaultPartnerId);
+        context.setFirmwareVersion(percentFilterConfig.getFirmwareVersion());
+
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(true, true);
+
+        mockMvc.perform(postContext("/xconf/stb/runningFirmwareVersion/info", context))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JsonUtil.toJson(runningVersionInfo)));
+    }
+
+    @Test
+    public void percentFilterIsMatchedAndFirmwareVersionIsInMinCheckAmvRuleIsNotMatched() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        Environment env = createAndSaveEnvironment(defaultEnvironmentId.toUpperCase());
+
+        FirmwareConfig firmwareConfig = createDefaultFirmwareConfig();
+        save(firmwareConfig);
+
+        FirmwareConfig firmwareConfig1 = createAndSaveFirmwareConfig("ANOTHER_FIRMWARE_VERSION", model.getId(), FirmwareConfig.DownloadProtocol.http);
+
+        createAndSavePercentageBean("AMV_TEST", env.getId(), model.getId(), null, null, firmwareConfig.getFirmwareVersion(), STB);
+
+        createAndSaveActivationVersion(defaultPartnerId, Sets.newHashSet(firmwareConfig.getFirmwareVersion()), new HashSet<>());
+
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setPartnerId(defaultPartnerId);
+        context.setFirmwareVersion(firmwareConfig1.getFirmwareVersion());
+
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(false, false);
+
+        mockMvc.perform(postContext("/xconf/stb/runningFirmwareVersion/info", context))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JsonUtil.toJson(runningVersionInfo)));
     }
 
     @Test

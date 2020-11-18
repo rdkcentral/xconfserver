@@ -629,29 +629,46 @@ public class EstbFirmwareRuleBase {
     }
 
     public RunningVersionInfo getAppliedActivationVersionType(EstbFirmwareContext context, String applicationType) {
-        Multimap<String, FirmwareRule> firmwareRules = sort(Optional.presentInstances(firmwareRuleDao.asLoadingCache().asMap().values()), applicationType);
-        RunningVersionInfo runningVersionInfo = new RunningVersionInfo();
-        FirmwareRule matchedActivationVersionRule = findMatchedRule(firmwareRules, DEFINE_PROPERTIES_TEMPLATE, ACTIVATION_VERSION,
-                context.getProperties(), context.convert().getBypassFilters());
-
+        RunningVersionInfo runningVersionInfo = new RunningVersionInfo(true, true);
         String firmwareVersion = context.getFirmwareVersion();
-        if (matchedActivationVersionRule != null) {
-            DefinePropertiesAction action = (DefinePropertiesAction) matchedActivationVersionRule.getApplicableAction();
-            if (CollectionUtils.isNotEmpty(action.getFirmwareVersions()) && action.getFirmwareVersions().contains(firmwareVersion)
-                    || CollectionUtils.isNotEmpty(action.getFirmwareVersionRegExs()) && matchFirmwareVersionRegEx(action.getFirmwareVersionRegExs(), firmwareVersion)) {
-                log.info("ActivationVersion type: applied " + matchedActivationVersionRule.getName() + " activation version rule");
-                runningVersionInfo.setHasActivationMinFW(true);
-            }
-        }
-        FirmwareRule matchedRule = findMatchedRule(firmwareRules, ApplicableAction.Type.RULE_TEMPLATE, context.getProperties(), context.convert().getBypassFilters());
-        if (matchedRule != null && matchedRule.getApplicableAction() != null && matchedRule.getApplicableAction() instanceof RuleAction) {
+        Multimap<String, FirmwareRule> firmwareRules = sort(Optional.presentInstances(firmwareRuleDao.asLoadingCache().asMap().values()), applicationType);
+
+        EvaluationResult eval = eval(context, applicationType);
+        FirmwareRule matchedRule = eval.getMatchedRule();
+
+        boolean isPercentRuleIsMatched = matchedRule != null && !eval.isBlocked() && eval.getFirmwareConfig() != null
+                && TemplateNames.ENV_MODEL_RULE.equals(matchedRule.getType());
+
+        if (isPercentRuleIsMatched && matchedRule.getApplicableAction() != null && matchedRule.getApplicableAction() instanceof RuleAction) {
             RuleAction ruleAction = (RuleAction) matchedRule.getApplicableAction();
-            if (CollectionUtils.isNotEmpty(ruleAction.getFirmwareVersions()) && ruleAction.getFirmwareVersions().contains(firmwareVersion)) {
-                log.info("ActivationVersion type: applied " + matchedRule.getName() + " firmware rule version");
-                runningVersionInfo.setHasMinimumFW(true);
+            if (CollectionUtils.isEmpty(ruleAction.getFirmwareVersions())
+                    || StringUtils.isBlank(firmwareVersion)
+                    || !ruleAction.getFirmwareVersions().contains(firmwareVersion)) {
+                runningVersionInfo.setHasMinimumFW(false);
             }
+
+            FirmwareRule matchedActivationVersionRule = findMatchedRule(firmwareRules, DEFINE_PROPERTIES_TEMPLATE, ACTIVATION_VERSION,
+                    context.getProperties(), context.convert().getBypassFilters());
+
+            boolean isAmvRuleMatched = false;
+            if (matchedActivationVersionRule != null) {
+                DefinePropertiesAction action = (DefinePropertiesAction) matchedActivationVersionRule.getApplicableAction();
+                isAmvRuleMatched = StringUtils.isNotBlank(firmwareVersion)
+                        && (firmwareVersionIsMatched(firmwareVersion, action)
+                        || firmwareVersionRegExIsMatched(firmwareVersion, action));
+            }
+            runningVersionInfo.setHasActivationMinFW(isAmvRuleMatched);
         }
+
         return runningVersionInfo;
+    }
+
+    private boolean firmwareVersionIsMatched(String firmwareVersion, DefinePropertiesAction action) {
+        return CollectionUtils.isNotEmpty(action.getFirmwareVersions()) && action.getFirmwareVersions().contains(firmwareVersion);
+    }
+
+    private boolean firmwareVersionRegExIsMatched(String firmwareVersion, DefinePropertiesAction action) {
+        return CollectionUtils.isNotEmpty(action.getFirmwareVersionRegExs()) && matchFirmwareVersionRegEx(action.getFirmwareVersionRegExs(), firmwareVersion);
     }
 
     private FirmwareRule findMatchedRule(Multimap<String, FirmwareRule> firmwareRules, ApplicableAction.Type actionType,

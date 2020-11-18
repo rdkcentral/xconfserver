@@ -27,6 +27,14 @@ public class RunningVersionInfo {
 
     private boolean hasMinimumFW = false;
 
+    public RunningVersionInfo() {
+    }
+
+    public RunningVersionInfo(boolean hasActivationMinFW, boolean hasMinimumFW) {
+        this.hasActivationMinFW = hasActivationMinFW;
+        this.hasMinimumFW = hasMinimumFW;
+    }
+
     public boolean isHasActivationMinFW() {
         return hasActivationMinFW;
     }

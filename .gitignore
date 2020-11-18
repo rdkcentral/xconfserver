@@ -1,0 +1,26 @@
+# Compiled Source
+*.class
+# Packages
+*.war
+# Misc Files ( Logs, Temporary Files )
+*.log*
+*.bak
+# Directories
+WebContent/
+tmp/
+.svn/
+.cvs/
+target/
+bower_components/
+node/
+node_modules/
+# Text Editor/IDE specific
+.project
+.classpath
+.settings
+*.iml
+.idea
+statistics/job/dependency-reduced-pom.xml
+# Other files and file types to ignore
+*.DS_Store*
+xconf-angular-admin/src/main/webapp/app/compiled*

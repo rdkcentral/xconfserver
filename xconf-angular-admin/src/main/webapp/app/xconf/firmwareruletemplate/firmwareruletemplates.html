@@ -146,7 +146,7 @@
                     <button type="button" class="btn btn-default" title="Create FirmwareRule"
                             ui-sref="firmwarerule-add({actionType: vm.getActionNameForRuleCreation(vm.selectedActionType.name), templateId: template.id})"
                             ng-show="authUtils.canWriteFirmwareByApplication($root.applicationType) && template.editable">
-                        <span class="fa fa-certificate"></span>
+                        <i class="ri-magic-fill"></i>
                     </button>
                     <button type="button" class="btn btn-default features-shadowed"
                             ui-sref="firmwareruletemplate-edit({id: template.id, templatesSize: vm.templatesSize})"

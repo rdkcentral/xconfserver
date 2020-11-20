@@ -42,8 +42,11 @@ import com.comcast.xconf.logupload.settings.SettingType;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.logupload.telemetry.TimestampedRule;
 import com.comcast.xconf.queries.controllers.BaseQueriesControllerTest;
+import org.codehaus.jackson.JsonProcessingException;
 import com.google.common.collect.Sets;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -58,7 +61,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -406,6 +409,59 @@ public class LogUploaderControllerTest extends BaseQueriesControllerTest {
         verifyT2ResponseByApplication(RDKCLOUD);
     }
 
+    @Test
+    public void getTelemetryTwoProfilesTest() throws Exception {
+        TelemetryTwoProfile telemetryTwoProfile = createTelemetryTwoProfile("ID", "TestProfile");
+        telemetryTwoProfileDAO.setOne(telemetryTwoProfile.getId(), telemetryTwoProfile);
+
+        final String model = "TEST";
+        TelemetryTwoRule telemetryTwoRule = new TelemetryTwoRule();
+        telemetryTwoRule.setId(ID);
+        telemetryTwoRule.setName("myRuleName");
+        List<String> boundTelemetryIds = new ArrayList<>();
+        boundTelemetryIds.add(telemetryTwoProfile.getId());
+        telemetryTwoRule.setBoundTelemetryIds(boundTelemetryIds);
+
+        telemetryTwoRule.setCondition(BaseTestUtils.createCondition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model)));
+        telemetryTwoRuleDAO.setOne(telemetryTwoRule.getId(), telemetryTwoRule);
+
+        assertNotNull(telemetryTwoRule);
+        assertNotNull(telemetryTwoProfile);
+
+        mockMvc.perform(
+                get(MAPPING + "getTelemetryProfiles?model=TEST")
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getTelemetryTwoProfilesNotFoundTest() throws Exception {
+        TelemetryTwoProfile telemetryTwoProfile = createTelemetryTwoProfile("ID", "TestProfile");
+        telemetryTwoProfileDAO.setOne(telemetryTwoProfile.getId(), telemetryTwoProfile);
+
+        final String model = "TEST";
+        TelemetryTwoRule telemetryTwoRule = new TelemetryTwoRule();
+        telemetryTwoRule.setId(ID);
+        telemetryTwoRule.setName("myRuleName");
+        List<String> boundTelemetryIds = new ArrayList<>();
+        boundTelemetryIds.add(telemetryTwoProfile.getId());
+        telemetryTwoRule.setBoundTelemetryIds(boundTelemetryIds);
+
+        telemetryTwoRule.setCondition(BaseTestUtils.createCondition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model)));
+        telemetryTwoRuleDAO.setOne(telemetryTwoRule.getId(), telemetryTwoRule);
+
+        assertNotNull(telemetryTwoRule);
+        assertNotNull(telemetryTwoProfile);
+
+        mockMvc.perform(
+                get(MAPPING + "getTelemetryProfiles?model=NOMATCH")
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString();
+    }
+
     private void verifyT2ResponseByApplication(String applicationType) throws Exception {
         DCMGenericRule dcmGenericRule = createDcmGenericRule();
         dcmGenericRule.setApplicationType(applicationType);
@@ -553,5 +609,42 @@ public class LogUploaderControllerTest extends BaseQueriesControllerTest {
         vodSettings.setLocationsURL("http://foo.com");
         vodSettings.setSrmIPList(new HashMap<String, String>());
         return vodSettings;
+    }
+
+    private TelemetryTwoProfile createTelemetryTwoProfile(String id, String name) {
+        TelemetryTwoProfile telemetryTwoprofile = new TelemetryTwoProfile();
+        telemetryTwoprofile.setId(id);
+        telemetryTwoprofile.setName(name);
+        telemetryTwoprofile.setJsonconfig("{\n" +
+                "    \"Description\": \"Telemetry 2.0 test\",\n" +
+                "    \"Version\": \"0.2\",\n" +
+                "    \"Protocol\": \"HTTP\",\n" +
+                "    \"EncodingType\": \"JSON\",\n" +
+                "    \"ReportingInterval\": 180,\n" +
+                "    \"TimeReference\": \"0001-01-01T00:00:00Z\",\n" +
+                "    \"Parameter\": [{\n" +
+                "        \"type\": \"dataModel\",\n" +
+                "        \"name\": \"TestMac\",\n" +
+                "        \"reference\": \"Device.ABC\"\n" +
+                "    }],\n" +
+                "    \"HTTP\": {\n" +
+                "        \"URL\": \"https://test.com/\",\n" +
+                "        \"Compression\": \"None\",\n" +
+                "        \"Method\": \"POST\",\n" +
+                "        \"RequestURIParameter\": [{\n" +
+                "            \"Name\": \"profileName\",\n" +
+                "            \"Reference\": \"Test.Name\"\n" +
+                "        }, {\n" +
+                "            \"Name\": \"testVersion\",\n" +
+                "            \"Reference\": \"Test.Version\"\n" +
+                "        }]\n" +
+                "    },\n" +
+                "    \"JSONEncoding\": {\n" +
+                "        \"ReportFormat\": \"NameValuePair\",\n" +
+                "        \"ReportTimestamp\": \"None\"\n" +
+                "    }\n" +
+                "}");
+        telemetryTwoprofile.setApplicationType(STB);
+        return telemetryTwoprofile;
     }
 }

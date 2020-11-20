@@ -52,6 +52,8 @@ import com.comcast.xconf.logupload.settings.SettingRule;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.queries.beans.DownloadLocationFilterWrapper;
 import com.comcast.xconf.rfc.Feature;
@@ -143,7 +145,10 @@ public abstract class BaseQueriesControllerTest {
     protected CachedSimpleDao<String, PermanentTelemetryProfile> permanentTelemetryDAO;
     @Autowired
     protected CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
-
+    @Autowired
+    protected CachedSimpleDao<String, TelemetryTwoProfile> telemetryTwoProfileDAO;
+    @Autowired
+    protected CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO;
     @Autowired
     protected PercentageBeanConverter converter;
 

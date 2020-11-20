@@ -37,6 +37,8 @@ import com.comcast.xconf.admin.controller.shared.ChangeLogControllerTest;
 import com.comcast.xconf.admin.controller.shared.StatisticsControllerTest;
 import com.comcast.xconf.admin.controller.telemetry.PermanentProfileControllerTest;
 import com.comcast.xconf.admin.controller.telemetry.TargetingRuleControllerTest;
+import com.comcast.xconf.admin.controller.telemetry.TelemetryTwoProfileControllerTest;
+import com.comcast.xconf.admin.controller.telemetry.TelemetryTwoTargetingRuleControllerTest;
 import com.comcast.xconf.admin.converter.firmware.PercentageBeanConverterTest;
 import com.comcast.xconf.admin.validator.UrlValidatorTest;
 import com.comcast.xconf.admin.validator.change.ChangeValidatorTest;
@@ -83,6 +85,8 @@ import java.io.IOException;
         // controller/telemetry
         PermanentProfileControllerTest.class,
         TargetingRuleControllerTest.class,
+        TelemetryTwoProfileControllerTest.class,
+        TelemetryTwoTargetingRuleControllerTest.class,
         // controller/change
         ChangeControllerTest.class,
 

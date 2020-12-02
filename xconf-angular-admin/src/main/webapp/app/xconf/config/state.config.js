@@ -337,7 +337,7 @@
                     permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
                 }
             })
-            state('telemetrytwoprofile-view', {
+            .state('telemetrytwoprofile-view', {
                 controller: 'TelmetryTwoProfileViewController',
                 controllerAs: 'vm',
                 url: '/telemetrytwoprofile/view/:telemetryProfileId',

@@ -28,7 +28,7 @@
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:git:ssh://git@github.comcast.com:appds-services/xconf-oss.git</connection>
+        <connection>scm:git:ssh://git@github.com:rdkcentral/xconfserver.git</connection>
         <tag>HEAD</tag>
     </scm>
 

@@ -457,8 +457,13 @@
 					<webApp>
 						<contextPath>/</contextPath>
 					</webApp>
+					<!--
+                    Note:
+                    Remove this segment and add -Djetty.port=[port number] to the command line
+                     to specify a custom port OR change the value specified here.
+                    -->
 					<httpConnector>
-						<port>9092</port>
+						<port>19092</port>
 					</httpConnector>
 					<contextXml>jetty-context.xml</contextXml>
 				</configuration>

@@ -21,7 +21,6 @@
  */
 package com.comcast.xconf;
 
-
 import com.comcast.apps.dataaccess.cache.dao.ChangedKeysProcessingDaoImpl;
 import com.comcast.apps.dataaccess.dao.SimpleDao;
 import com.comcast.xconf.dcm.ruleengine.LogFileService;
@@ -40,6 +39,8 @@ import com.comcast.xconf.logupload.settings.SettingProfile;
 import com.comcast.xconf.logupload.settings.SettingRule;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.permissions.DcmPermissionService;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
@@ -128,6 +129,12 @@ public class BaseIntegrationTest {
     protected CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
 
     @Autowired
+    protected CachedSimpleDao<String, TelemetryTwoProfile> telemetryTwoProfileDAO;
+
+    @Autowired
+    protected CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO;
+
+    @Autowired
     protected CachedSimpleDao<String, FeatureRule> featureRuleDAO;
 
     @Autowired
@@ -205,7 +212,7 @@ public class BaseIntegrationTest {
                 firmwareRuleDao, vodSettingsDAO, permanentTelemetryDAO, telemetryRuleDAO, featureRuleDAO,
                 genericNamespacedListDAO, singletonFilterValueDAO, settingProfileDao, settingRuleDAO,
                 formulaDAO, ipAddressGroupDAO, namespacedListDAO, firmwareRuleDAO,
-                featureDAO
+                featureDAO, telemetryTwoProfileDAO, telemetryTwoRuleDAO
         );
         cleanData(daoList);
     }

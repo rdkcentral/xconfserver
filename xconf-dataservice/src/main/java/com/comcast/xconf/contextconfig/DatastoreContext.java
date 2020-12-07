@@ -36,13 +36,14 @@ import com.comcast.xconf.logupload.settings.SettingRule;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.logupload.telemetry.TimestampedRule;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.FeatureRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 
 @Configuration
 public class DatastoreContext {
@@ -215,4 +216,13 @@ public class DatastoreContext {
         return daoFactory.createSimpleDao(ApprovedChange.class);
     }
 
+    @Bean
+    CachedSimpleDao<String, TelemetryTwoProfile> telemetryTwoProfileDAO() {
+        return daoFactory.createCachedSimpleDao(String.class, TelemetryTwoProfile.class);
+    }
+
+    @Bean
+    CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO() {
+        return daoFactory.createCachedSimpleDao(String.class, TelemetryTwoRule.class);
+    }
 }

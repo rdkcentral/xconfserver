@@ -42,6 +42,8 @@ import com.comcast.xconf.logupload.settings.SettingType;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.WhitelistProperty;
 import com.google.common.collect.Lists;
@@ -65,7 +67,6 @@ import static com.comcast.xconf.firmware.ApplicationType.XHOME;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 public class BaseControllerTest extends BaseIntegrationTest {
 
@@ -1041,5 +1042,92 @@ public class BaseControllerTest extends BaseIntegrationTest {
             groupedChanges.get(profileId).add(change);
         }
         return groupedChanges;
+    }
+
+    protected TelemetryTwoProfile createTelemetryTwoProfile() {
+        return createTelemetryTwoProfile("telemetryTwoProfileId");
+    }
+
+    protected TelemetryTwoProfile createTelemetryTwoProfile(String id) {
+        return createTelemetryTwoProfile(id, "ProfileName");
+    }
+
+    protected TelemetryTwoProfile createTelemetryTwoProfile(String id, String name) {
+        TelemetryTwoProfile telemetryTwoprofile = new TelemetryTwoProfile();
+        telemetryTwoprofile.setId(id);
+        telemetryTwoprofile.setName(name);
+        telemetryTwoprofile.setJsonconfig("{\n" +
+                "    \"Description\": \"Telemetry 2.0 test\",\n" +
+                "    \"Version\": \"0.2\",\n" +
+                "    \"Protocol\": \"HTTP\",\n" +
+                "    \"EncodingType\": \"JSON\",\n" +
+                "    \"ReportingInterval\": 180,\n" +
+                "    \"TimeReference\": \"0001-01-01T00:00:00Z\",\n" +
+                "    \"Parameter\": [{\n" +
+                "        \"type\": \"dataModel\",\n" +
+                "        \"name\": \"TestMac\",\n" +
+                "        \"reference\": \"Device.ABC\"\n" +
+                "    }],\n" +
+                "    \"HTTP\": {\n" +
+                "        \"URL\": \"https://test.com/\",\n" +
+                "        \"Compression\": \"None\",\n" +
+                "        \"Method\": \"POST\",\n" +
+                "        \"RequestURIParameter\": [{\n" +
+                "            \"Name\": \"profileName\",\n" +
+                "            \"Reference\": \"Test.Name\"\n" +
+                "        }, {\n" +
+                "            \"Name\": \"testVersion\",\n" +
+                "            \"Reference\": \"Test.Version\"\n" +
+                "        }]\n" +
+                "    },\n" +
+                "    \"JSONEncoding\": {\n" +
+                "        \"ReportFormat\": \"NameValuePair\",\n" +
+                "        \"ReportTimestamp\": \"None\"\n" +
+                "    }\n" +
+                "}");
+        telemetryTwoprofile.setApplicationType(STB);
+        return telemetryTwoprofile;
+    }
+
+    protected TelemetryTwoProfile saveTelemetryTwoProfile(TelemetryTwoProfile telemetryTwoprofile) {
+        telemetryTwoProfileDAO.setOne(telemetryTwoprofile.getId(), telemetryTwoprofile);
+
+        return telemetryTwoprofile;
+    }
+
+    protected TelemetryTwoRule createTelemetryTwoRule() throws Exception {
+        return createTelemetryTwoRule(createCondition());
+    }
+
+    protected TelemetryTwoRule createTelemetryTwoRule(Condition condition) throws Exception {
+        return createTelemetryTwoRule("1-2-3-4-5", condition);
+    }
+
+    protected TelemetryTwoRule createTelemetryTwoRule(String id, String name) throws Exception {
+        return createTelemetryTwoRule(id, name, createCondition());
+    }
+
+    protected TelemetryTwoRule createTelemetryTwoRule(String id, Condition condition) throws Exception {
+        return createTelemetryTwoRule(id, "Rule name", condition);
+    }
+
+    protected TelemetryTwoRule createTelemetryTwoRule(String id, String name, Condition condition) throws Exception {
+        TelemetryTwoProfile permanentTelemetryProfile = createTelemetryTwoProfile();
+        telemetryTwoProfileDAO.setOne(permanentTelemetryProfile.getId(), permanentTelemetryProfile);
+        TelemetryTwoRule telemetryRule = new TelemetryTwoRule();
+        telemetryRule.setName(name);
+        telemetryRule.setId(UUID.fromString(id).toString());
+        List<String> boundTelemetryIds = new ArrayList<>();
+        boundTelemetryIds.add(createTelemetryTwoProfile().getId());
+        telemetryRule.setBoundTelemetryIds(boundTelemetryIds);
+        telemetryRule.setCondition(condition);
+        telemetryRule.setApplicationType(STB);
+        return telemetryRule;
+    }
+
+    protected TelemetryTwoRule saveTelemetryTwoRule(TelemetryTwoRule rule) throws Exception {
+        telemetryTwoRuleDAO.setOne(rule.getId(), rule);
+
+        return rule;
     }
 }

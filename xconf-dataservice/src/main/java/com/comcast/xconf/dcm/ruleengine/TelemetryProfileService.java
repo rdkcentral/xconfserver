@@ -34,16 +34,20 @@ import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.logupload.telemetry.TimestampedRule;
 import com.comcast.xconf.util.EvaluatorHelper;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Longs;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
@@ -54,7 +58,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TelemetryProfileService {
@@ -67,6 +73,10 @@ public class TelemetryProfileService {
     private CachedSimpleDao<String, PermanentTelemetryProfile> permanentTelemetryDAO;
     @Autowired
     private CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
+    @Autowired
+    private CachedSimpleDao<String, TelemetryTwoProfile> telemetryTwoProfileDAO;
+    @Autowired
+    private CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO;
 
     @Autowired
     private RuleProcessorFactory ruleProcessorFactory;
@@ -220,5 +230,38 @@ public class TelemetryProfileService {
                         StandardOperation.IS,
                         FixedArg.from(expectedValue)))
                 .copyTo(new TimestampedRule());
+    }
+
+    public List<TelemetryTwoRule> processTelemetryTwoRules(final Map<String, String> context) {
+        return Lists.newArrayList(Iterables.filter(Optional.presentInstances(telemetryTwoRuleDAO.asLoadingCache().asMap().values()), new Predicate<TelemetryTwoRule>() {
+            @Override
+            public boolean apply(@Nullable TelemetryTwoRule telemetryTwoRule) {
+                return ruleProcessorFactory.get().evaluate(telemetryTwoRule.getRule(), context);
+            }
+        }));
+    }
+
+    public List<TelemetryTwoProfile> getTelemetryTwoProfileByTelemetryRules(List<TelemetryTwoRule> telemetryTwoRules) {
+        final LinkedList<TelemetryTwoProfile> telemetryTwoProfiles = new LinkedList<>();
+        for (final TelemetryTwoRule telemetryTwoRule : telemetryTwoRules) {
+            if (telemetryTwoRule != null && CollectionUtils.isNotEmpty(telemetryTwoRule.getBoundTelemetryIds()) ) {
+                for (final String boundTelemetryId : telemetryTwoRule.getBoundTelemetryIds()) {
+                    if (StringUtils.isBlank(boundTelemetryId)) {
+                        continue;
+                    }
+                    TelemetryTwoProfile telemetryTwoProfile = telemetryTwoProfileDAO.getOne(boundTelemetryId);
+                    if (telemetryTwoProfile != null) {
+                        telemetryTwoProfiles.add(telemetryTwoProfile);
+                    }
+                }
+            }
+        }
+
+        Set<String> nameSet = new HashSet<>();
+        List<TelemetryTwoProfile> uniqueTelemetryTwoProfiles = telemetryTwoProfiles.stream()
+                .filter(e -> nameSet.add(e.getName()))
+                .collect(Collectors.toList());
+
+        return uniqueTelemetryTwoProfiles;
     }
 }

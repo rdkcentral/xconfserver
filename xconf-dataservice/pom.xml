@@ -44,13 +44,13 @@
 		<repository>
 			<id>m2</id>
 			<name>Maven 2</name>
-			<url>http://repo2.maven.org/maven2</url>
+			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 		<!-- For recent versions of spring -->
 		<repository>
 			<id>spring</id>
 			<name>spring</name>
-			<url>http://repo.springsource.org/release</url>
+			<url>https://repo.springsource.org/release</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -271,6 +271,11 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180130</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -452,8 +457,13 @@
 					<webApp>
 						<contextPath>/</contextPath>
 					</webApp>
+					<!--
+                    Note:
+                    Remove this segment and add -Djetty.port=[port number] to the command line
+                     to specify a custom port OR change the value specified here.
+                    -->
 					<httpConnector>
-						<port>9092</port>
+						<port>19092</port>
 					</httpConnector>
 					<contextXml>jetty-context.xml</contextXml>
 				</configuration>

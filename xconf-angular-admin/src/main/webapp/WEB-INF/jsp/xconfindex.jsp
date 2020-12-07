@@ -207,6 +207,9 @@
             <script src="<c:url value="/app/xconf/telemetry/permanentprofile/permanentprofile.view.controller.js"/>"></script>
             <script src="<c:url value="/app/xconf/telemetry/permanentprofile/permanentprofile.filter.js"/>"></script>
 
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofile.module.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofiles.controller.js"/>"></script>
+
             <script src="<c:url value="/app/xconf/settings/settingprofile/settingprofile.module.js"/>"></script>
             <script src="<c:url value="/app/xconf/settings/settingprofile/settingprofile.service.js"/>"></script>
             <script src="<c:url value="/app/xconf/settings/settingprofile/settingprofiles.controller.js"/>"></script>
@@ -229,9 +232,18 @@
             <script src="<c:url value="/app/xconf/telemetry/targetingrule/targetingrule.edit.controller.js"/>"></script>
             <script src="<c:url value="/app/xconf/telemetry/targetingrule/targetingrule.import.controller.js"/>"></script>
 
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.module.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.service.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrules.controller.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.edit.controller.js"/>"></script>
+
             <script src="<c:url value="/app/xconf/telemetry/testpage/testpage.module.js"/>"></script>
             <script src="<c:url value="/app/xconf/telemetry/testpage/testpage.service.js"/>"></script>
             <script src="<c:url value="/app/xconf/telemetry/testpage/testpage.controller.js"/>"></script>
+
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotestpage/telemetrytwotestpage.module.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotestpage/telemetrytwotestpage.service.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetry/telemetrytwotestpage/telemetrytwotestpage.controller.js"/>"></script>
 
             <script src="<c:url value="/app/xconf/dcm/uploadRepository/uploadRepository.module.js"/>"></script>
             <script src="<c:url value="/app/xconf/dcm/uploadRepository/uploadRepository.service.js"/>"></script>
@@ -457,11 +469,20 @@
                                     <a ui-sref="permanentprofiles">Permanent Profiles</a>
                                 </li>
                                 <li>
+                                    <a ui-sref="telemetrytwoprofiles">Telemetry 2.0 Profiles</a>
+                                </li>
+                                <li>
                                     <a ui-sref="targetingrules">Targeting Rules</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="telemetrytwotargetingrules">Telemetry 2.0 Rules</a>
                                 </li>
                                 <li role="separator" class="divider"></li>
                                 <li>
                                     <a ui-sref="testpage-telemetry">Test page</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="testpage-telemetrytwo">Telemetry 2.0 Test page</a>
                                 </li>
                             </ul>
                         </li>

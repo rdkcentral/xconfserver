@@ -63,7 +63,7 @@ public class FirmwareConfigFacade {
         properties = map;
     }
 
-    private void putIfPresent(Map<String, Object> map, String key, Object value) {
+    public void putIfPresent(Map<String, Object> map, String key, Object value) {
         if (!isEmpty(value)) {
             map.put(key, value);
         }
@@ -185,7 +185,7 @@ public class FirmwareConfigFacade {
         return new FirmwareConfigFacade(map);
     }
 
-    private boolean isRedundantEntry(Map.Entry<String, Object> entry) {
+    public boolean isRedundantEntry(Map.Entry<String, Object> entry) {
         String key = entry.getKey();
         return ConfigNames.ID.equals(key) || ConfigNames.DESCRIPTION.equals(key)
                 || ConfigNames.SUPPORTED_MODEL_IDS.equals(key) || ConfigNames.UPDATED.equals(key)

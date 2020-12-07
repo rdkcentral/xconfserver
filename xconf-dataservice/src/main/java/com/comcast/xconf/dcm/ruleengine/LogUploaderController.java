@@ -19,6 +19,7 @@
 package com.comcast.xconf.dcm.ruleengine;
 
 import com.comcast.xconf.logupload.LogUploaderContext;
+import org.codehaus.jackson.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Set;
@@ -93,4 +94,22 @@ public class LogUploaderController {
         return logUploaderService.evaluateSettings(request, checkNow, apiVersion, settingTypes, context, false);
     }
 
+    @RequestMapping(value = "/getTelemetryProfiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getTelemetryTwoProfiles(HttpServletRequest request,
+                                                  @RequestParam Map<String, String> params) throws JsonProcessingException, IOException {
+
+        final LogUploaderContext context = new LogUploaderContext(params);
+        context.setApplication(STB);
+        return logUploaderService.getTelemetryTwoProfiles(request, context);
+    }
+
+    @RequestMapping(value = "/getTelemetryProfiles/{applicationType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getTelemetryTwoProfilesByApplicationType(HttpServletRequest request,
+                                                                   @PathVariable String applicationType,
+                                                                   @RequestParam Map<String, String> params) throws JsonProcessingException, IOException {
+
+        final LogUploaderContext context = new LogUploaderContext(params);
+        context.setApplication(applicationType);
+        return logUploaderService.getTelemetryTwoProfiles(request, context);
+    }
 }

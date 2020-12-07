@@ -139,6 +139,16 @@
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.erosb</groupId>
+            <artifactId>everit-json-schema-jdk6</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -209,8 +219,13 @@
                     <webApp>
                         <contextPath>/admin/</contextPath>
                     </webApp>
+                    <!--
+                    Note:
+                    Remove this segment and add -Djetty.port=[port number] to the command line
+                     to specify a custom port OR change the value specified here.
+                    -->
                     <httpConnector>
-                        <port>9093</port>
+                        <port>19093</port>
                     </httpConnector>
                     <contextXml>jetty-context.xml</contextXml>
                 </configuration>
@@ -230,7 +245,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and npm</id>
+                        <id>Install Node and NPM local to project</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
@@ -240,7 +255,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm install</id>
+                        <id>Compile via NPM install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -249,7 +264,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm install bower and grunt</id>
+                        <id>Install Bower cli and Grunt-CLI packages</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
@@ -258,7 +273,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>bower install</id>
+                        <id>Compile via Bower</id>
                         <goals>
                             <goal>bower</goal>
                         </goals>
@@ -267,7 +282,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>grunt install</id>
+                        <id>Compile via Grunt</id>
                         <goals>
                             <goal>grunt</goal>
                         </goals>

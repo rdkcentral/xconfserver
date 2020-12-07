@@ -30,6 +30,8 @@ import com.comcast.xconf.logupload.settings.SettingRule;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryRule;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.queries.QueriesHelper;
 import com.comcast.xconf.util.RequestUtil;
 import com.google.common.base.Joiner;
@@ -41,9 +43,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.JsonProcessingException;
+import org.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.zip.CRC32;
+import java.io.IOException;
 
 @Service
 public class LogUploaderService {
@@ -194,5 +201,46 @@ public class LogUploaderService {
                 CollectionUtils.isNotEmpty(ruleNames) ? Joiner.on(",").join(ruleNames) : EvaluationResult.DefaultValue.NOMATCH,
                 telemetryRule != null ? telemetryRule.getName() : EvaluationResult.DefaultValue.NOMATCH,
                 CollectionUtils.isNotEmpty(settingRuleNames) ? Joiner.on(",").join(settingRuleNames) : EvaluationResult.DefaultValue.NOMATCH);
+    }
+
+    public String getHashValue(String jsonConfig) {
+        CRC32 crc = new CRC32();
+        crc.update(jsonConfig.getBytes());
+        String hashValue = Long.toHexString(crc.getValue());
+        return hashValue;
+    }
+
+    public ResponseEntity getTelemetryTwoProfiles(HttpServletRequest request, LogUploaderContext context) throws JsonProcessingException, IOException {
+
+        if (context.getEnv() != null) {
+            context.setEnv(context.getEnv().toUpperCase());
+        }
+        String ipAddress = requestUtil.findValidIpAddress(request, context.getEstbIP());
+        context.setEstbIP(ipAddress);
+        normalizeContext(context);
+
+        final Map<String, String> contextProps = context.getProperties();
+
+        List<TelemetryTwoRule> telemetryTwoRules = telemetryProfileService.processTelemetryTwoRules(contextProps);
+        List<TelemetryTwoProfile> telemetryTwoProfiles = telemetryProfileService.getTelemetryTwoProfileByTelemetryRules(telemetryTwoRules);
+
+        List<Object> profiles = new ArrayList<>();
+        for (final TelemetryTwoProfile telemetryTwoProfile : telemetryTwoProfiles) {
+            Map<String, Object> newHashProfile = new HashMap<>();
+            newHashProfile.put("name", telemetryTwoProfile.getName());
+            JSONObject jsonObj = new JSONObject(telemetryTwoProfile.getJsonconfig());
+            newHashProfile.put("versionHash", getHashValue(jsonObj.toString()));
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(telemetryTwoProfile.getJsonconfig());
+            newHashProfile.put("value", node);
+            profiles.add(newHashProfile);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("profiles", profiles);
+
+        if (profiles.isEmpty()) return new ResponseEntity<>("<h2>404 NOT FOUND</h2>profiles not found", HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

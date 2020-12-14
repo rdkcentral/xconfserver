@@ -35,8 +35,7 @@
     "underscore": "~1.8.3",
     "angular-file-saver": "~1.0.0",
     "angular-ui-select": "~0.19.6",
-    "angular-diff-match-patch": "~0.6.0",
-    "google-diff-match-patch-js": "~1.0.0"
+    "angular-diff-match-patch": "~0.7.79"
   },
   "resolutions": {
     "angular": "1.4.9",

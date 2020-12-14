@@ -78,7 +78,7 @@ module.exports = function (grunt) {
                     'bower_components/underscore/underscore-min.js',
                     'bower_components/angular-file-saver/dist/angular-file-saver.bundle.js',
                     'bower_components/angular-ui-select/dist/select.js',
-                    'bower_components/google-diff-match-patch-js/diff_match_patch.js',
+                    'bower_components/google-diff-match-patch/diff_match_patch.js',
                     'bower_components/angular-diff-match-patch/angular-diff-match-patch.js'
                 ]
             },

@@ -16,10 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
-(function() {
-    'use strict';
-
-    angular
-        .module('app.telemetrytwotestpage', ['ngResource', 'app.telemetrytwoprofileFilters'])
-})();
+angular.module('app.telemetrytwoprofileFilters', [])
+    .filter('profileName', function() {
+        return function(profileId, profiles) {
+            for(var i = 0; i < profiles.length; i++) {
+                if (profileId === profiles[i].id) {
+                    return profiles[i]['name'];
+                }
+            }
+            return 'PROFILE NOT FOUND';
+        }
+    });

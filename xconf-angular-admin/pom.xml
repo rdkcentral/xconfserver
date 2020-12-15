@@ -255,21 +255,21 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Compile via NPM install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>Install Bower cli and Grunt-CLI packages</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>install bower cli grunt-cli</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Compile via NPM install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>

@@ -17,7 +17,7 @@
  * limitations under the License.
  *******************************************************************************/
 angular.module('app.telemetrytwoprofileFilters', [])
-    .filter('profileName', function() {
+    .filter('profileNameTwo', function() {
         return function(profileId, profiles) {
             for(var i = 0; i < profiles.length; i++) {
                 if (profileId === profiles[i].id) {

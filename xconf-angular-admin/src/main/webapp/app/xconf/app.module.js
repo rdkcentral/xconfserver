@@ -67,6 +67,7 @@
         'app.formula',
         'app.namespacedlist',
         'app.permanentprofileFilters',
+        'app.telemetrytwoprofileFilters',
         'app.namespacedlist',
         'app.vodsettings',
         'app.uploadRepository',

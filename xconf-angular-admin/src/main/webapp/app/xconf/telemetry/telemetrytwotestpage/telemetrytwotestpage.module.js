@@ -21,5 +21,5 @@
     'use strict';
 
     angular
-        .module('app.telemetrytwotestpage', ['ngResource', 'app.telemetrytwoprofileFilters'])
+        .module('app.telemetrytwotestpage', ['ngResource'])
 })();

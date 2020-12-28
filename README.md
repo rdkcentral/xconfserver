@@ -1,4 +1,21 @@
-XConf Open Source Software
+# Table of Contents
+<!--ts-->
+* [XConf Overview](#xconf-overview)
+* [Architecture](#architecture)
+* [Run application](#run-application)
+    * [Local run](#local-run)
+* [Endpoints](#endpoints)
+    * [XConf Primary API](#xconf-primary-api)
+    * [Device Configuration Manager](#device-configuration-manager-dcm)
+    * [RDK Feature Control](#rdk-feature-control-rfc)
+* [Examples](#examples)
+    * [Get STB firmware version](#get-stb-firmware-version)
+    * [Get STB settings](#get-stb-settings)
+    * [Get Feature Settings](#get-feature-settings)
+<!--te-->
+
+
+#XConf Overview
 
 ***Important Note about Licensing:
 The XConf Server uses the Bootstrap framework.  When building XConf Server, Bootstrap and other modules are pulled in by NPM.  Bootstrap contains a small set of Glyphicons.  According to the Bootstrap license, Bootstrap and the included Glyphicons are available to use commercially for free.  However, any party building and using XConf Server should review the licenses and make their own determination.
@@ -24,7 +41,7 @@ The information is returned in JSON format.
 * Angular 1
 * Cassandra DB
 
-## Run app
+## Run application
 ### Local run
 1. Run cassandra DB and create a corresponding scheme using `schema.cql` file from `xconf-angular-admin` or `xconf-dataservice` module.
 2. Use sample.service.properties to add/override specific environments properties.

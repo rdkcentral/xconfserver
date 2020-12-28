@@ -36,6 +36,8 @@ environment, and model. Xconf then applies various rules to determine which firm
 The information is returned in JSON format.
 
 ## Architecture
+Repository contains both projects: admin and dataservice.
+
 * Java 8
 * Spring MVC
 * Angular 1
@@ -43,6 +45,7 @@ The information is returned in JSON format.
 
 ## Run application
 ### Local run
+Related to `xconf-dataservice` and `xconf-angular-admin`
 1. Run cassandra DB and create a corresponding scheme using `schema.cql` file from `xconf-angular-admin` or `xconf-dataservice` module.
 2. Use sample.service.properties to add/override specific environments properties.
 3. Create service.properties file with needed application properties in `resources` folder. 

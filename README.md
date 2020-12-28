@@ -50,14 +50,19 @@ NOTE: XConf UI is compiled using `frontend-maven-plugin` during `run` and `insta
 
 ### XConf Primary API
 
-| PATH <div style="width:50"></div>  | METHOD | HEADERS | MAIN QUERY PARAMETERS | DESCRIPTION |
-|------|--------|---------|-----------------------|-------------|
-| `/xconf/swu/{applicationType}` | `GET/POST` | `HA-Haproxy-xconf-http` - indicate if connection is secure |`eStbMac`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br><br>`controllerId`<br>`channelMapId`<br>`vodId`| Returns firmwareVersion to STB box <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud` |
-| `/xconf/swu/bse` | `GET/PUT/POST` | | `ipAddress` - required | Returns BSE configuration |
-| `/estbfirmware/changelogs` | `GET/PUT/POST` | | `mac` - required | Returns logs of the communication between xconf and the given stb where xconf instructed stb to get different firmware |
-| `/estbfirmware/lastlog` | `GET/PUT/POST` | | `mac` - required | Returns log of the last communication between xconf and the given stb |
-| `/estbfirmware/checkMinimumFirmware` | `GET/PUT/POST` | | `mac` - required | Return if device has Minimum Firmware version |
-| `/xconf/{applicationType}`<br>`/runningFirmwareVersion/info` | `GET/PUT/POST` | | `mac` - required | Return if device has Activation Minimum Firmware and Minimum Firmware version |
+| PATH | METHOD | MAIN QUERY PARAMETERS | DESCRIPTION |
+|------|--------|-----------------------|-------------|
+| `/xconf/swu/{applicationType}` | `GET/POST` |`eStbMac`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br><br>`controllerId`<br>`channelMapId`<br>`vodId`| Returns firmwareVersion to STB box <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud` |
+| `/xconf/swu/bse` | `GET/PUT/POST` | `ipAddress` - required | Returns BSE configuration |
+| `/estbfirmware/changelogs` | `GET/PUT/POST` | `mac` - required | Returns logs of the communication between xconf and the given stb where xconf instructed stb to get different firmware |
+| `/estbfirmware/lastlog` | `GET/PUT/POST` | `mac` - required | Returns log of the last communication between xconf and the given stb |
+| `/estbfirmware/checkMinimumFirmware` | `GET/PUT/POST` | `mac` - required | Return if device has Minimum Firmware version |
+| `/xconf/{applicationType}`<br>`/runningFirmwareVersion/info` | `GET/PUT/POST` | `mac` - required | Return if device has Activation Minimum Firmware and Minimum Firmware version |
+
+#### Headers 
+For `/xconf/swu/{applictionType}` API: <br>
+`HA-Haproxy-xconf-http` to indicate if connection is secure
+
 
 ### Device Configuration Manager (DCM)
 
@@ -71,9 +76,13 @@ Remote devices like set top boxes and DVRs have settings to control certain acti
 
 ### RDK Feature Control (RFC)
 
-| PATH | METHOD | HEADERS | MAIN QUERY PARAMETERS | DESCRIPTION |
-|------|--------|---------|-----------------------|-------------|
-| `/featureControl/getSettings`<br>`/{applicationType}` | `GET/POST` | `HA-Haproxy-xconf-http` - indicate if connection is secure<br>`configsethash` - hash of previous response to return `304 Not Modified` http status | `estbMacAddress`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br>`ecmMacAddress`<br>`controllerId`<br>`channelMapId`<br>`vodId`| Returns enabled/disable features <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud`, field is optional and `stb` application is used by default |
+| PATH | METHOD | MAIN QUERY PARAMETERS | DESCRIPTION |
+|------|--------|-----------------------|-------------|
+| `/featureControl/getSettings`<br>`/{applicationType}` | `GET/POST` | `estbMacAddress`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br>`ecmMacAddress`<br>`controllerId`<br>`channelMapId`<br>`vodId`| Returns enabled/disable features <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud`, field is optional and `stb` application is used by default |
+
+#### Headers
+`HA-Haproxy-xconf-http` - indicate if connection is secure <br>
+`configsethash` - hash of previous response to return `304 Not Modified` http status
 
 ## Examples
 

@@ -19,6 +19,7 @@
 
 package com.comcast.xconf.queries.controllers;
 
+import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.FeatureExport;
@@ -31,8 +32,10 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.comcast.xconf.firmware.ApplicationType.STB;
+import static com.comcast.xconf.firmware.ApplicationType.XHOME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -62,6 +65,29 @@ public class FeatureDataControllerTest extends BaseQueriesControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         assertNotNull(featureDAO.getOne(feature.getId()));
+    }
+
+    @Test
+    public void createFeatureWithSameNameButDifferentApplicationTypes() throws Exception {
+        Feature stbFeature = createFeature();
+        Feature xhomeFeature = CloneUtil.clone(stbFeature);
+        xhomeFeature.setId(UUID.randomUUID().toString());
+        xhomeFeature.setApplicationType(XHOME);
+
+        mockMvc.perform(post(FeatureDataController.API_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(stbFeature))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post(FeatureDataController.API_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(xhomeFeature))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        assertNotNull(featureDAO.getOne(stbFeature.getId()));
+        assertNotNull(featureDAO.getOne(xhomeFeature.getId()));
     }
 
     @Test

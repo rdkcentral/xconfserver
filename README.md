@@ -52,7 +52,7 @@ NOTE: XConf UI is compiled using `frontend-maven-plugin` during `run` and `insta
 
 | PATH | METHOD | MAIN QUERY PARAMETERS | DESCRIPTION |
 |------|--------|-----------------------|-------------|
-| `/xconf/swu/{applicationType}` | `GET/POST` |`eStbMac`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br><br>`controllerId`<br>`channelMapId`<br>`vodId`| Returns firmwareVersion to STB box <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud` |
+| `/xconf/swu/{applicationType}` | `GET/POST` |`eStbMac`,<br>`ipAddress`,<br>`env`,<br>`model`,<br>`firmwareVersion`,<br>`partnerId`,<br>`accountId`,<br>`{tag name}` - any tag from Tagging Service,<br>`controllerId`,<br>`channelMapId`,<br>`vodId`| Returns firmwareVersion to STB box <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud` |
 | `/xconf/swu/bse` | `GET/PUT/POST` | `ipAddress` - required | Returns BSE configuration |
 | `/estbfirmware/changelogs` | `GET/PUT/POST` | `mac` - required | Returns logs of the communication between xconf and the given stb where xconf instructed stb to get different firmware |
 | `/estbfirmware/lastlog` | `GET/PUT/POST` | `mac` - required | Returns log of the last communication between xconf and the given stb |
@@ -70,7 +70,7 @@ Remote devices like set top boxes and DVRs have settings to control certain acti
 
 | PATH | METHOD | MAIN QUERY PARAMETERS | DESCRIPTION |
 |------|--------|-----------------------|-------------|
-| `/loguploader/getSettings`<br>`/{applicationType}` | `GET/POST` | `estbMacAddress`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br>`checkNow` - boolean<br>`version`<br>`settingsType` `ecmMacAddress`<br>`controllerId`<br>`channelMapId`<br>`vodId` | Returns settings to STB box <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud`, <br>field is optional and `stb` application is used by default |
+| `/loguploader/getSettings`<br>`/{applicationType}` | `GET/POST` | `estbMacAddress`,<br>`ipAddress`,<br>`env`,<br>`model`,<br>`firmwareVersion`,<br>`partnerId`,<br>`accountId`,<br>`{tag name}` - any tag from Tagging Service,<br>`checkNow` - boolean,<br>`version`,<br>`settingsType`,<br>`ecmMacAddress`,<br>`controllerId`,<br>`channelMapId`,<br>`vodId` | Returns settings to STB box <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud`, <br>field is optional and `stb` application is used by default |
 | `/loguploader/getT2Settings`<br>`/{applicatoionType}` | `GET` | The same as a previous | Returns telemetry configuration in the new format. If the component name has been defined for an entry, <br>the response will be in the new format. The second and third columns for that entry will not be used in the response. <br>The content field comes from the fifth column (component name). The type field will be a constant string `<event>` |
 | `/loguploader/getTelemetryProfiles`<br>`/{applicationType}` | `GET` | The same as a previous | Returns Telemetry 2.0 profiles based on Telemetry 2.0 rules |
 
@@ -78,7 +78,7 @@ Remote devices like set top boxes and DVRs have settings to control certain acti
 
 | PATH | METHOD | MAIN QUERY PARAMETERS | DESCRIPTION |
 |------|--------|-----------------------|-------------|
-| `/featureControl/getSettings`<br>`/{applicationType}` | `GET/POST` | `estbMacAddress`<br>`ipAddress`<br>`env`<br>`model`<br>`firmwareVersion`<br>`partnerId`<br>`accountId`<br>`{tag name}` - any tag from Tagging Service<br>`ecmMacAddress`<br>`controllerId`<br>`channelMapId`<br>`vodId`| Returns enabled/disable features <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud`, field is optional and `stb` application is used by default |
+| `/featureControl/getSettings`<br>`/{applicationType}` | `GET/POST` | `estbMacAddress`,<br>`ipAddress`,<br>`env`,<br>`model`,<br>`firmwareVersion`,<br>`partnerId`,<br>`accountId`,<br>`{tag name}` - any tag from Tagging Service,<br>`ecmMacAddress`,<br>`controllerId`,<br>`channelMapId`,<br>`vodId`| Returns enabled/disable features <br> `{applicationType}` - for now supported `stb`, `xhome`, `rdkcloud`, field is optional and `stb` application is used by default |
 
 #### Headers
 `HA-Haproxy-xconf-http` - indicate if connection is secure <br>

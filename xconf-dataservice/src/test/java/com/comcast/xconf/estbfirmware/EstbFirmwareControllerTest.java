@@ -63,6 +63,7 @@ import java.util.*;
 
 import static com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation.IS;
 import static com.comcast.xconf.estbfirmware.factory.RuleFactory.MODEL;
+import static com.comcast.xconf.firmware.ApplicationType.SKY;
 import static com.comcast.xconf.firmware.ApplicationType.STB;
 import static com.comcast.xconf.util.RequestUtil.XCONF_HTTP_HEADER;
 import static com.comcast.xconf.util.RequestUtil.XCONF_HTTP_VALUE;
@@ -143,6 +144,34 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
 
         FirmwareConfig expectedResult = createDefaultFirmwareConfig();
         verifyFirmwareConfig(expectedResult, actualResult);
+    }
+
+    @Test
+    public void skyConfigIsUsedWhenPartnerStartsWithSky() throws Exception {
+        xconfSpecificConfig.setReadSkyApplicationTypeFromPartnerParam(true);
+        FirmwareConfig skyFirmwareConfig = createAndSaveFirmwareConfig(defaultFirmwareVersion, defaultModelId, defaultFirmwareDownloadProtocol, SKY);
+        MacRuleBean skyMacRuleBean = createDefaultMacRuleBean();
+        skyMacRuleBean.setFirmwareConfig(skyFirmwareConfig);
+        macRuleService.save(skyMacRuleBean, SKY);
+
+        EstbFirmwareContext defaultContext = createDefaultContext();
+        defaultContext.setPartnerId("sky-italy");
+        String actualResult = mockMvc.perform(postContext("/xconf/swu/stb", defaultContext)).andReturn().getResponse().getContentAsString();
+
+        FirmwareConfig expectedResult = createDefaultFirmwareConfig();
+        verifyFirmwareConfig(expectedResult, actualResult);
+        xconfSpecificConfig.setReadSkyApplicationTypeFromPartnerParam(false);
+    }
+
+    @Test
+    public void skyConfigIsNotUsedForDefaultContext() throws Exception {
+        xconfSpecificConfig.setReadSkyApplicationTypeFromPartnerParam(true);
+        MacRuleBean skyMacRuleBean = createDefaultMacRuleBean();
+        macRuleService.save(skyMacRuleBean, SKY);
+
+        String actualResult = mockMvc.perform(postContext("/xconf/swu/stb", createDefaultContext())).andReturn().getResponse().getContentAsString();
+        assertTrue(actualResult.contains(getExplanationForNoMatchedRules()));
+        xconfSpecificConfig.setReadSkyApplicationTypeFromPartnerParam(false);
     }
 
     @Test

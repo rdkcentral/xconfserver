@@ -39,36 +39,54 @@ angular
         'READ_FIRMWARE_STB': 'read-firmware-stb',
         'READ_FIRMWARE_XHOME': 'read-firmware-xhome',
         'READ_FIRMWARE_RDKCLOUD': 'read-firmware-rdkcloud',
+        'READ_FIRMWARE_SKY': 'read-firmware-sky',
 
         'WRITE_FIRMWARE': 'write-firmware',
         'WRITE_FIRMWARE_ALL': 'write-firmware-*',
         'WRITE_FIRMWARE_STB': 'write-firmware-stb',
         'WRITE_FIRMWARE_XHOME': 'write-firmware-xhome',
         'WRITE_FIRMWARE_RDKCLOUD': 'write-firmware-rdkcloud',
+        'WRITE_FIRMWARE_SKY': 'write-firmware-sky',
 
         'READ_DCM': 'read-dcm',
         'READ_DCM_ALL': 'read-dcm-*',
         'READ_DCM_STB': 'read-dcm-stb',
         'READ_DCM_XHOME': 'read-dcm-xhome',
         'READ_DCM_RDKCLOUD': 'read-dcm-rdkcloud',
+        'READ_DCM_SKY': 'read-dcm-sky',
 
         'WRITE_DCM': 'write-dcm',
         'WRITE_DCM_ALL': 'write-dcm-*',
         'WRITE_DCM_STB': 'write-dcm-stb',
         'WRITE_DCM_XHOME': 'write-dcm-xhome',
         'WRITE_DCM_RDKCLOUD': 'write-dcm-rdkcloud',
+        'WRITE_DCM_SKY': 'write-dcm-sky',
 
         'READ_TELEMETRY': 'read-telemetry',
         'READ_TELEMETRY_ALL': 'read-telemetry-*',
         'READ_TELEMETRY_STB': 'read-telemetry-stb',
         'READ_TELEMETRY_XHOME': 'read-telemetry-xhome',
         'READ_TELEMETRY_RDKCLOUD': 'read-telemetry-rdkcloud',
+        'READ_TELEMETRY_SKY': 'read-telemetry-sky',
 
         'WRITE_TELEMETRY': 'write-telemetry',
         'WRITE_TELEMETRY_ALL': 'write-telemetry-*',
         'WRITE_TELEMETRY_STB': 'write-telemetry-stb',
         'WRITE_TELEMETRY_XHOME': 'write-telemetry-xhome',
         'WRITE_TELEMETRY_RDKCLOUD': 'write-telemetry-rdkcloud',
+        'WRITE_TELEMETRY_SKY': 'write-telemetry-sky',
+
+        'READ_CHANGES_ALL': 'read-changes-*',
+        'READ_CHANGES_STB': 'read-changes-stb',
+        'READ_CHANGES_XHOME': 'read-changes-xhome',
+        'READ_CHANGES_RDKCLOUD': 'read-changes-rdkcloud',
+        'READ_CHANGES_SKY': 'read-changes-sky',
+
+        'WRITE_CHANGES_ALL': 'write-changes-*',
+        'WRITE_CHANGES_STB': 'write-changes-stb',
+        'WRITE_CHANGES_XHOME': 'write-changes-xhome',
+        'WRITE_CHANGES_RDKCLOUD': 'write-changes-rdkcloud',
+        'WRITE_CHANGES_SKY': 'write-changes-sky',
 
         'VIEW_TOOLS': 'view-tools',
         'WRITE_TOOLS': 'write-tools',
@@ -76,14 +94,33 @@ angular
         'READ_FIRMWARE_RULE_TEMPLATES': 'read-firmware-rule-templates',
         'WRITE_FIRMWARE_RULE_TEMPLATES': 'write-firmware-rule-templates',
 
-        'READ_CHANGES_ALL': 'read-changes-*',
-        'WRITE_CHANGES_ALL': 'write-changes-*',
-        'READ_CHANGES_STB': 'read-changes-stb',
-        'WRITE_CHANGES_STB': 'write-changes-stb',
-        'READ_CHANGES_XHOME': 'read-changes-xhome',
-        'WRITE_CHANGES_XHOME': 'write-changes-xhome',
-        'READ_CHANGES_RDKCLOUD': 'read-changes-rdkcloud',
-        'WRITE_CHANGES_RDKCLOUD': 'write-changes-rdkcloud'
+        'READ_FIRMWARE_PERMISSIONS': [
+            'read-firmware-*', 'read-firmware-stb', 'read-firmware-xhome', 'read-firmware-rdkcloud', 'read-firmware-sky'
+        ],
+        'WRITE_FIRMWARE_PERMISSIONS': [
+            'write-firmware-*', 'write-firmware-stb', 'write-firmware-xhome', 'write-firmware-rdkcloud', 'write-firmware-sky'
+        ],
+
+        'READ_DCM_PERMISSIONS': [
+            'read-dcm-*', 'read-dcm-stb', 'read-dcm-xhome', 'read-dcm-rdkcloud', 'read-dcm-sky'
+        ],
+        'WRITE_DCM_PERMISSIONS': [
+            'write-dcm-*', 'write-dcm-stb', 'write-dcm-xhome', 'write-dcm-rdkcloud', 'write-dcm-sky'
+        ],
+
+        'READ_TELEMETRY_PERMISSIONS': [
+            'read-telemetry-*', 'read-telemetry-stb', 'read-telemetry-xhome', 'read-telemetry-rdkcloud', 'read-telemetry-sky'
+        ],
+        'WRITE_TELEMETRY_PERMISSIONS': [
+            'write-telemetry-*', 'write-telemetry-stb', 'write-telemetry-xhome', 'write-telemetry-rdkcloud', 'write-telemetry-sky'
+        ],
+
+        'READ_CHANGES_PERMISSIONS': [
+            'read-changes-*', 'read-changes-stb', 'read-changes-xhome', 'read-changes-rdkcloud', 'read-changes-sky'
+        ],
+        'WRITE_CHANGES_PERMISSIONS': [
+            'write-changes-*', 'write-changes-stb', 'write-changes-xhome', 'write-changes-rdkcloud', 'write-changes-sky'
+        ]
     })
 
     .constant('ENTITY_TYPE', {
@@ -173,15 +210,15 @@ angular
     ])
 
     .constant('RFC_RULE_OPERATION_ARRAY', [
-            'IS',
-            'IN_LIST',
-            'LIKE',
-            'PERCENT',
-            'RANGE',
-            'EXISTS'
-        ])
+        'IS',
+        'IN_LIST',
+        'LIKE',
+        'PERCENT',
+        'RANGE',
+        'EXISTS'
+    ])
 
-        .constant('TIME_FREE_ARG_OPERATION_ARRAY', [
+    .constant('TIME_FREE_ARG_OPERATION_ARRAY', [
         'LTE',
         'GTE'
     ])
@@ -340,10 +377,12 @@ angular
             }
         ]
 
-    }).constant('TIME_ZONES', [
-    'UTC',
-    'Local time'
-])
+    })
+
+    .constant('TIME_ZONES', [
+        'UTC',
+        'Local time'
+    ])
 
     .constant('SEARCH_OPTIONS', {
         TEMPLATE_ID: 'TEMPLATE_ID',
@@ -354,13 +393,15 @@ angular
     .constant('APPLICATION_TYPES', [
         'stb',
         'xhome',
-        'rdkcloud'
+        'rdkcloud',
+        'sky'
     ])
 
     .constant('APPLICATION_TYPE', {
         STB: 'stb',
         XHOME: 'xhome',
-        RDKCLOUD: 'rdkcloud'
+        RDKCLOUD: 'rdkcloud',
+        SKY: 'sky'
     })
     .constant('CHANGE_TYPE', {
         PENDING: 'PENDING',

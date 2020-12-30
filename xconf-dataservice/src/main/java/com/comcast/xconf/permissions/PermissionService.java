@@ -74,6 +74,8 @@ public abstract class PermissionService {
             return ApplicationType.STB;
         } else if (permissions.contains(getEntityPermission().getReadRdkcloud())) {
             return ApplicationType.RDKCLOUD;
+        } else if (permissions.contains(getEntityPermission().getReadSky())) {
+            return ApplicationType.SKY;
         }
         return null;
     }
@@ -94,6 +96,8 @@ public abstract class PermissionService {
             return ApplicationType.STB;
         } else if (permissions.contains(getEntityPermission().getWriteRdkcloud())) {
             return ApplicationType.RDKCLOUD;
+        } else if (permissions.contains(getEntityPermission().getWriteSky())) {
+            return ApplicationType.SKY;
         }
         return null;
     }
@@ -110,6 +114,8 @@ public abstract class PermissionService {
             return permissions.contains(getEntityPermission().getWriteXhome());
         } else if (ApplicationType.RDKCLOUD.equals(applicationType)) {
             return permissions.contains(getEntityPermission().getWriteRdkcloud());
+        } else if (ApplicationType.SKY.equals(applicationType)) {
+            return permissions.contains(getEntityPermission().getWriteSky());
         }
         return false;
     }
@@ -126,6 +132,8 @@ public abstract class PermissionService {
             return permissions.contains(getEntityPermission().getReadXhome());
         } else if (ApplicationType.RDKCLOUD.equals(applicationType)) {
             return permissions.contains(getEntityPermission().getReadRdkcloud());
+        } else if (ApplicationType.SKY.equals(applicationType)) {
+            return permissions.contains(getEntityPermission().getReadSky());
         }
         return false;
     }

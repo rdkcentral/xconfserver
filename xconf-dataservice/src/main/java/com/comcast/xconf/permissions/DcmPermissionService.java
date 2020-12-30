@@ -32,10 +32,12 @@ public class DcmPermissionService extends PermissionService {
                 Permissions.READ_DCM_STB,
                 Permissions.READ_DCM_XHOME,
                 Permissions.READ_DCM_RDLCLOUD,
+                Permissions.READ_DCM_SKY,
                 Permissions.WRITE_DCM_ALL,
                 Permissions.WRITE_DCM_STB,
                 Permissions.WRITE_DCM_XHOME,
-                Permissions.WRITE_DCM_RDKCLOUD
+                Permissions.WRITE_DCM_RDKCLOUD,
+                Permissions.WRITE_DCM_SKY
         ).build();
     }
 }

@@ -32,10 +32,12 @@ public class FirmwarePermissionService extends PermissionService {
                 Permissions.READ_FIRMWARE_STB,
                 Permissions.READ_FIRMWARE_XHOME,
                 Permissions.READ_FIRMWARE_RDKCLOUD,
+                Permissions.READ_FIRMWARE_SKY,
                 Permissions.WRITE_FIRMWARE_ALL,
                 Permissions.WRITE_FIRMWARE_STB,
                 Permissions.WRITE_FIRMWARE_XHOME,
-                Permissions.WRITE_FIRMWARE_RDKCLOUD
+                Permissions.WRITE_FIRMWARE_RDKCLOUD,
+                Permissions.WRITE_FIRMWARE_SKY
         ).build();
     }
 }

@@ -32,10 +32,12 @@ public class TelemetryPermissionService extends PermissionService {
                 Permissions.READ_TELEMETRY_STB,
                 Permissions.READ_TELEMETRY_XHOME,
                 Permissions.READ_TELEMETRY_RDKCLOUD,
+                Permissions.READ_TELEMETRY_SKY,
                 Permissions.WRITE_TELEMETRY_ALL,
                 Permissions.WRITE_TELEMETRY_STB,
                 Permissions.WRITE_TELEMETRY_XHOME,
-                Permissions.WRITE_TELEMETRY_RDKCLOUD
+                Permissions.WRITE_TELEMETRY_RDKCLOUD,
+                Permissions.WRITE_TELEMETRY_SKY
         ).build();
     }
 }

@@ -30,10 +30,12 @@ public class ChangePermissionService extends PermissionService {
                 Permissions.READ_CHANGES_STB,
                 Permissions.READ_CHANGES_XHOME,
                 Permissions.READ_CHANGES_RDKCLOUD,
+                Permissions.READ_CHANGES_SKY,
                 Permissions.WRITE_CHANGES_ALL,
                 Permissions.WRITE_CHANGES_STB,
                 Permissions.WRITE_CHANGES_XHOME,
-                Permissions.WRITE_CHANGES_RDKCLOUD
+                Permissions.WRITE_CHANGES_RDKCLOUD,
+                Permissions.WRITE_CHANGES_SKY
         ).build();
     }
 }

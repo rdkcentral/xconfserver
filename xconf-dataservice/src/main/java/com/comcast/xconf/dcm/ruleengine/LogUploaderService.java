@@ -20,6 +20,7 @@
 package com.comcast.xconf.dcm.ruleengine;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.hydra.astyanax.config.XconfSpecificConfig;
 import com.comcast.xconf.ApiVersionUtils;
 import com.comcast.xconf.estbfirmware.evaluation.EvaluationResult;
 import com.comcast.xconf.logupload.DCMGenericRule;
@@ -52,11 +53,16 @@ import java.util.*;
 import java.util.zip.CRC32;
 import java.io.IOException;
 
+import static com.comcast.xconf.firmware.ApplicationType.SKY;
+import static com.comcast.xconf.firmware.ApplicationType.STB;
+
 @Service
 public class LogUploaderService {
 
     private static final Logger log = LoggerFactory.getLogger(LogUploaderService.class);
 
+    @Autowired
+    private XconfSpecificConfig xconfSpecificConfig;
     @Autowired
     private RequestUtil requestUtil;
     @Autowired
@@ -70,12 +76,14 @@ public class LogUploaderService {
 
     public ResponseEntity evaluateSettings(HttpServletRequest request, Boolean checkNow, String apiVersion,
                                            Set<String> settingTypes, LogUploaderContext context, boolean isTelemetry2Settings) {
-        if (context.getEnv() != null) {
-            context.setEnv(context.getEnv().toUpperCase());
-        }
 
         String ipAddress = requestUtil.findValidIpAddress(request, context.getEstbIP());
         context.setEstbIP(ipAddress);
+
+        if (xconfSpecificConfig.isReadSkyApplicationTypeFromPartnerParam() &&
+                STB.equals(context.getApplication()) && StringUtils.startsWithIgnoreCase(context.getPartnerId(), SKY)) {
+            context.setApplication(SKY);
+        }
 
         normalizeContext(context);
 

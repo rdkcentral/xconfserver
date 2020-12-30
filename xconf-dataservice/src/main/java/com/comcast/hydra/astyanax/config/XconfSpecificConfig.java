@@ -67,6 +67,9 @@ public class XconfSpecificConfig {
     @Value("${specific.allowedNumberOfFeatures:20}")
     private Integer allowedNumberOfFeatures;
 
+    @Value("${specific.readSkyApplicationTypeFromPartnerParam:false}")
+    private boolean readSkyApplicationTypeFromPartnerParam;
+
     @PostConstruct
     public void init() {
         validateProperties();
@@ -164,6 +167,14 @@ public class XconfSpecificConfig {
         this.socketTimeoutInMs = socketTimeoutInMs;
     }
 
+    public boolean isReadSkyApplicationTypeFromPartnerParam() {
+        return readSkyApplicationTypeFromPartnerParam;
+    }
+
+    public void setReadSkyApplicationTypeFromPartnerParam(boolean readSkyApplicationTypeFromPartnerParam) {
+        this.readSkyApplicationTypeFromPartnerParam = readSkyApplicationTypeFromPartnerParam;
+    }
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("XconfSpecificConfig{");
@@ -177,6 +188,7 @@ public class XconfSpecificConfig {
         sb.append(", enableUpdateDeleteAPI=").append(enableUpdateDeleteAPI);
         sb.append(", recoveryFirmwareVersions=").append(recoveryFirmwareVersions);
         sb.append(", allowedNumberOfFeatures=").append(allowedNumberOfFeatures);
+        sb.append(", readSkyApplicationTypeFromPartnerParam=").append(readSkyApplicationTypeFromPartnerParam);
         sb.append('}');
         return sb.toString();
     }

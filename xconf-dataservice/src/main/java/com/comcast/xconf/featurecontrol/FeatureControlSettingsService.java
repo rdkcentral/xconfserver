@@ -18,6 +18,7 @@
  *******************************************************************************/
 package com.comcast.xconf.featurecontrol;
 
+import com.comcast.hydra.astyanax.config.XconfSpecificConfig;
 import com.comcast.xconf.util.RequestUtil;
 import com.comcast.xconf.logupload.LogUploaderContext;
 import com.comcast.xconf.rfc.FeatureControl;
@@ -34,10 +35,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.comcast.xconf.firmware.ApplicationType.SKY;
+import static com.comcast.xconf.firmware.ApplicationType.STB;
+
 @Service
 public class FeatureControlSettingsService {
 
     protected static final Logger log = LoggerFactory.getLogger(FeatureControlSettingsService.class);
+
+    @Autowired
+    private XconfSpecificConfig xconfSpecificConfig;
 
     @Autowired
     private RequestUtil requestUtil;
@@ -48,6 +55,12 @@ public class FeatureControlSettingsService {
     protected ResponseEntity getFeatureSettings(HttpServletRequest request, Map<String, String> context, String applicationType, String configSetHash, String xconfHttpHeader) {
         String ipAddress = requestUtil.findValidIpAddress(request, context.get(LogUploaderContext.ESTB_IP));
         context.put(LogUploaderContext.ESTB_IP, ipAddress);
+
+        if (xconfSpecificConfig.isReadSkyApplicationTypeFromPartnerParam() && STB.equals(applicationType)
+                 && StringUtils.startsWithIgnoreCase(context.get(LogUploaderContext.PARTNER_ID), SKY)) {
+            context.put(LogUploaderContext.APPLICATION, SKY);
+            applicationType = SKY;
+        }
 
         context = featureControlRuleBase.normalizeContext(context);
 

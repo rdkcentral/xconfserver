@@ -22,14 +22,17 @@
 package com.comcast.xconf.estbfirmware.converter;
 
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.Time;
+import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.xconf.estbfirmware.EnvModelRuleBean;
 import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.TimeFilter;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
-import com.comcast.xconf.estbfirmware.legacy.TimeFilterLegacyConverter;
 import com.comcast.xconf.firmware.BlockingFilterAction;
 import com.comcast.xconf.firmware.FirmwareRule;
+import com.comcast.xconf.util.RuleUtil;
+import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +40,7 @@ import org.springframework.stereotype.Component;
 public class TimeFilterConverter {
 
     @Autowired
-    private TimeFilterLegacyConverter legacyConverter;
+    private ConverterHelper converterHelper;
 
     public FirmwareRule convert(TimeFilter timeFilter) {
 
@@ -89,18 +92,60 @@ public class TimeFilterConverter {
     public TimeFilter convert(FirmwareRule firmwareRule) {
         TimeFilter timeFilter = new TimeFilter();
 
-        EnvModelRuleBean envModelWhitelist = new EnvModelRuleBean();
-
         timeFilter.setId(firmwareRule.getId());
         timeFilter.setName(firmwareRule.getName());
 
         timeFilter.setNeverBlockRebootDecoupled(false);
         timeFilter.setNeverBlockHttpDownload(false);
 
-        legacyConverter.convertConditions(firmwareRule.getRule(), timeFilter, envModelWhitelist);
+        EnvModelRuleBean envModelWhitelist = new EnvModelRuleBean();
+
+        convertConditions(firmwareRule.getRule(), timeFilter, envModelWhitelist);
 
         timeFilter.setEnvModelWhitelist(envModelWhitelist);
 
         return timeFilter;
+    }
+
+
+    private void convertConditions(Rule firmwareRule, TimeFilter filter, EnvModelRuleBean envModelWhitelist) {
+        for (Rule rule : RuleUtil.getIterableList(firmwareRule)) {
+            convertCondition(rule, envModelWhitelist, filter);
+        }
+    }
+
+    private void convertCondition(Rule r, EnvModelRuleBean envModelWhitelist, TimeFilter timeFilter) {
+        Condition condition = r.getCondition();
+        if (condition != null) {
+            if (RuleFactory.REBOOT_DECOUPLED.equals(condition.getFreeArg())) {
+                if (StandardOperation.EXISTS.equals(condition.getOperation())) {
+                    timeFilter.setNeverBlockRebootDecoupled(true);
+                }
+            } else if (RuleFactory.FIRMWARE_DOWNLOAD_PROTOCOL.equals(condition.getFreeArg())) {
+                if (StandardOperation.IS.equals(condition.getOperation())) {
+                    timeFilter.setNeverBlockHttpDownload(true);
+                }
+            } else if (ConverterHelper.isLegacyIpFreeArg(condition.getFreeArg())
+                    || RuleFactory.IP.equals(condition.getFreeArg())) {
+                timeFilter.setIpWhitelist(converterHelper.getIpAddressGroup(condition));
+            } else if (RuleFactory.MODEL.equals(condition.getFreeArg())) {
+                envModelWhitelist.setModelId((String) condition.getFixedArg().getValue());
+            } else if (RuleFactory.ENV.equals(condition.getFreeArg())) {
+                envModelWhitelist.setEnvironmentId((String) condition.getFixedArg().getValue());
+            } else if (ConverterHelper.isLegacyLocalTimeFreeArg(condition.getFreeArg()) ||
+                    RuleFactory.LOCAL_TIME.equals(condition.getFreeArg())) {
+                if (StandardOperation.GTE.equals(condition.getOperation())) {
+                    String rawTime = (String) condition.getFixedArg().getValue();
+                    LocalTime locTime = LocalTime.parse(rawTime);
+                    timeFilter.setStart(locTime);
+                } else if (StandardOperation.LTE.equals(condition.getOperation())) {
+                    String rawTime = (String) condition.getFixedArg().getValue();
+                    LocalTime locTime = LocalTime.parse(rawTime);
+                    timeFilter.setEnd(locTime);
+                }
+            } else if (RuleFactory.TIME_ZONE.equals(condition.getFreeArg())) {
+                timeFilter.setLocalTime(r.isNegated());
+            }
+        }
     }
 }

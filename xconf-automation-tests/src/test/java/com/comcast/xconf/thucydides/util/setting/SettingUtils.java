@@ -27,7 +27,7 @@ import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
 import com.comcast.apps.hesperius.ruleengine.main.api.FreeArg;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
-import com.comcast.xconf.estbfirmware.FirmwareRule;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.logupload.settings.SettingProfile;
 import com.comcast.xconf.logupload.settings.SettingRule;
 import com.comcast.xconf.logupload.settings.SettingType;
@@ -132,6 +132,6 @@ public class SettingUtils {
     }
 
     private static Rule createRule(String name) {
-        return createRule(name, FirmwareRule.MODEL);
+        return createRule(name, RuleFactory.MODEL);
     }
 }

@@ -894,18 +894,6 @@ public class BaseControllerTest extends BaseIntegrationTest {
         return namespacedList;
     }
 
-    protected com.comcast.xconf.estbfirmware.FirmwareRule createOldFirmwareRule() {
-        com.comcast.xconf.estbfirmware.FirmwareRule firmwareRule = new com.comcast.xconf.estbfirmware.FirmwareRule();
-        firmwareRule.setBoundConfigId("configId");
-        firmwareRule.setId(UUID.randomUUID().toString());
-        firmwareRule.setName("firmwareRuleName");
-        firmwareRule.setCondition(new Condition(RuleFactory.IP, RuleFactory.IN_LIST, FixedArg.from("ipList")));
-        firmwareRule.setNegated(false);
-        firmwareRule.setType(com.comcast.xconf.estbfirmware.FirmwareRule.RuleType.IP_RULE);
-        firmwareRule.setTargetedModelIds(Sets.newHashSet(createModel().getId()));
-        return firmwareRule;
-    }
-
     protected RuleAction createRuleAction(String firmwareConfigId) {
         RuleAction ruleAction = new RuleAction();
         ruleAction.setConfigId(firmwareConfigId);

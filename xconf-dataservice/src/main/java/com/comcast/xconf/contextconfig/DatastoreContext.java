@@ -67,18 +67,8 @@ public class DatastoreContext {
     }
 
     @Bean
-    CachedSimpleDao<String, FirmwareRule> firmwareRuleDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, FirmwareRule.class);
-    }
-
-    @Bean
     CachedSimpleDao<String, com.comcast.xconf.firmware.FirmwareRule> firmwareRuleDao() {
         return daoFactory.createCachedSimpleDao(String.class, com.comcast.xconf.firmware.FirmwareRule.class);
-    }
-
-    @Bean
-    CachedSimpleDao<String, com.comcast.xconf.firmware.legacy.FirmwareRule> firmwareRuleLegacyDao() {
-        return daoFactory.createCachedSimpleDao(String.class, com.comcast.xconf.firmware.legacy.FirmwareRule.class);
     }
 
     @Bean

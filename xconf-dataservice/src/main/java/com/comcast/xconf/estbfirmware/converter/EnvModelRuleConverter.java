@@ -19,14 +19,19 @@
  * Author: Igor Kostrov
  * Created: 18.01.2016
 */
-package com.comcast.xconf.estbfirmware.legacy;
+package com.comcast.xconf.estbfirmware.converter;
 
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.xconf.estbfirmware.EnvModelRuleBean;
-import com.comcast.xconf.estbfirmware.FirmwareRule;
+import com.comcast.xconf.estbfirmware.TemplateNames;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.FirmwareRule;
+import com.comcast.xconf.firmware.RuleAction;
+import org.springframework.stereotype.Component;
 import com.comcast.xconf.util.RuleUtil;
 
-public class EnvModelRuleLegacyConverter {
+@Component
+public class EnvModelRuleConverter {
 
     public static EnvModelRuleBean convertFirmwareRuleToEnvModelRuleBean(FirmwareRule firmwareRule) {
         EnvModelRuleBean bean = new EnvModelRuleBean();
@@ -34,10 +39,10 @@ public class EnvModelRuleLegacyConverter {
         bean.setName(firmwareRule.getName());
         bean.setId(firmwareRule.getId());
 
-        for (Condition condition : RuleUtil.toConditions(firmwareRule)) {
-            if (condition.getFreeArg().equals(FirmwareRule.ENV)) {
+        for (Condition condition : RuleUtil.toConditions(firmwareRule.getRule())) {
+            if (condition.getFreeArg().equals(RuleFactory.ENV)) {
                 bean.setEnvironmentId((String) condition.getFixedArg().getValue());
-            } else if (condition.getFreeArg().equals(FirmwareRule.MODEL)) {
+            } else if (condition.getFreeArg().equals(RuleFactory.MODEL)) {
                 bean.setModelId((String) condition.getFixedArg().getValue());
             }
         }
@@ -45,12 +50,18 @@ public class EnvModelRuleLegacyConverter {
     }
 
     public static FirmwareRule convertModelRuleBeanToFirmwareRule(EnvModelRuleBean bean) {
-        FirmwareRule rule = FirmwareRule.newEnvModelRule(bean.getEnvironmentId(), bean.getModelId());
+        FirmwareRule rule = new FirmwareRule();
+
+        rule.setRule(RuleFactory.newEnvModelRule(bean.getEnvironmentId(), bean.getModelId()));
+
+        rule.setType(TemplateNames.ENV_MODEL_RULE);
         rule.setName(bean.getName());
-        if (bean.getFirmwareConfig() != null) {
-            rule.setBoundConfigId(bean.getFirmwareConfig().getId());
-        }
         rule.setId(bean.getId());
+
+        if (bean.getFirmwareConfig() != null) {
+            rule.setApplicableAction(new RuleAction(bean.getFirmwareConfig().getId()));
+        }
+
         return rule;
     }
 

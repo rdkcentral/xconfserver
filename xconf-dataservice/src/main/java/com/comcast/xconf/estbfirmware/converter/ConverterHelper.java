@@ -19,11 +19,13 @@
  * Author: Igor Kostrov
  * Created: 1/22/2016
 */
-package com.comcast.xconf.estbfirmware.legacy;
+package com.comcast.xconf.estbfirmware.converter;
 
 import com.comcast.apps.hesperius.ruleengine.domain.additional.AuxFreeArgType;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddressGroup;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
+import com.comcast.apps.hesperius.ruleengine.main.api.FreeArg;
+import com.comcast.apps.hesperius.ruleengine.main.api.FreeArgType;
 import com.comcast.apps.hesperius.ruleengine.main.api.Operation;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.xconf.GenericNamespacedList;
@@ -37,9 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LegacyConverterHelper {
+public class ConverterHelper {
 
-    private static final Logger log = LoggerFactory.getLogger(LegacyConverterHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(ConverterHelper.class);
 
     @Autowired
     private GenericNamespacedListQueriesService listService;
@@ -66,10 +68,24 @@ public class LegacyConverterHelper {
     }
 
     public static boolean isLegacyIpCondition(Condition condition) {
-        return AuxFreeArgType.IP_ADDRESS.equals(condition.getFreeArg().getType())
-                && StbContext.IP_ADDRESS.equals(condition.getFreeArg().getName())
+        return isLegacyIpFreeArg(condition.getFreeArg())
                 && StandardOperation.IN.equals(condition.getOperation())
                 && condition.getFixedArg().getValue() instanceof IpAddressGroup;
+    }
+
+    public static boolean isLegacyIpFreeArg(FreeArg freeArg) {
+        return AuxFreeArgType.IP_ADDRESS.equals(freeArg.getType())
+                && StbContext.IP_ADDRESS.equals(freeArg.getName());
+    }
+
+    public static boolean isLegacyMacFreeArg(FreeArg freeArg) {
+        return AuxFreeArgType.MAC_ADDRESS.equals(freeArg.getType())
+                && StbContext.ESTB_MAC.equals(freeArg.getName());
+    }
+
+    public static boolean isLegacyLocalTimeFreeArg(FreeArg freeArg) {
+        return FreeArgType.forName("LOCAL_TIME").equals(freeArg.getType())
+                && StbContext.TIME.equals(freeArg.getName());
     }
 
 }

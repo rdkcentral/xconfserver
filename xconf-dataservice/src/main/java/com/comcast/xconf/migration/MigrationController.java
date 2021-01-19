@@ -23,16 +23,12 @@ package com.comcast.xconf.migration;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.hydra.astyanax.data.IPersistable;
+import com.comcast.hydra.astyanax.data.XMLPersistable;
 import com.comcast.xconf.estbfirmware.TemplateNames;
-import com.comcast.xconf.estbfirmware.converter.DownloadLocationFilterConverter;
-import com.comcast.xconf.estbfirmware.converter.NgRuleConverter;
 import com.comcast.xconf.estbfirmware.factory.TemplateFactory;
 import com.comcast.xconf.firmware.ApplicableAction;
-import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.firmware.FirmwareRuleTemplate;
 import com.comcast.xconf.utils.annotation.Migration;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -45,9 +41,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.comcast.xconf.firmware.ApplicableAction.Type.DEFINE_PROPERTIES_TEMPLATE;
 
@@ -60,18 +59,6 @@ public class MigrationController {
 
     @Autowired
     private CachedSimpleDao<String, FirmwareRuleTemplate> firmwareRuleTemplateDao;
-
-    @Autowired
-    private CachedSimpleDao<String, com.comcast.xconf.estbfirmware.FirmwareRule> firmwareRuleDAO; // old dao
-
-    @Autowired
-    private CachedSimpleDao<String, FirmwareRule> firmwareRuleDao; // new dao
-
-    @Autowired
-    private NgRuleConverter ngRuleConverter;
-
-    @Autowired
-    private DownloadLocationFilterConverter downloadLocationFilterConverter;
 
     @Autowired
     private TemplateFactory templateBuilder;
@@ -107,21 +94,6 @@ public class MigrationController {
         return count;
     }
 
-    @RequestMapping(value = "/rules", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-    /*@Migration(oldKey = String.class, oldEntity = com.comcast.xconf.estbfirmware.FirmwareRule.class, newKey = String.class, newEntity = FirmwareRule.class, migrationURL = "/rules")*/
-    public ResponseEntity doMigrate() {
-
-        List<com.comcast.xconf.estbfirmware.FirmwareRule> firmwareRules = firmwareRuleDAO.getAll();
-
-        String response = "Templates migration: " + createTemplates(true);
-
-        response += "\nFirmware Rules migration: " + createGenericRules(firmwareRules);
-
-        response += "\nDownload Location Filter migration. " + createDownloadLocationFilters(firmwareRules);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     private String createTemplates(boolean override) {
         log.info("Creating templates...");
 
@@ -149,22 +121,10 @@ public class MigrationController {
 
     private void filterOutExistingTemplates(List<FirmwareRuleTemplate> templates) {
         // the cache might be not initialized at this point so we need to read directly from db
-        Iterable<FirmwareRuleTemplate> all = firmwareRuleTemplateDao.getAll();
-        final List<String> keys = Lists.newArrayList(Iterables.transform(all, new Function<FirmwareRuleTemplate, String>() {
-            @Nullable
-            @Override
-            public String apply(FirmwareRuleTemplate firmwareRuleTemplate) {
-                return firmwareRuleTemplate.getId();
-            }
-        }));
+        List<FirmwareRuleTemplate> all = firmwareRuleTemplateDao.getAll();
+        final List<String> keys = all.stream().map(XMLPersistable::getId).collect(Collectors.toList());
         log.info("Templates already exist: " + keys + ". They won't be changed.");
-        Iterator<FirmwareRuleTemplate> templateIterator = templates.iterator();
-        while (templateIterator.hasNext()) {
-            FirmwareRuleTemplate next = templateIterator.next();
-            if (keys.contains(next.getId())) {
-                templateIterator.remove();
-            }
-        }
+        templates.removeIf(next -> keys.contains(next.getId()));
         Map<ApplicableAction.Type, Integer> countersByType = countTemplatesByType(all);
 
         for (FirmwareRuleTemplate template : templates) {
@@ -190,45 +150,6 @@ public class MigrationController {
     private Integer getCount(Map<ApplicableAction.Type, Integer> map, ApplicableAction.Type actionType) {
         Integer count = map.get(actionType);
         return (count == null) ? 0 : count;
-    }
-
-    private String createGenericRules(List<com.comcast.xconf.estbfirmware.FirmwareRule> firmwareRules) {
-        log.info("Creating rules...");
-        List<FirmwareRule> ngRules = new ArrayList<>();
-        for (com.comcast.xconf.estbfirmware.FirmwareRule firmwareRule : firmwareRules) {
-            FirmwareRule converted = ngRuleConverter.convertOld(firmwareRule);
-            if (converted != null) {
-                ngRules.add(converted);
-            }
-        }
-
-        return createAll(firmwareRuleDao, ngRules);
-    }
-
-    private String createDownloadLocationFilters(List<com.comcast.xconf.estbfirmware.FirmwareRule> firmwareRules) {
-        List<FirmwareRule> singleRules = new ArrayList<>();
-        StringBuilder buf = new StringBuilder();
-        for (com.comcast.xconf.estbfirmware.FirmwareRule rule : firmwareRules) {
-            if (rule.getType().equals(com.comcast.xconf.estbfirmware.FirmwareRule.RuleType.DOWNLOAD_LOCATION_FILTER)) {
-                List<FirmwareRule> converted = downloadLocationFilterConverter.convert(rule);
-                if (converted.size() == 1) {
-                    singleRules.addAll(converted);
-                } else {
-                    String msg = "Creating 2 rules for DownloadLocationFilter[id:" + rule.getId() + "]";
-                    log.info(msg);
-                    buf.append("\n").append(msg).append(
-                            createAll(firmwareRuleDao, converted)
-                    );
-                }
-            }
-        }
-
-        if (!singleRules.isEmpty()) {
-            String responseMessage = "Converting Download Location Filters as single rule (one rule will be created per each download location filter): ";
-            log.info(responseMessage);
-            buf.append(responseMessage).append(createAll(firmwareRuleDao, singleRules));
-        }
-        return buf.toString();
     }
 
     private <T extends IPersistable> String createAll(CachedSimpleDao<String, T> dao, List<T> list) {

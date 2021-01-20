@@ -21,14 +21,12 @@
 */
 package com.comcast.xconf.estbfirmware.converter;
 
-import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddress;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddressGroup;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.xconf.ConfigNames;
 import com.comcast.xconf.estbfirmware.DownloadLocationFilter;
-import com.comcast.xconf.estbfirmware.FilterAction;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
@@ -52,9 +50,6 @@ public class DownloadLocationFilterConverter {
 
     @Autowired
     private GenericNamespacedListLegacyService genericNamespacedListService;
-
-    @Autowired
-    private CachedSimpleDao<String, FilterAction> filterActionDAO;
 
     public FirmwareRule convert(DownloadLocationFilter bean) {
         String ipList = bean.getIpAddressGroup().getName();

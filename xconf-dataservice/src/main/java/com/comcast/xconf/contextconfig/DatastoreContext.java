@@ -33,12 +33,7 @@ import com.comcast.xconf.firmware.FirmwareRuleTemplate;
 import com.comcast.xconf.logupload.*;
 import com.comcast.xconf.logupload.settings.SettingProfile;
 import com.comcast.xconf.logupload.settings.SettingRule;
-import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryRule;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
-import com.comcast.xconf.logupload.telemetry.TimestampedRule;
+import com.comcast.xconf.logupload.telemetry.*;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.FeatureRule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,11 +129,6 @@ public class DatastoreContext {
     @Bean
     CachedSimpleDao<String, SingletonFilterValue> singletonFilterValueDAO() {
         return daoFactory.createCachedSimpleDao(String.class, SingletonFilterValue.class);
-    }
-
-    @Bean
-    CachedSimpleDao<String, FilterAction> filterActionDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, FilterAction.class);
     }
 
     @Bean

@@ -157,10 +157,6 @@ public class BaseIntegrationTest {
 
     @Autowired
     @Deprecated
-    protected CachedSimpleDao<String, Formula> formulaDAO;
-
-    @Autowired
-    @Deprecated
     protected CachedSimpleDao<String, IpAddressGroupExtended> ipAddressGroupDAO;
 
     @Autowired
@@ -207,7 +203,7 @@ public class BaseIntegrationTest {
                 logUploadSettingsDAO, deviceSettingsDAO, firmwareRuleTemplateDao, firmwareConfigDAO,
                 firmwareRuleDao, vodSettingsDAO, permanentTelemetryDAO, telemetryRuleDAO, featureRuleDAO,
                 genericNamespacedListDAO, singletonFilterValueDAO, settingProfileDao, settingRuleDAO,
-                formulaDAO, ipAddressGroupDAO, namespacedListDAO,
+                ipAddressGroupDAO, namespacedListDAO,
                 featureDAO, telemetryTwoProfileDAO, telemetryTwoRuleDAO
         );
         cleanData(daoList);

@@ -18,7 +18,7 @@
  *******************************************************************************/
 package com.comcast.xconf;
 
-import com.comcast.xconf.logupload.Formula;
+import com.comcast.xconf.rfc.FeatureRule;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,25 +33,23 @@ import java.util.List;
 public class SortingManagerTest {
 
     @Test
-    public void testSortFormulasByPriorityDesc() throws Exception {
+    public void testSortFeatureRulesByPriorityDesc() {
 
-        List<Formula> formulas = createFormulas();
-        List<Formula> sorted = SortingManager.sortFormulasByPriorityAsc(formulas);
+        List<FeatureRule> formulas = createFeatureRules();
+        List<FeatureRule> sorted = SortingManager.sortRulesByPriorityAsc(formulas);
 
-        List<Integer> integers = new ArrayList<Integer>();
-        for (Formula formula : sorted) {
+        List<Integer> integers = new ArrayList<>();
+        for (FeatureRule formula : sorted) {
             integers.add(formula.getPriority());
         }
-
-        System.out.println("SOrted list: " + integers);
 
         for (int i = 0; i < integers.size() - 1; i++) {
             Assert.assertTrue(integers.get(i) < integers.get(i+1));
         }
     }
 
-    private List<Formula> createFormulas() {
-        ArrayList<Formula> list = new ArrayList<Formula>();
+    private List<FeatureRule> createFeatureRules() {
+        ArrayList<FeatureRule> list = new ArrayList<>();
         list.add(createFormula(3));
         list.add(createFormula(1));
         list.add(createFormula(5));
@@ -61,9 +59,9 @@ public class SortingManagerTest {
         return list;
     }
 
-    private Formula createFormula(int num) {
-        Formula formula = new Formula();
-        formula.setName("Formula" + num);
+    private FeatureRule createFormula(int num) {
+        FeatureRule formula = new FeatureRule();
+        formula.setName("FeatureRule" + num);
         formula.setPriority(num);
         return formula;
     }

@@ -188,7 +188,7 @@
                 url: '/firmwareconfig/all',
                 templateUrl: 'app/xconf/firmware/firmwareconfig/firmwareconfigs.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
                 }
             })
             .state('firmwareconfig-edit', {
@@ -197,7 +197,7 @@
                 url: '/firmwareconfig/edit/:firmwareConfigId',
                 templateUrl: 'app/xconf/firmware/firmwareconfig/firmwareconfig-edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
                 }
             })
             .state('firmwareconfig-import', {
@@ -206,7 +206,7 @@
                 url: '/firmwareconfig/import',
                 templateUrl: 'app/xconf/firmware/firmwareconfig/firmwareconfig.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
                 }
             })
 
@@ -289,7 +289,7 @@
                 url: '/changes',
                 templateUrl: 'app/xconf/changes/change.html',
                 data: {
-                    permissions: [PERMISSION.READ_CHANGES_ALL, PERMISSION.READ_CHANGES_STB, PERMISSION.READ_CHANGES_XHOME, PERMISSION.READ_CHANGES_RDKCLOUD]
+                    permissions: PERMISSION.READ_CHANGES_PERMISSIONS
                 }
             })
             .state('permanentprofiles', {
@@ -298,7 +298,7 @@
                 url: '/permanentprofile/all',
                 templateUrl: 'app/xconf/telemetry/permanentprofile/permanentprofiles.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.READ_TELEMETRY_PERMISSIONS
                 }
             })
             .state('permanentprofile-edit', {
@@ -307,7 +307,7 @@
                 url: '/permanentprofile/edit/:profileId',
                 templateUrl: 'app/xconf/telemetry/permanentprofile/permanentprofile.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
             .state('permanentprofile-import', {
@@ -316,7 +316,7 @@
                 url: '/permanentprofile/import',
                 templateUrl: 'app/xconf/telemetry/permanentprofile/permanentprofile.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
             .state('telemetrytwoprofiles', {
@@ -352,7 +352,7 @@
                 url: '/targetingrule/all',
                 templateUrl: 'app/xconf/telemetry/targetingrule/targetingrules.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.READ_TELEMETRY_PERMISSIONS
                 }
             })
             .state('targetingrule-edit', {
@@ -361,7 +361,7 @@
                 url: '/targetingrule/edit/:ruleId',
                 templateUrl: 'app/xconf/telemetry/targetingrule/targetingrule.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
             .state('targetingrule-import', {
@@ -370,7 +370,7 @@
                 url: '/targetingrule/import',
                 templateUrl: 'app/xconf/telemetry/targetingrule/targetingrule.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
             .state('telemetrytwotargetingrules', {
@@ -406,7 +406,7 @@
                 url: '/telemetry/testpage',
                 templateUrl: 'app/shared/pages/testpage/testpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD],
+                    permissions: PERMISSION.READ_TELEMETRY_PERMISSIONS,
                     pageType: 'TELEMETRY',
                     matchRuleApiUrl: 'api/telemetry/testpage/'
                 }
@@ -426,7 +426,7 @@
                 url: '/settings/testpage',
                 templateUrl: 'app/shared/pages/testpage/testpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD],
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS,
                     pageType: 'SETTINGS',
                     matchRuleApiUrl: 'api/settings/testpage'
                 }
@@ -438,7 +438,7 @@
                 url: '/feature',
                 templateUrl: 'app/xconf/rfc/feature/feature.html',
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
 
@@ -448,7 +448,7 @@
                 url: '/feature/edit/:featureId',
                 templateUrl: 'app/xconf/rfc/feature/feature-edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -458,7 +458,7 @@
                 url: '/feature/import',
                 templateUrl: 'app/xconf/rfc/feature/feature-import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -479,7 +479,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
 
@@ -489,7 +489,7 @@
                 url: '/featurerule/edit/:featureRuleId?featureRulesSize',
                 templateUrl: 'app/xconf/rfc/featurerule/featurerule-edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -499,7 +499,7 @@
                 url: '/featurerule/import',
                 templateUrl: 'app/xconf/rfc/featurerule/featurerule-import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -509,7 +509,7 @@
                 url: '/settingprofiles/all',
                 templateUrl: 'app/xconf/settings/settingprofile/settingprofiles.html',
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
             .state('settingprofile-edit', {
@@ -518,7 +518,7 @@
                 url: '/settingprofile/edit/:profileId',
                 templateUrl: 'app/xconf/settings/settingprofile/settingprofile.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
             .state('settingprofile-import', {
@@ -527,7 +527,7 @@
                 url: '/settingprofile/import',
                 templateUrl: 'app/xconf/settings/settingprofile/settingprofile.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -537,7 +537,7 @@
                 url: '/settingrules/all',
                 templateUrl: 'app/xconf/settings/settingrule/settingrules.html',
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
             .state('settingrule-edit', {
@@ -546,7 +546,7 @@
                 url: '/settingrule/edit/:ruleId',
                 templateUrl: 'app/xconf/settings/settingrule/settingrule.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
             .state('settingrule-import', {
@@ -555,7 +555,7 @@
                 url: '/settingrule/import',
                 templateUrl: 'app/xconf/settings/settingrule/settingrule.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -576,7 +576,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
 
@@ -597,7 +597,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
             .state('formula-edit', {
@@ -606,7 +606,7 @@
                 url: '/formula/edit/:ruleId?formulasSize',
                 templateUrl: 'app/xconf/dcm/formula/formula.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
             .state('formula-import', {
@@ -625,7 +625,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -663,7 +663,8 @@
                 url: '/firmwarerules/:actionType',
                 templateUrl: 'app/xconf/firmwarerule/firmwarerules.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             })
             .state('firmwarerule-add', {
@@ -672,7 +673,8 @@
                 url: '/firmwarerule/add/:actionType/:templateId',
                 templateUrl: 'app/xconf/firmwarerule/firmwarerule-edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             })
             .state('firmwarerule-edit', {
@@ -681,7 +683,8 @@
                 url: '/firmwarerule/edit/:id',
                 templateUrl: 'app/xconf/firmwarerule/firmwarerule-edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             })
             .state('firmwarerule-import', {
@@ -690,7 +693,8 @@
                 url: '/firmwarerule/import',
                 templateUrl: 'app/xconf/firmwarerule/firmwarerule-import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             })
 
@@ -748,7 +752,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
             .state('uploadrepository-edit', {
@@ -757,7 +761,7 @@
                 url: '/uploadrepository/edit/:uploadRepositoryId/:editMode',
                 templateUrl: 'app/xconf/dcm/uploadRepository/uploadRepository.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
             .state('uploadrepository-import', {
@@ -766,7 +770,7 @@
                 url: '/uploadrepository/import',
                 templateUrl: 'app/xconf/dcm/uploadRepository/uploadrepository-import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_DCM_ALL, PERMISSION.WRITE_DCM_STB, PERMISSION.WRITE_DCM_XHOME, PERMISSION.WRITE_DCM_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_DCM_PERMISSIONS
                 }
             })
 
@@ -776,7 +780,7 @@
                 url: '/dcm/testpage',
                 templateUrl: 'app/xconf/dcm/testpage/testpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
 
@@ -797,7 +801,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
 
@@ -807,7 +811,8 @@
                 url: '/firmware/testpage',
                 templateUrl: 'app/xconf/firmware/testpage/testpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             })
 
@@ -817,7 +822,8 @@
                 url: '/firmware/log',
                 templateUrl: 'app/xconf/firmware/log/log.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             })
 
@@ -838,7 +844,7 @@
                     }
                 },
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS
                 }
             })
 
@@ -848,7 +854,8 @@
                 url: '/roundrobinfilter',
                 templateUrl: 'app/xconf/firmware/roundrobinfilter/roundrobinfilter.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             })
             .state('roundrobinfilter-edit', {
@@ -857,7 +864,8 @@
                 url: '/roundrobinfilter/edit',
                 templateUrl: 'app/xconf/firmware/roundrobinfilter/roundrobinfilter.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             })
             .state('roundrobinfilter-import', {
@@ -866,7 +874,8 @@
                 url: '/roundrobinfilter/import',
                 templateUrl: 'app/xconf/firmware/roundrobinfilter/roundrobinfilter.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             })
 
@@ -876,7 +885,8 @@
                 url: '/firmware/reportpage',
                 templateUrl: 'app/xconf/firmware/reportpage/reportpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             })
 
@@ -886,7 +896,8 @@
                 url: '/firmware/percentfilter',
                 templateUrl: 'app/xconf/firmware/percentfilter/percentfilter.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             }).state('percentfilter-edit', {
                 controller: 'PercentFilterEditController',
@@ -894,7 +905,8 @@
                 url: '/firmware/percentfilter-edit/:envModelRuleName',
                 templateUrl: 'app/xconf/firmware/percentfilter/percentfilter.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             }).state('percentfilter-import', {
                 controller: 'PercentFilterImportController',
@@ -902,7 +914,8 @@
                 url: '/firmware/percentfilter-import',
                 templateUrl: 'app/xconf/firmware/percentfilter/percentfilter.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             }).state('migration', {
                 controller: 'MigrationController',
@@ -918,7 +931,7 @@
                 url: '/rfc/testpage',
                 templateUrl: 'app/shared/pages/testpage/testpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD],
+                    permissions: PERMISSION.READ_DCM_PERMISSIONS,
                     pageName: 'RFC Test Page',
                     matchRuleApiUrl: 'api/rfc/test',
                     pageType: 'FEATURE'
@@ -929,7 +942,8 @@
                 url: '/percentagebean-edit/:id',
                 templateUrl: 'app/xconf/firmware/percentfilter/percentage-bean.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             }).state('activation-version', {
                 controller: 'ActivationVersionController',
@@ -937,7 +951,8 @@
                 url: '/activation-version',
                 templateUrl: 'app/xconf/firmware/activation-version/activation-versions.html',
                 data: {
-                    permissions: [PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.READ_FIRMWARE_PERMISSIONS
+
                 }
             }).state('activation-version-edit', {
                 controller: 'ActivationVersionEditController',
@@ -945,7 +960,8 @@
                 url: '/activation-version-edit/:id',
                 templateUrl: 'app/xconf/firmware/activation-version/activation-version.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             }).state('activation-version-import', {
                 controller: 'ActivationVersionImportController',
@@ -953,7 +969,8 @@
                 url: '/activation-version-import',
                 templateUrl: 'app/xconf/firmware/activation-version/activation-version.import.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_FIRMWARE_ALL, PERMISSION.WRITE_FIRMWARE_STB, PERMISSION.WRITE_FIRMWARE_XHOME, PERMISSION.WRITE_FIRMWARE_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_FIRMWARE_PERMISSIONS
+
                 }
             })
     }

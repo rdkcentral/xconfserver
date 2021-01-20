@@ -343,8 +343,6 @@
             <script src="<c:url value="/app/shared/pages/testpage/testpage.service.js"/>"></script>
             <script src="<c:url value="/app/shared/pages/testpage/testpage.controller.js"/>"></script>
 
-            <script src="<c:url value="/app/shared/directives/tagautocomplete/tagautocomplete.directive.js"/>"></script>
-            <script src="<c:url value="/app/shared/directives/tagautocomplete/tagautocomplete-modal.controller.js"/>"></script>
         </c:when>
         <c:otherwise>
 

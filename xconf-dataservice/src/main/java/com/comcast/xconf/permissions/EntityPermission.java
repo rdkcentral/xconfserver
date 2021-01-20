@@ -18,6 +18,8 @@
  *******************************************************************************/
 package com.comcast.xconf.permissions;
 
+import java.util.Objects;
+
 public final class EntityPermission {
 
     private String readAll;
@@ -28,6 +30,8 @@ public final class EntityPermission {
 
     private String readRdkcloud;
 
+    private String readSky;
+
     private String writeAll;
 
     private String writeStb;
@@ -36,9 +40,11 @@ public final class EntityPermission {
 
     private String writeRdkcloud;
 
+    private String writeSky;
+
     private EntityPermission(Builder builder) {
-        if (builder.readAll == null || builder.readStb == null || builder.readXhome == null || builder.readRdkcloud == null
-                || builder.writeAll == null || builder.writeStb == null || builder.writeXhome == null || builder.writeRdkcloud == null) {
+        if (builder.readAll == null || builder.readStb == null || builder.readXhome == null || builder.readRdkcloud == null || builder.readSky == null
+                || builder.writeAll == null || builder.writeStb == null || builder.writeXhome == null || builder.writeRdkcloud == null || builder.writeSky == null) {
             throw new IllegalArgumentException("Any field should not be null");
         }
 
@@ -46,11 +52,13 @@ public final class EntityPermission {
         this.readStb = builder.readStb;
         this.readXhome = builder.readXhome;
         this.readRdkcloud = builder.readRdkcloud;
+        this.readSky = builder.readSky;
 
         this.writeAll = builder.writeAll;
         this.writeStb = builder.writeStb;
         this.writeXhome = builder.writeXhome;
         this.writeRdkcloud = builder.writeRdkcloud;
+        this.writeSky = builder.writeSky;
     }
 
     public String getReadAll() {
@@ -69,6 +77,10 @@ public final class EntityPermission {
         return readRdkcloud;
     }
 
+    public String getReadSky() {
+        return readSky;
+    }
+
     public String getWriteAll() {
         return writeAll;
     }
@@ -85,6 +97,10 @@ public final class EntityPermission {
         return writeRdkcloud;
     }
 
+    public String getWriteSky() {
+        return writeSky;
+    }
+
 
     @Override
     public String toString() {
@@ -93,10 +109,12 @@ public final class EntityPermission {
         sb.append(", readStb='").append(readStb).append('\'');
         sb.append(", readXhome='").append(readXhome).append('\'');
         sb.append(", readRdkcloud='").append(readRdkcloud).append('\'');
+        sb.append(", readSky='").append(readSky).append('\'');
         sb.append(", writeAll='").append(writeAll).append('\'');
         sb.append(", writeStb='").append(writeStb).append('\'');
         sb.append(", writeXhome='").append(writeXhome).append('\'');
         sb.append(", writeRdkcloud='").append(writeRdkcloud).append('\'');
+        sb.append(", writeSky='").append(writeSky).append('\'');
         sb.append('}');
         return sb.toString();
     }
@@ -105,30 +123,22 @@ public final class EntityPermission {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         EntityPermission that = (EntityPermission) o;
-
-        if (readAll != null ? !readAll.equals(that.readAll) : that.readAll != null) return false;
-        if (readStb != null ? !readStb.equals(that.readStb) : that.readStb != null) return false;
-        if (readXhome != null ? !readXhome.equals(that.readXhome) : that.readXhome != null) return false;
-        if (readRdkcloud != null ? !readRdkcloud.equals(that.readRdkcloud) : that.readRdkcloud != null) return false;
-        if (writeAll != null ? !writeAll.equals(that.writeAll) : that.writeAll != null) return false;
-        if (writeStb != null ? !writeStb.equals(that.writeStb) : that.writeStb != null) return false;
-        if (writeXhome != null ? !writeXhome.equals(that.writeXhome) : that.writeXhome != null) return false;
-        return writeRdkcloud != null ? writeRdkcloud.equals(that.writeRdkcloud) : that.writeRdkcloud == null;
+        return Objects.equals(readAll, that.readAll) &&
+                Objects.equals(readStb, that.readStb) &&
+                Objects.equals(readXhome, that.readXhome) &&
+                Objects.equals(readRdkcloud, that.readRdkcloud) &&
+                Objects.equals(readSky, that.readSky) &&
+                Objects.equals(writeAll, that.writeAll) &&
+                Objects.equals(writeStb, that.writeStb) &&
+                Objects.equals(writeXhome, that.writeXhome) &&
+                Objects.equals(writeRdkcloud, that.writeRdkcloud) &&
+                Objects.equals(writeSky, that.writeSky);
     }
 
     @Override
     public int hashCode() {
-        int result = readAll != null ? readAll.hashCode() : 0;
-        result = 31 * result + (readStb != null ? readStb.hashCode() : 0);
-        result = 31 * result + (readXhome != null ? readXhome.hashCode() : 0);
-        result = 31 * result + (readRdkcloud != null ? readRdkcloud.hashCode() : 0);
-        result = 31 * result + (writeAll != null ? writeAll.hashCode() : 0);
-        result = 31 * result + (writeStb != null ? writeStb.hashCode() : 0);
-        result = 31 * result + (writeXhome != null ? writeXhome.hashCode() : 0);
-        result = 31 * result + (writeRdkcloud != null ? writeRdkcloud.hashCode() : 0);
-        return result;
+        return Objects.hash(readAll, readStb, readXhome, readRdkcloud, readSky, writeAll, writeStb, writeXhome, writeRdkcloud, writeSky);
     }
 
     public static class Builder {
@@ -140,6 +150,8 @@ public final class EntityPermission {
 
         private String readRdkcloud;
 
+        private String readSky;
+
         private String writeAll;
 
         private String writeStb;
@@ -148,18 +160,22 @@ public final class EntityPermission {
 
         private String writeRdkcloud;
 
+        private String writeSky;
+
         public Builder() {}
 
-        public Builder(String readAll, String readStb, String readXhome, String readRdkcloud, String writeAll, String writeStb, String writeXhome, String writeRdkcloud) {
+        public Builder(String readAll, String readStb, String readXhome, String readRdkcloud, String readSky, String writeAll, String writeStb, String writeXhome, String writeRdkcloud, String writeSky) {
 
             this.readAll = readAll;
             this.readStb = readStb;
             this.readXhome = readXhome;
             this.readRdkcloud = readRdkcloud;
+            this.readSky = readSky;
             this.writeAll = writeAll;
             this.writeStb = writeStb;
             this.writeXhome = writeXhome;
             this.writeRdkcloud = writeRdkcloud;
+            this.writeSky = writeSky;
         }
 
         public Builder setReadAll(String readAll) {
@@ -182,6 +198,11 @@ public final class EntityPermission {
             return this;
         }
 
+        public Builder setReadSky(String readSky) {
+            this.readSky = readSky;
+            return this;
+        }
+
         public Builder setWriteAll(String writeAll) {
             this.writeAll = writeAll;
             return this;
@@ -199,6 +220,11 @@ public final class EntityPermission {
 
         public Builder setWriteRdkcloud(String writeRdkcloud) {
             this.writeRdkcloud = writeRdkcloud;
+            return this;
+        }
+
+        public Builder setWriteSky(String writeSky) {
+            this.writeSky = writeSky;
             return this;
         }
 

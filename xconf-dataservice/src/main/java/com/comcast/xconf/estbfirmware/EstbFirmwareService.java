@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.comcast.xconf.firmware.ApplicationType.SKY;
+import static com.comcast.xconf.firmware.ApplicationType.STB;
 import static com.comcast.xconf.util.RequestUtil.XCONF_HTTP_HEADER;
 import static com.comcast.xconf.util.RequestUtil.XCONF_HTTP_VALUE;
 
@@ -86,6 +88,11 @@ public class EstbFirmwareService {
         String xconfHttp = request.getHeader(XCONF_HTTP_HEADER);
         if (!isSecureConnection(context, xconfHttp)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        if (xconfSpecificConfig.isReadSkyApplicationTypeFromPartnerParam() &&
+                STB.equals(applicationType) && StringUtils.startsWithIgnoreCase(context.getPartnerId(), SKY)) {
+            applicationType = SKY;
         }
 
         EvaluationResult evaluationResult = ruleBase.eval(context, applicationType);
@@ -352,6 +359,11 @@ public class EstbFirmwareService {
         String xconfHttp = request.getHeader(XCONF_HTTP_HEADER);
         if (!isSecureConnection(context, xconfHttp)) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
+        if (xconfSpecificConfig.isReadSkyApplicationTypeFromPartnerParam() &&
+                STB.equals(applicationType) && StringUtils.startsWithIgnoreCase(context.getPartnerId(), SKY)) {
+            applicationType = SKY;
         }
 
         RunningVersionInfo runningVersionInfo = ruleBase.getAppliedActivationVersionType(context, applicationType);

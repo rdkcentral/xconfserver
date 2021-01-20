@@ -30,6 +30,7 @@ public class ApplicationType {
     public static final String STB = "stb";
     public static final String XHOME = "xhome";
     public static final String RDKCLOUD = "rdkcloud";
+    public static final String SKY = "sky";
     public static final String ALL = "all";
 
     public static String get(String applicationType) {
@@ -39,6 +40,8 @@ public class ApplicationType {
             return XHOME;
         } else if (ApplicationType.RDKCLOUD.equals(applicationType)) {
             return RDKCLOUD;
+        } else if (ApplicationType.SKY.equals(applicationType)) {
+            return SKY;
         }
         return applicationType;
     }
@@ -52,6 +55,6 @@ public class ApplicationType {
     }
 
     private static List<String> getAll() {
-        return Lists.newArrayList(STB, XHOME, RDKCLOUD);
+        return Lists.newArrayList(STB, XHOME, RDKCLOUD, SKY);
     }
 }

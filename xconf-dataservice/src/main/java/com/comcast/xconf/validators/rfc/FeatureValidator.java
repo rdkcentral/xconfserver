@@ -25,6 +25,7 @@ import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.xconf.GenericNamespacedList;
 import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.exception.EntityNotFoundException;
+import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.permissions.DcmPermissionService;
 import com.comcast.xconf.permissions.PermissionHelper;
 import com.comcast.xconf.rfc.Feature;
@@ -99,7 +100,7 @@ public class FeatureValidator implements IValidator<Feature> {
     @Override
     public void validateAll(Feature entity, Iterable<Feature> existingEntities) {
         for (Feature feature : existingEntities) {
-            if (!feature.getId().equals(entity.getId()) && StringUtils.equals(feature.getFeatureName(), entity.getFeatureName())) {
+            if (!feature.getId().equals(entity.getId()) && ApplicationType.equals(feature.getApplicationType(), entity.getApplicationType()) && StringUtils.equals(feature.getFeatureName(), entity.getFeatureName())) {
                 throw new EntityConflictException("Feature with such featureInstance already exists: " + entity.getFeatureName());
             }
         }

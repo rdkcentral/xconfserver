@@ -39,6 +39,10 @@
             PERMISSION.READ_DCM_RDKCLOUD, PERMISSION.WRITE_DCM_RDKCLOUD,
             PERMISSION.READ_TELEMETRY_RDKCLOUD, PERMISSION.WRITE_TELEMETRY_RDKCLOUD];
 
+        var SKY_PERMISSIONS = [PERMISSION.READ_FIRMWARE_SKY, PERMISSION.WRITE_FIRMWARE_SKY,
+            PERMISSION.READ_DCM_SKY, PERMISSION.WRITE_DCM_SKY,
+            PERMISSION.READ_TELEMETRY_SKY, PERMISSION.WRITE_TELEMETRY_SKY];
+
         var hasPermissions = function(permissions) {
             var userPermissions = getUserPermissions();
             if (userPermissions.indexOf(PERMISSION.PERMIT_ALL) === -1) {
@@ -81,19 +85,19 @@
         }
 
         function canReadFirmware() {
-            return hasOneOfPermissions([PERMISSION.READ_FIRMWARE_ALL, PERMISSION.READ_FIRMWARE_STB, PERMISSION.READ_FIRMWARE_XHOME, PERMISSION.READ_FIRMWARE_RDKCLOUD]);
+            return hasOneOfPermissions(PERMISSION.READ_FIRMWARE_PERMISSIONS);
         }
 
         function canReadDcm() {
-            return hasOneOfPermissions([PERMISSION.READ_DCM_ALL, PERMISSION.READ_DCM_STB, PERMISSION.READ_DCM_XHOME, PERMISSION.READ_DCM_RDKCLOUD]);
+            return hasOneOfPermissions(PERMISSION.READ_DCM_PERMISSIONS);
         }
 
         function canReadTelemetry() {
-            return hasOneOfPermissions([PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]);
+            return hasOneOfPermissions(PERMISSION.READ_TELEMETRY_PERMISSIONS);
         }
 
         function canReadChanges() {
-            return hasOneOfPermissions([PERMISSION.READ_CHANGES_ALL, PERMISSION.READ_CHANGES_STB, PERMISSION.READ_CHANGES_XHOME, PERMISSION.READ_CHANGES_RDKCLOUD]);
+            return hasOneOfPermissions(PERMISSION.READ_CHANGES_PERMISSIONS);
         }
 
         function hasOneOfPermissions(permissions) {
@@ -121,6 +125,8 @@
                 return APPLICATION_TYPE.XHOME;
             } else if (hasOneOfPermissions(RDKCLOUD_PERMISSIONS)) {
                 return APPLICATION_TYPE.RDKCLOUD;
+            } else if (hasOneOfPermissions(SKY_PERMISSIONS)) {
+                return APPLICATION_TYPE.SKY;
             }
             return APPLICATION_TYPE.STB;
         }
@@ -139,7 +145,7 @@
         }
 
         function endsWithApplicationType(permission) {
-            var suffixes = [APPLICATION_TYPE.STB, APPLICATION_TYPE.XHOME, APPLICATION_TYPE.RDKCLOUD, '*'];
+            var suffixes = [APPLICATION_TYPE.STB, APPLICATION_TYPE.XHOME, APPLICATION_TYPE.RDKCLOUD, APPLICATION_TYPE.SKY, '*'];
             if (!permission) {
                 return null;
             }

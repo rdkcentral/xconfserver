@@ -405,7 +405,7 @@ public class LogUploaderControllerTest extends BaseQueriesControllerTest {
     }
 
     @Test
-    public void verifyTelemetry2ResponseByRdcCloudApplication() throws Exception {
+    public void verifyTelemetry2ResponseByRdkCloudApplication() throws Exception {
         verifyT2ResponseByApplication(RDKCLOUD);
     }
 
@@ -460,6 +460,11 @@ public class LogUploaderControllerTest extends BaseQueriesControllerTest {
         )
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
+    }
+
+    @Test
+    public void verifyTelemetry2ResponseBySkyApplication() throws Exception {
+        verifyT2ResponseByApplication(SKY);
     }
 
     private void verifyT2ResponseByApplication(String applicationType) throws Exception {

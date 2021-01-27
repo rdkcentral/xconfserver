@@ -39,8 +39,6 @@ public class TelemetryTwoProfileController extends ApplicationTypeAwayController
 
     public static final String URL_MAPPING = "api/telemetry/v2/profile";
 
-    private static final Logger logger = LoggerFactory.getLogger(TelemetryTwoProfileController.class);
-
     @Autowired
     private TelemetryTwoProfileService telemetryTwoProfileService;
 

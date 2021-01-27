@@ -325,25 +325,25 @@
                 url: '/telemetrytwoprofiles/all',
                 templateUrl: 'app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofiles.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.READ_TELEMETRY_PERMISSIONS
                 }
             })
             .state('telemetrytwoprofile-edit', {
-                controller: 'TelmetryTwoProfileEditController',
+                controller: 'TelemetryTwoProfileEditController',
                 controllerAs: 'vm',
                 url: '/telemetrytwoprofile/edit/:telemetryProfileId',
                 templateUrl: 'app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofile.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
-            .state('telemetrytwoprofile-view', {
-                controller: 'TelmetryTwoProfileViewController',
+            .state('telemetrytwoprofile-import', {
+                controller: 'TelemetryTwoProfileImportController',
                 controllerAs: 'vm',
-                url: '/telemetrytwoprofile/view/:telemetryProfileId',
-                templateUrl: 'app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofile.view.html',
+                url: '/telemetrytwoprofile/import',
+                templateUrl: 'app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofile.import.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
             .state('targetingrules', {
@@ -379,7 +379,7 @@
                 url: '/telemetrytwo/targetingrule/all',
                 templateUrl: 'app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrules.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.READ_TELEMETRY_PERMISSIONS
                 }
             })
             .state('telemetrytwotargetingrule-edit', {
@@ -388,16 +388,16 @@
                 url: '/telemetrytwo/targetingrule/edit/:ruleId',
                 templateUrl: 'app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.edit.html',
                 data: {
-                    permissions: [PERMISSION.WRITE_TELEMETRY_ALL, PERMISSION.WRITE_TELEMETRY_STB, PERMISSION.WRITE_TELEMETRY_XHOME, PERMISSION.WRITE_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
-            .state('telemetrytwotargetingrule-view', {
-                controller: 'TelemetryTwoTargetingRuleViewController',
+            .state('telemetrytwotargetingrule-import', {
+                controller: 'TelemetryTwoTargetingRuleImportController',
                 controllerAs: 'vm',
-                url: '/telemetrytwo/targetingrule/view/:ruleId',
-                templateUrl: 'app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.view.html',
+                url: '/telemetrytwo/targetingrule/import',
+                templateUrl: 'app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.import.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD]
+                    permissions: PERMISSION.WRITE_TELEMETRY_PERMISSIONS
                 }
             })
             .state('testpage-telemetry', {
@@ -417,7 +417,7 @@
                 url: '/telemetrytwo/testpage',
                 templateUrl: 'app/xconf/telemetry/telemetrytwotestpage/telemetrytwotestpage.html',
                 data: {
-                    permissions: [PERMISSION.READ_TELEMETRY_ALL, PERMISSION.READ_TELEMETRY_STB, PERMISSION.READ_TELEMETRY_XHOME, PERMISSION.READ_TELEMETRY_RDKCLOUD],
+                    permissions: PERMISSION.READ_TELEMETRY_PERMISSIONS
                 }
             })
             .state('settings-testpage', {

@@ -23,9 +23,9 @@
         .module('app.telemetrytwoprofile')
         .controller('TelemetryTwoProfilesController', controller);
 
-    controller.$inject = ['$scope', '$controller', 'telemetryTwoProfileService', 'alertsService', 'utilsService', 'dialogs', '$log', 'paginationService'];
+    controller.$inject = ['$scope', '$controller', 'telemetryTwoProfileService', 'alertsService', 'utilsService', 'dialogs', '$log', 'paginationService', '$uibModal'];
 
-    function controller($scope, $controller, telemetryTwoProfileService, alertsService, utilsService, dialogs, $log, paginationService) {
+    function controller($scope, $controller, telemetryTwoProfileService, alertsService, utilsService, dialogs, $log, paginationService, $modal) {
         var vm = this;
 
         angular.extend(vm, $controller('MainController', {
@@ -54,6 +54,8 @@
         vm.deleteTelemetryTwoProfile = deleteTelemetryTwoProfile;
         vm.getTelemetryTwoProfiles = getTelemetryTwoProfiles;
         vm.exportOne = telemetryTwoProfileService.exportOne;
+        vm.exportAll = telemetryTwoProfileService.exportAll
+        vm.viewTelemetryTwoProfile = viewTelemetryTwoProfile;
 
         init();
 
@@ -99,6 +101,19 @@
                         });
                 });
             }
+        }
+
+        function viewTelemetryTwoProfile(profile) {
+            $modal.open({
+                templateUrl: 'app/xconf/telemetry/telemetrytwoprofile/telemetrytwoprofile.view.html',
+                controller: 'TelemetryTwoProfileViewController as vm',
+                size: 'lg',
+                resolve : {
+                    profile: function() {
+                        return profile;
+                    }
+                }
+            });
         }
 
         function shiftItems() {

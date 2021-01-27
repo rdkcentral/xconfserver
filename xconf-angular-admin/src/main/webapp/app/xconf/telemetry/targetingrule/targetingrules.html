@@ -20,10 +20,10 @@
 -->
 <h1 class="page-header">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-4">
             Targeting Rules
         </div>
-        <div class="col-md-7">
+        <div class="col-md-5">
             <div class="form-inline">
                 <simple-search-directive options="vm.searchOptions"></simple-search-directive>
             </div>
@@ -34,7 +34,7 @@
                     <button id="createEntity" type="button" class="btn btn-success"
                             ui-sref="targetingrule-edit"
                             ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
-                        <i class="ri-add-fill ri-sm"></i> Create
+                        Create
                     </button>
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                             ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">

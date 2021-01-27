@@ -1,0 +1,89 @@
+<!--
+*
+* If not stated otherwise in this file or this component's Licenses.txt file the
+* following copyright and licenses apply:
+*
+* Copyright 2020 RDK Management
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <span>
+                Import<small> Telemetry 2.0 Profiles</small>
+            </span>
+            <div class="pull-right">
+                <button type="button" class="btn btn-danger" ng-click="vm.importAllProfiles()" ng-hide="vm.wrappedProfiles === null || vm.wrappedProfiles.length < 2">
+                    Import <b>All</b>
+                </button>
+            </div>
+        </h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <file-select on-change="vm.retrieveFile"></file-select>
+            </div>
+        </div>
+        <custom-progressbar control="vm.progressBarControl" ></custom-progressbar>
+        <br />
+        <div ng-hide="vm.wrappedProfiles === null || vm.wrappedProfiles.length === 0">
+            <div class="row row-title">
+                <div class="col-md-1">
+                    <div></div>
+                </div>
+                <div class="col-md-8">
+                    Name
+                </div>
+                <div class="col-md-2">
+                    <span ng-hide="vm.wrappedProfiles === null || vm.wrappedProfiles.length < 2">
+                        <input type="checkbox" id="overwriteAll" class="check-box inline" ng-model="vm.isOverwritten" ng-click="vm.overwriteAll()"/>
+                    </span>
+                    Overwrite
+                </div>
+                <div class="col-md-1">
+                    <div class="pull-center">
+                        <span>Action</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row border-top" ng-repeat="wrappedProfile in vm.wrappedProfiles" ng-if="$index >= vm.startIndex && $index < vm.endIndex">
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-default" ng-click="vm.viewTelemetryTwoProfile(wrappedProfile.entity)">
+                        <i class=ri-eye-fill></i>
+                    </button>
+                </div>
+                <div class="col-md-8">
+                    <div class="break-word-inline" ng-bind="wrappedProfile.entity.name"></div>
+                </div>
+                <div class="col-md-2 no-padding-left">
+                    <div class="pull-left">
+                        <input type="checkbox" ng-model="wrappedProfile.overwrite"/>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger" ng-click="vm.importProfile(wrappedProfile)">
+                        Import
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-success" ng-show="vm.wrappedProfiles.length == 0">All Telemetry 2.0 Profiles have been imported. You can select another file.</div>
+    </div>
+    <xconf-pagination page-size="vm.pageSize"
+                      page-number="vm.pageNumber"
+                      pagination-storage-key="vm.paginationStorageKey"
+                      get-general-items-number="vm.getGeneralItemsNumber()"
+                      get-page="vm.selectPage()">
+    </xconf-pagination>
+</div>

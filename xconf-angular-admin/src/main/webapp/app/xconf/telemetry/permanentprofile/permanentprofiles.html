@@ -18,36 +18,40 @@
 * limitations under the License.
 *
 -->
-<h1 class="page-header row">
-    <div class="col-md-4">
-        Permanent profiles
-    </div>
-    <div class="col-md-3">
-        <simple-search-directive options="vm.searchOptions"></simple-search-directive>
-    </div>
-    <div class="col-md-3 pull-right">
-        <div class="btn-group">
-            <button id="createEntity" type="button" class="btn btn-success"
-                    ui-sref="permanentprofile-edit"
-                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
-                <i class="ri-add-fill ri-sm"></i>Create
-            </button>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
-                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
-                    <a ui-sref="permanentprofile-import" style="cursor: pointer">
-                        Import
-                    </a>
-                </li>
-            </ul>
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-4">
+            Permanent profiles
         </div>
-        <button type="button" class="btn btn-default" ng-show="vm.profiles.length > 0" ng-click="vm.exportAll()" title="Export All" id="exportAll">
-            Export All
-        </button>
+        <div class="col-md-4">
+            <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button id="createEntity" type="button" class="btn btn-success"
+                            ui-sref="permanentprofile-edit"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                            <a ui-sref="permanentprofile-import" style="cursor: pointer">
+                                Import
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-default" ng-show="vm.profiles.length > 0" ng-click="vm.exportAll()" title="Export All" id="exportAll">
+                    Export All
+                </button>
+            </div>
+        </div>
     </div>
 </h1>
 <div class="row">

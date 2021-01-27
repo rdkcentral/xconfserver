@@ -34,8 +34,21 @@
                     <button id="createEntity" type="button" class="btn btn-success"
                             ui-sref="telemetrytwotargetingrule-edit"
                             ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
-                        <i class="ri-add-fill ri-sm"></i> Create
+                        Create
                     </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu"
+                        ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <li>
+                            <a ui-sref="telemetrytwotargetingrule-import" style="cursor: pointer">
+                                Import
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <button type="button" class="btn btn-default" ng-show="vm.rules.length > 0" id="exportAll" ng-click="vm.exportAll()" title="Export All">
                     Export All
@@ -49,18 +62,28 @@
     <div class="col-md-12" style="padding-top: 1em">
         <div ng-hide="vm.rules.length === 0" class="panel-default panel">
             <table class="table">
+                <colgroup width="5%" />
                 <colgroup width="25%" />
                 <colgroup />
                 <colgroup width="145"/>
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Name</th>
                     <th>Rule</th>
-                    <th style="text-align: center">Action</th>
+                    <th class="pull-center">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="rule in vm.rules">
+                    <td>
+                        <button type="button" class="btn btn-default"
+                                ng-click="vm.viewTelemetryTwoRule(rule)"
+                                ng-show="authUtils.canReadTelemetry()"
+                                title="View">
+                            <i class=ri-eye-fill></i>
+                        </button>
+                    </td>
                     <td style="width: 30em">
                         <span class="telemetry-rule-name-value break-word-inline">{{rule.name}}</span><br>
                     </td>
@@ -73,14 +96,8 @@
                             </div>
                         </div>
                     </td>
-                    <td style="width: 15em">
+                    <td>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-default"
-                                    ui-sref="telemetrytwotargetingrule-view({ruleId: rule.id})"
-                                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)"
-                                    title="View">
-                                <i class=ri-eye-fill></i>
-                            </button>
                             <button type="button" class="btn btn-default editEntity"
                                     title="Edit"
                                     ui-sref="telemetrytwotargetingrule-edit({ruleId: rule.id})"

@@ -21,7 +21,7 @@
 
  	angular
  		.module('app.telemetrytwoprofile')
- 		.controller('TelmetryTwoProfileEditController', controller);
+ 		.controller('TelemetryTwoProfileEditController', controller);
 
 	controller.$inject = ['$rootScope', '$scope', '$controller', 'PROTOCOL', 'telemetryTwoProfileService', '$stateParams', '$state', 'alertsService', 'utilsService'];
 

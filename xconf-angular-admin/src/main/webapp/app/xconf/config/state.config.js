@@ -292,6 +292,15 @@
                     permissions: PERMISSION.READ_CHANGES_PERMISSIONS
                 }
             })
+            .state('telemetrytwochanges', {
+                controller: 'TelemetryTwoChangeController',
+                controllerAs: 'vm',
+                url: '/telemetrytwochanges',
+                templateUrl: 'app/xconf/telemetrytwochanges/telemetrytwochange.html',
+                data: {
+                    permissions: PERMISSION.READ_CHANGES_PERMISSIONS
+                }
+            })
             .state('permanentprofiles', {
                 controller: 'PermanentProfilesController',
                 controllerAs: 'vm',

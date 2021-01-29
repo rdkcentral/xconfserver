@@ -51,7 +51,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="profile in vm.telemetryTwoProfiles">
+                <tr ng-repeat="profile in vm.telemetryTwoProfiles" ng-class="{'alert alert-info': vm.hasPendingChange(profile.id)}">
                     <td class="break-word">{{profile.name}}</td>
                     <td>
                         <div class="pull-left">

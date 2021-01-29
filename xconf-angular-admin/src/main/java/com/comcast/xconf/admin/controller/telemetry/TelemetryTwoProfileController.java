@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.admin.controller.ExportFileNames;
 import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
@@ -62,5 +63,25 @@ public class TelemetryTwoProfileController extends ApplicationTypeAwayController
     @RequestMapping(method = RequestMethod.POST, value = "/byIdList")
     public ResponseEntity getTelemetryTwoProfilesByIdList(@RequestBody List<String> telemetryTwoProfileIdList) {
         return new ResponseEntity<>(telemetryTwoProfileService.getTelemetryTwoProfilesByIdList(telemetryTwoProfileIdList), HttpStatus.OK);
+    }
+    
+    @Override
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity create(@RequestBody TelemetryTwoProfile entity) {
+    	telemetryTwoProfileService.writeCreateChange(entity);
+        logger.info("Successfully saved create change of TelemetryTwoProfile: {}", JsonUtil.toJson(entity));
+        return ResponseEntity.status(HttpStatus.CREATED).body(entity);
+    }
+
+    @Override
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity update(@RequestBody TelemetryTwoProfile entity) {
+        boolean addedToPending = telemetryTwoProfileService.writeUpdateChangeOrSave(entity);
+        if (addedToPending) {
+            logger.info("Successfully saved update change of TelemetryTwoProfile: {}", JsonUtil.toJson(entity));
+        } else {
+            logger.info("Successfully updated: {}", JsonUtil.toJson(entity));
+        }
+        return ResponseEntity.ok(addedToPending);
     }
 }

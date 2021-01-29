@@ -31,6 +31,7 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.*;
 import com.comcast.xconf.change.Change;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.estbfirmware.*;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.firmware.FirmwareRule;
@@ -1039,6 +1040,17 @@ public class BaseControllerTest extends BaseIntegrationTest {
             PermanentTelemetryProfile profile = createTelemetryProfile(profileId, "profileName_" + i);
             profile.setUploadRepository("http://" + UUID.randomUUID().toString() + ".com");
             Change<PermanentTelemetryProfile> change = telemetryProfileService.writeUpdateChange(profile);
+            groupedChanges.get(profileId).add(change);
+        }
+        return groupedChanges;
+    }
+    
+    protected Map<String, List<TelemetryTwoChange<TelemetryTwoProfile>>> createTelemetryTwoProfileChangesForTheSameId(String profileId, Integer size) {
+        Map<String, List<TelemetryTwoChange<TelemetryTwoProfile>>> groupedChanges = new HashMap<>();
+        groupedChanges.put(profileId, new ArrayList<TelemetryTwoChange<TelemetryTwoProfile>>());
+        for (int i = 0; i < size; i++) {
+        	TelemetryTwoProfile profile = createTelemetryTwoProfile(profileId, "profileName_" + i);
+            TelemetryTwoChange<TelemetryTwoProfile> change = telemetryTwoProfileService.writeUpdateChange(profile);
             groupedChanges.get(profileId).add(change);
         }
         return groupedChanges;

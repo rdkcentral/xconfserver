@@ -23,9 +23,9 @@
         .module('app.telemetrytwoprofile')
         .controller('TelemetryTwoProfilesController', controller);
 
-    controller.$inject = ['$scope', '$controller', 'telemetryTwoProfileService', 'alertsService', 'utilsService', 'dialogs', '$log', 'paginationService'];
+    controller.$inject = ['$scope', '$controller', 'telemetryTwoProfileService', 'alertsService', 'utilsService', 'dialogs', '$log', 'paginationService','telemetryTwoChangeService'];
 
-    function controller($scope, $controller, telemetryTwoProfileService, alertsService, utilsService, dialogs, $log, paginationService) {
+    function controller($scope, $controller, telemetryTwoProfileService, alertsService, utilsService, dialogs, $log, paginationService, telemetryTwoChangeService) {
         var vm = this;
 
         angular.extend(vm, $controller('MainController', {
@@ -33,6 +33,7 @@
         }));
 
         vm.telemetryTwoProfiles = [];
+        vm.telemetryTwoChangedEntityIds = [];
         vm.paginationStorageKey = 'telemetryTwoProfilePageSize';
         vm.pageSize = paginationService.getPageSize(vm.paginationStorageKey);
         vm.pageNumber = paginationService.getPageNumber();
@@ -54,11 +55,13 @@
         vm.deleteTelemetryTwoProfile = deleteTelemetryTwoProfile;
         vm.getTelemetryTwoProfiles = getTelemetryTwoProfiles;
         vm.exportOne = telemetryTwoProfileService.exportOne;
+        vm.hasPendingChange=hasPendingChange;
 
         init();
 
         function init() {
             getTelemetryTwoProfiles();
+            getTelemetryTwoChangedEntityIds();
         }
 
         $scope.$on('$locationChangeSuccess', function () {
@@ -113,6 +116,16 @@
 
         function getGeneralItemsNumber() {
             return vm.generalItemsNumber;
+        }
+
+        function getTelemetryTwoChangedEntityIds() {
+            telemetryTwoChangeService.getChangedEntityIds().then(function(resp) {
+                vm.telemetryTwoChangedEntityIds = resp.data;
+            }, alertsService.errorHandler);
+        }
+
+        function hasPendingChange(profileId) {
+            return vm.telemetryTwoChangedEntityIds.includes(profileId);
         }
     }
 })();

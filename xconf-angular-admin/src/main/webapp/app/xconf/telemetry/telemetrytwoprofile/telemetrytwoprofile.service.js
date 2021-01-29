@@ -37,7 +37,9 @@
             deleteTelemetryTwoProfile: deleteTelemetryTwoProfile,
             exportOne: exportOne,
             getAll: getAll,
-            getTelemetryTwoProfilesByIdList: getTelemetryTwoProfilesByIdList
+            getTelemetryTwoProfilesByIdList: getTelemetryTwoProfilesByIdList,
+            getProfileView: getProfileView,
+            getProfileName: getProfileName
         };
 
         function getAll() {
@@ -71,6 +73,42 @@
 
         function getTelemetryTwoProfilesByIdList(idList) {
             return $http.post(API_URL + "byIdList", idList);
+        }
+
+        function getProfileView(profile1, profile2) {
+            var profile = getProfileChanges(profile1, profile2);
+            if (!profile) {
+                return '';
+            }
+            var view = '';
+            if (profile['name']) {
+                view += 'NAME: ' + profile['name'] + '\n';
+            }
+            if (profile['jsonconfig']) {
+                view += 'JSON_CONFIG: ' + profile['jsonconfig'] + '\n';
+            }
+            return view;
+        }
+
+        function getProfileChanges(profile1, profile2) {
+            var oldProfileChanges = {};
+            if (!profile1) {
+                profile1 = {};
+            }
+            if (!profile2) {
+                profile2 = {};
+            }
+            if (!angular.equals(profile1['name'], profile2['name'])) {
+                oldProfileChanges['name'] = profile1['name'];
+            }
+            if (!angular.equals(profile1['jsonconfig'], profile2['jsonconfig'])) {
+                oldProfileChanges['jsonconfig'] = profile1['jsonconfig'];
+            }
+            return oldProfileChanges;
+        }
+
+        function getProfileName(profile) {
+            return profile['name'];
         }
     }
 })();

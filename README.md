@@ -12,6 +12,7 @@
     * [Get STB firmware version](#get-stb-firmware-version)
     * [Get STB settings](#get-stb-settings)
     * [Get Feature Settings](#get-feature-settings)
+    * [Rule Structure](#rule-structure)
 <!--te-->
 
 
@@ -193,3 +194,121 @@ curl --location --request GET 'http://${xconfds-path}/featureControl/getSettings
     }
 }
 ```
+
+### Rule Structure
+There are 6 different rule types: FirmwareRule, DCM Rule (Formula), TelemetryRule, TelemetryTwoRule, SettingRule and FeatureRule (RFC Rule).
+
+Extended from `Rule` object: `DCM Rule`, `TelemetryRule`, `TelemetryTwoRule`. It means that rule object itself has rule structure, corresponding rule fields like `negated`, `condition`, `compoundParts` and `relation` are located in root json object itself.
+
+Otherwise there is rule field.
+
+`TelemetryRule` json extended by `Rule` object:
+
+```json
+{
+    "negated": false,
+    "compoundParts": [
+    {
+        "negated": false,
+        "condition":
+        {
+            "freeArg":
+            {
+                "type": "STRING",
+                "name": "model"
+            },
+            "operation": "IS",
+            "fixedArg":
+            {
+                "bean":
+                {
+                    "value":
+                    {
+                        "java.lang.String": "TEST_MODEL1"
+                    }
+                }
+            }
+        },
+        "compoundParts": []
+    },
+    {
+        "negated": false,
+        "relation": "OR",
+        "condition":
+        {
+            "freeArg":
+            {
+                "type": "STRING",
+                "name": "model"
+            },
+            "operation": "IS",
+            "fixedArg":
+            {
+                "bean":
+                {
+                    "value":
+                    {
+                        "java.lang.String": "TEST_MODEL2"
+                    }
+                }
+            }
+        },
+        "compoundParts": []
+    }],
+    "boundTelemetryId": "ad10dd05-d2ff-4d00-8f52-b0ca6956cde6",
+    "id": "fb4210ac-8187-4cba-9301-eb8f27fcdaa8",
+    "name": "Arris_SVG",
+    "applicationType": "stb"
+}
+```
+
+
+`FeatureRule` json, which contains `Rule` object
+```json
+{
+    "id": "018bfb79-4aaf-426e-9e45-17e26d52ad49",
+    "name": "Test",
+    "rule":
+    {
+        "negated": false,
+        "condition":
+        {
+            "freeArg":
+            {
+                "type": "STRING",
+                "name": "estbMacAddress"
+            },
+            "operation": "IS",
+            "fixedArg":
+            {
+                "bean":
+                {
+                    "value":
+                    {
+                        "java.lang.String": "AA:AA:AA:AA:AA:AA"
+                    }
+                }
+            }
+        },
+        "compoundParts": []
+    },
+    "priority": 13,
+    "featureIds": ["68add112-cdc9-47be-ae3b-86e753c8d23e"],
+    "applicationType": "stb"
+}
+```
+
+#### Rule Object
+There are following fields there:<br>
+`negated` - means condition is with `not` operand.<br>
+`condition` - key and value statement.<br>
+`compoundParts` - list with multiple conditions.<br>
+`relation` - operation between multiple conditions, possible values `OR`, `AND`.
+
+#### Condition structure
+Each condition has `freeArg` and `fixedArg` field.
+freeArg typed key.
+fixedArg value meaning.
+
+If rule has only one condition there are no `compoundParts`, `relation` field is empty.
+If there are more than one condition - they are located in `compoundParts` object. First condition does not have any relation, next one has a relation.

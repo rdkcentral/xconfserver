@@ -49,7 +49,7 @@
         <spring.security.version>4.0.1.RELEASE</spring.security.version>
         <jackson-asl.version>1.9.2</jackson-asl.version> <!-- should satisfy jersey.version -->
         <testng-version>6.8.1</testng-version>
-        <jackson.version>2.9.0</jackson.version>
+        <jackson.version>2.11.0</jackson.version>
        	<joda-time.version>2.3</joda-time.version>
         <guava.version>18.0</guava.version>
         <jetty.version>9.2.1.v20140609</jetty.version>

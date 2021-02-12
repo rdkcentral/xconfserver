@@ -25,13 +25,14 @@ import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.apps.dataaccess.annotation.CF;
 import com.comcast.hydra.astyanax.data.XMLPersistable;
 import com.comcast.xconf.Applicationable;
+import com.comcast.xconf.CfNames;
 import com.comcast.xconf.XRule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.collections.comparators.NullComparator;
 import org.apache.commons.lang.StringUtils;
 
-@CF(cfName = "FirmwareRule4")
+@CF(cfName = CfNames.Firmware.FIRMWARE_RULE)
 @JsonIgnoreProperties({"updated", "ttlMap"})
 public class FirmwareRule extends XMLPersistable implements Comparable<FirmwareRule>, XRule, Applicationable {
     private String name;

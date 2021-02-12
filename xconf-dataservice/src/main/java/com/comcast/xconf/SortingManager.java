@@ -21,7 +21,6 @@
  */
 package com.comcast.xconf;
 
-import com.comcast.xconf.logupload.Formula;
 import com.comcast.xconf.priority.Prioritizable;
 import com.google.common.collect.Ordering;
 
@@ -30,26 +29,11 @@ import java.util.List;
 
 public class SortingManager {
 
-    public static List<Formula> sortFormulasByPriorityAsc(Iterable<Formula> formulas) {
-        Comparator<Formula> byPriorityDesc = new Comparator<Formula>() {
-            @Override
-            public int compare(Formula left, Formula right) {
-                int leftPriority = (left != null && left.getPriority() != null) ? left.getPriority() : 0;
-                int rightPriority = (right != null && right.getPriority() != null) ? right.getPriority() : 0;
-                return leftPriority - rightPriority;
-            }
-        };
-
-        return Ordering.from(byPriorityDesc).sortedCopy(formulas);
-    }
     public static <T extends Prioritizable>List<T> sortRulesByPriorityAsc(Iterable<T> formulas) {
-        Comparator<T> byPriorityDesc = new Comparator<T>() {
-            @Override
-            public int compare(T left, T right) {
-                int leftPriority = (left != null && left.getPriority() != null) ? left.getPriority() : 0;
-                int rightPriority = (right != null && right.getPriority() != null) ? right.getPriority() : 0;
-                return leftPriority - rightPriority;
-            }
+        Comparator<T> byPriorityDesc = (left, right) -> {
+            int leftPriority = (left != null && left.getPriority() != null) ? left.getPriority() : 0;
+            int rightPriority = (right != null && right.getPriority() != null) ? right.getPriority() : 0;
+            return leftPriority - rightPriority;
         };
 
         return Ordering.from(byPriorityDesc).sortedCopy(formulas);

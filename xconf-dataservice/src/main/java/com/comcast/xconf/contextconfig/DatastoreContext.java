@@ -107,11 +107,6 @@ public class DatastoreContext {
     }
 
     @Bean
-    CachedSimpleDao<String, Formula> formulaDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, Formula.class);
-    }
-
-    @Bean
     CachedSimpleDao<String, VodSettings> vodSettingsDAO() {
         return daoFactory.createCachedSimpleDao(String.class, VodSettings.class);
     }

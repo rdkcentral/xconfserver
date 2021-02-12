@@ -18,6 +18,7 @@
  *******************************************************************************/
 package com.comcast.xconf.logupload;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -25,6 +26,16 @@ import static org.junit.Assert.assertEquals;
 public class SettingsUtilTest {
 
     private SettingsUtil settingsUtil = new SettingsUtil();
+
+    @Test
+    public void testValidateCronExpression() throws Exception {
+        Assert.assertTrue(SettingsUtil.validate("15 23 * * *"));
+        Assert.assertTrue(SettingsUtil.validate("15 23 "));
+
+        Assert.assertFalse(SettingsUtil.validate("15"));
+        Assert.assertFalse(SettingsUtil.validate("15 * * *"));
+        Assert.assertFalse(SettingsUtil.validate("* * *"));
+    }
 
     @Test
     public void getAddedHoursToRandomizedCronByTimeZone() throws Exception {

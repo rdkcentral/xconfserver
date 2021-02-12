@@ -876,17 +876,6 @@ public class BaseControllerTest extends BaseIntegrationTest {
         return telemetryRule;
     }
 
-    protected Formula createOldFormula() {
-        Formula formula = new Formula();
-        formula.setId(UUID.randomUUID().toString());
-        formula.setName("formulaName");
-        formula.setPercentage(100);
-        formula.setRuleExpression("eStbMac AND env");
-        formula.setEnv(Sets.newHashSet(createEnvironment().getId()));
-        formula.setEstbMacAddress("AA:AA:AA:AA:AA:AA");
-        return formula;
-    }
-
     protected NamespacedList createNamespacedList() {
         NamespacedList namespacedList = new NamespacedList();
         namespacedList.setId("namespacedListId");

@@ -916,3 +916,7 @@ table.log-table >tbody>tr>th {
     vertical-align: -0.235em !important
 }
 
+.no-padding-left {
+    padding-left: 0
+}
+

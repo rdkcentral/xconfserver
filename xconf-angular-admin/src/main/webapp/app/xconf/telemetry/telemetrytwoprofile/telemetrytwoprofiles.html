@@ -26,13 +26,36 @@
         <simple-search-directive options="vm.searchOptions"></simple-search-directive>
     </div>
     <div class="col-md-3 pull-right">
-        <div class="btn-group">
-            <button id="createEntity" type="button" class="btn btn-success"
-                    ui-sref="telemetrytwoprofile-edit"
+        <div class="pull-right">
+            <div class="btn-group">
+                <button id="createEntity" type="button" class="btn btn-success"
+                        ui-sref="telemetrytwotargetingrule-edit"
+                        ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                    Create
+                </button>
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                        ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu"
                     ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
-                <i class="ri-add-fill ri-sm"></i> Create
+                    <li>
+                        <a ui-sref="telemetrytwoprofile-import" style="cursor: pointer">
+                            Import
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <button type="button"
+                    class="btn btn-default"
+                    id="exportAll"
+                    ng-show="vm.telemetryTwoProfiles.length > 0"
+                    ng-click="vm.exportAll()" title="Export All">
+                Export All
             </button>
         </div>
+
     </div>
 </h1>
 
@@ -40,27 +63,31 @@
     <div class="col-md-12" style="margin-top: 3em">
         <div ng-if="vm.startParse()" class="panel-default panel">
             <table class="table">
-                <colgroup width="35%" />
-                <colgroup width="120" />
-                <colgroup width="30"/>
-                <colgroup width="63"/>
+                <colgroup width="10%" />
+                <colgroup width="60%" />
+                <colgroup width="11%"/>
                 <thead>
                 <tr>
+                    <th></th>
                     <th>Name</th>
-                    <th>Action</th>
+                    <th class="pull-center">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="profile in vm.telemetryTwoProfiles">
-                    <td class="break-word">{{profile.name}}</td>
                     <td>
-                        <div class="pull-left">
+                        <div>
                             <button type="button" class="btn btn-default"
-                                    ui-sref="telemetrytwoprofile-view({telemetryProfileId: profile.id})"
+                                    ng-click="vm.viewTelemetryTwoProfile(profile)"
                                     ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)"
                                     title="View">
                                 <i class=ri-eye-fill></i>
                             </button>
+                        </div>
+                    </td>
+                    <td class="break-word">{{profile.name}}</td>
+                    <td>
+                        <div class="pull-right">
                             <button type="button" class="btn btn-default"
                                     ui-sref="telemetrytwoprofile-edit({telemetryProfileId: profile.id})"
                                     ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)"

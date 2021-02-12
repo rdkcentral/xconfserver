@@ -3,7 +3,7 @@
 * If not stated otherwise in this file or this component's Licenses.txt file the
 * following copyright and licenses apply:
 *
-* Copyright 2018 RDK Management
+* Copyright 2020 RDK Management
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,55 +18,39 @@
 * limitations under the License.
 *
 -->
-<h1 class="page-header">Telemetry 2.0 Targeting rule - View</h1>
-<form class="row" name="telemetryTwoTargetingRuleViewForm">
-    <div class="panel panel-default">
-        <div class="panel-heading"><label>Rule and Telemetry 2.0 profile details</label></div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon">Rule Name:</span>
-                            <input id="name" class="form-control" ng-model="vm.targetingRule.rule.name" readonly="" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon">Telemetry 2.0 profiles:</span>
-                            <ul id="telemetry-two-rule-view">
-                                <li class="ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list checked-in-list"
-                                    ng-repeat="profile in vm.profiles"
-                                    ng-bind="profile.name"></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading"><label>Rule conditions</label></div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <ruleview-editor-directive
-                            is-valid-condition="vm.isValidCondition"
-                            data="vm.targetingRule.rule"></ruleview-editor-directive>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="modal-header">
+    <h3 class="modal-title">
+        View feature rule
+        <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+            <span>&times;</span>
+        </button>
+    </h3>
+</div>
+<div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <div class="pull-left" style="padding-right: 1em">
-                <button type="button" class="btn btn-default" ui-sref="telemetrytwotargetingrules">Back to List</button>
+            <div id="id" class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Name</div>
+                    <input class="form-control rule-name cursor-default" ng-value="vm.telemetryRule.name" disabled readonly/>
+                </div>
+            </div>
+            <div id="rule" class="form-group">
+                <label>Rule</label>
+                <div>
+                    <ruleview-directive data="vm.telemetryRule"></ruleview-directive>
+                </div>
+            </div>
+            <div class="row" ng-show="vm.ruleProfiles.length > 0">
+                <div class="col-md-12" >
+                    <label>Profiles</label>
+                    <ul class="xconf-list" id="profiles">
+                        <li class="ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list checked-in-list"
+                            ng-repeat="feature in vm.ruleProfiles"
+                            ng-bind="feature.name"></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <br><br>
-</form>
+</div>

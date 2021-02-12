@@ -106,8 +106,6 @@
         <maven-failsafe-plugin.version>2.12</maven-failsafe-plugin.version>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
         <maven-deploy-plugin.version>2.8</maven-deploy-plugin.version>
-        <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
-        <sonar.exclusions>**/webapp/*,**/*.js</sonar.exclusions>
         <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
         <maven-scm-provider-gitexe.version>1.9</maven-scm-provider-gitexe.version>
         <maven-javadoc-plugin.version>2.9</maven-javadoc-plugin.version>
@@ -663,11 +661,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonarsource.scanner.maven</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>${sonar-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco-maven-plugin.version}</version>
@@ -717,6 +710,12 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>com/comcast/xconf/logupload/LogUploadSettingsFieldAccess</exclude>
+                        <exclude>com/comcast/xconf/logupload/DeviceSettingsFieldAccess</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>

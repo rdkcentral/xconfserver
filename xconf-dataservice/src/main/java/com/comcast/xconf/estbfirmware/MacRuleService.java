@@ -25,7 +25,7 @@ import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.xconf.MacAddressUtil;
 import com.comcast.xconf.NamespacedList;
 import com.comcast.xconf.StbContext;
-import com.comcast.xconf.estbfirmware.legacy.MacRuleLegacyConverter;
+import com.comcast.xconf.estbfirmware.converter.MacRuleConverter;
 import com.comcast.xconf.firmware.ApplicableAction;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.firmware.RuleAction;
@@ -142,11 +142,11 @@ public class MacRuleService {
     }
 
     public FirmwareRule convertMacRuleBeanToFirmwareRule(MacRuleBean bean) {
-        return MacRuleLegacyConverter.convertMacRuleBeanToFirmwareRule(bean);
+        return MacRuleConverter.convertMacRuleBeanToFirmwareRule(bean);
     }
 
     public MacRuleBeanWrapper convertFirmwareRuleToMacRuleBean(FirmwareRule firmwareRule) {
-        MacRuleBeanWrapper macRuleBean = MacRuleLegacyConverter.convertFirmwareRuleToMacRuleBeanWrapper(firmwareRule);
+        MacRuleBeanWrapper macRuleBean = MacRuleConverter.convertFirmwareRuleToMacRuleBeanWrapper(firmwareRule);
         RuleAction action = (RuleAction) firmwareRule.getApplicableAction();
         if (action != null && StringUtils.isNotBlank(action.getConfigId())) {
             FirmwareConfig config = firmwareConfigDAO.getOne(action.getConfigId());

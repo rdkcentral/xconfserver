@@ -19,14 +19,17 @@
  * Author: Igor Kostrov
  * Created: 1/22/2016
 */
-package com.comcast.xconf.estbfirmware.legacy;
+package com.comcast.xconf.estbfirmware.converter;
 
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddressGroup;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.MacAddress;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
-import com.comcast.xconf.estbfirmware.FirmwareRule;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.xconf.estbfirmware.RebootImmediatelyFilter;
+import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.DefinePropertiesAction;
+import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.util.RuleUtil;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
@@ -36,11 +39,10 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class RebootImmediatelyLegacyConverter {
+public class RebootImmediatelyConverter {
 
     @Autowired
-    private LegacyConverterHelper converterHelper;
-
+    private ConverterHelper converterHelper;
 
     public RebootImmediatelyFilter convertFirmwareRuleToRebootFilter(FirmwareRule firmwareRule) {
         RebootImmediatelyFilter filter = new RebootImmediatelyFilter();
@@ -48,27 +50,25 @@ public class RebootImmediatelyLegacyConverter {
         filter.setName(firmwareRule.getName());
         filter.setId(firmwareRule.getId());
 
-        convertConditions(filter, firmwareRule);
+        convertConditions(filter, firmwareRule.getRule());
 
         return filter;
     }
 
-    private void convertConditions(RebootImmediatelyFilter filter, FirmwareRule next) {
+    private void convertConditions(RebootImmediatelyFilter filter, Rule next) {
         for (Condition condition : RuleUtil.toConditions(next)) {
             convertCondition(filter, condition);
         }
     }
 
     private void convertCondition(RebootImmediatelyFilter filter, Condition condition) {
-        if (FirmwareRule.IP.equals(condition.getFreeArg())
-                || RuleFactory.IP.equals(condition.getFreeArg())) {
+        if (ConverterHelper.isLegacyIpFreeArg(condition.getFreeArg()) || RuleFactory.IP.equals(condition.getFreeArg())) {
             if (filter.getIpAddressGroups() == null) {
-                filter.setIpAddressGroups(new HashSet<IpAddressGroup>());
+                filter.setIpAddressGroups(new HashSet<>());
             }
             filter.getIpAddressGroups().add(converterHelper.getIpAddressGroup(condition));
 
-        } else if (FirmwareRule.MAC.equals(condition.getFreeArg())
-                    || RuleFactory.MAC.equals(condition.getFreeArg())) {
+        } else if (ConverterHelper.isLegacyIpFreeArg(condition.getFreeArg()) || RuleFactory.MAC.equals(condition.getFreeArg())) {
             HashSet<String> macAddresses = new HashSet<>();
             if (condition.getFixedArg().getValue() instanceof Collection) {
                 Iterator iterator = ((Collection) condition.getFixedArg().getValue()).iterator();
@@ -90,36 +90,44 @@ public class RebootImmediatelyLegacyConverter {
 
             filter.setMacAddresses(StringUtils.join(macAddresses, "\n"));
 
-        } else if (FirmwareRule.ENV.equals(condition.getFreeArg())) {
+        } else if (RuleFactory.ENV.equals(condition.getFreeArg())) {
             filter.setEnvironments(fixedArgValueToCollection(condition));
 
-        } else if (FirmwareRule.MODEL.equals(condition.getFreeArg())) {
+        } else if (RuleFactory.MODEL.equals(condition.getFreeArg())) {
             filter.setModels(fixedArgValueToCollection(condition));
         }
     }
 
     public FirmwareRule convertRebootFilterToFirmwareRule(RebootImmediatelyFilter filter) {
+        FirmwareRule rule = new FirmwareRule();
+        Set<String> macAddresses = getNormalizedMacAddresses(filter.getMacAddresses());
+        Set<String> ipAddressGroups = new HashSet<>();
+        if (filter.getIpAddressGroups() != null) {
+            for (IpAddressGroup ipAddressGroup : filter.getIpAddressGroups()) {
+                ipAddressGroups.add(ipAddressGroup.getName());
+            }
+        }
+        rule.setRule(RuleFactory.newRiFilter(ipAddressGroups, macAddresses, filter.getEnvironments(), filter.getModels()));
 
-        FirmwareRule rule = FirmwareRule.newRebootImmediatelyFilter(filter.getIpAddressGroups(),
-                getNormalizedMacAddresses(filter.getMacAddresses()),
-                filter.getEnvironments(),
-                filter.getModels());
+        rule.setType(TemplateNames.REBOOT_IMMEDIATELY_FILTER);
 
         rule.setName(filter.getName());
         rule.setId(filter.getId());
 
+        rule.setApplicableAction(new DefinePropertiesAction(asMap("rebootImmediately", "true")));
+
         return rule;
     }
 
-    public Set<MacAddress> getNormalizedMacAddresses(String macAddresses) {
-        Set<MacAddress> set = Sets.newHashSet();
+    public Set<String> getNormalizedMacAddresses(String macAddresses) {
+        Set<String> set = Sets.newHashSet();
         if (StringUtils.isBlank(macAddresses)) {
             return set;
         }
         String[] a = macAddresses.split("\\s+");
         for (String ma : a) {
             if (MacAddress.isValid(ma)) {
-                set.add(new MacAddress(ma));
+                set.add(ma);
             }
         }
         return set;
@@ -132,5 +140,11 @@ public class RebootImmediatelyLegacyConverter {
         } else {
             return Collections.singleton((String) fixedArgValue);
         }
+    }
+
+    private Map<String, String> asMap(String key, String value) {
+        Map<String, String> map = new HashMap<>();
+        map.put(key, value);
+        return map;
     }
 }

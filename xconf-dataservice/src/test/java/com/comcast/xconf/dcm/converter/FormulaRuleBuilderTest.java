@@ -20,7 +20,7 @@ package com.comcast.xconf.dcm.converter;
 
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
-import com.comcast.xconf.estbfirmware.FirmwareRule;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
@@ -36,12 +36,12 @@ public class FormulaRuleBuilderTest {
     @Test
     public void buildConditionFromCollection() throws Exception {
         List<String> fixedArgValues = Lists.newArrayList("envValue");
-        Condition condition = formulaRuleBuilder.buildConditionFromCollection(FirmwareRule.ENV, fixedArgValues);
+        Condition condition = formulaRuleBuilder.buildConditionFromCollection(RuleFactory.ENV, fixedArgValues);
 
         assertEquals(StandardOperation.IS, condition.getOperation());
 
         fixedArgValues.add("anotherEnvValue");
-        condition = formulaRuleBuilder.buildConditionFromCollection(FirmwareRule.ENV, fixedArgValues);
+        condition = formulaRuleBuilder.buildConditionFromCollection(RuleFactory.ENV, fixedArgValues);
 
         assertEquals(StandardOperation.IN, condition.getOperation());
     }

@@ -78,8 +78,6 @@ public class EstbFirmwareRuleBaseTest {
     @Autowired
     private RuleProcessorFactory ruleProcessorFactory;
 
-    private TemplateFactory templateFactory = new TemplateFactory();
-
     private String configID = "ConfigID";
 
     @Test

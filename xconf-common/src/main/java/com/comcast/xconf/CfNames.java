@@ -38,7 +38,6 @@ public interface CfNames {
     interface Firmware {
         String FIRMWARE_RULE = "FirmwareRule2";
         String FIRMWARE_CONFIG = "FirmwareConfig";
-        String FILTER_ACTION = "FilterAction";
         String SINGLETON_FILTER_VALUE = "SingletonFilterValue";
         String MODEL = "Model";
     }

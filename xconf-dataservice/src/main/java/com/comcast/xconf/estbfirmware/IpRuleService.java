@@ -22,8 +22,7 @@
 package com.comcast.xconf.estbfirmware;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.estbfirmware.converter.NgRuleConverter;
-import com.comcast.xconf.estbfirmware.legacy.IpRuleLegacyConverter;
+import com.comcast.xconf.estbfirmware.converter.IpRuleConverter;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.firmware.RuleAction;
 import com.comcast.xconf.search.firmware.FirmwareRulePredicates;
@@ -47,10 +46,7 @@ public class IpRuleService {
     private static final Logger log = LoggerFactory.getLogger(IpRuleService.class);
 
     @Autowired
-    private NgRuleConverter ngRuleConverter;
-
-    @Autowired
-    private IpRuleLegacyConverter ipRuleLegacyConverter;
+    private IpRuleConverter ipRuleConverter;
 
     @Autowired
     private CachedSimpleDao<String, FirmwareConfig> firmwareConfigDAO;
@@ -105,11 +101,11 @@ public class IpRuleService {
     }
 
     public FirmwareRule convertIpRuleBeanToFirmwareRule(IpRuleBean bean) {
-        return ngRuleConverter.convertOld(ipRuleLegacyConverter.convertIpRuleBeanToFirmwareRule(bean));
+        return ipRuleConverter.convertIpRuleBeanToFirmwareRule(bean);
     }
 
     public IpRuleBean convertFirmwareRuleToIpRuleBean(FirmwareRule firmwareRule) {
-        IpRuleBean bean = ipRuleLegacyConverter.convertFirmwareRuleToIpRuleBean(ngRuleConverter.convertNew(firmwareRule));
+        IpRuleBean bean = ipRuleConverter.convertFirmwareRuleToIpRuleBean(firmwareRule);
         RuleAction action = (RuleAction) firmwareRule.getApplicableAction();
         if (StringUtils.isNotBlank(action.getConfigId())) {
             bean.setFirmwareConfig(firmwareConfigDAO.getOne(action.getConfigId()));

@@ -22,8 +22,7 @@
 package com.comcast.xconf.estbfirmware;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.estbfirmware.converter.NgRuleConverter;
-import com.comcast.xconf.estbfirmware.legacy.EnvModelRuleLegacyConverter;
+import com.comcast.xconf.estbfirmware.converter.EnvModelRuleConverter;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.firmware.RuleAction;
 import com.comcast.xconf.search.firmware.FirmwareRulePredicates;
@@ -46,9 +45,6 @@ import static com.comcast.xconf.search.ApplicationTypePredicate.byApplication;
 public class EnvModelRuleService {
 
     private static final Logger log = LoggerFactory.getLogger(EnvModelRuleService.class);
-
-    @Autowired
-    private NgRuleConverter ngRuleConverter;
 
     @Autowired
     private CachedSimpleDao<String, FirmwareConfig> firmwareConfigDAO;
@@ -92,7 +88,7 @@ public class EnvModelRuleService {
     }
 
     public EnvModelRuleBean convertFirmwareRuleToEnvModelRuleBean(FirmwareRule firmwareRule) {
-        EnvModelRuleBean bean = EnvModelRuleLegacyConverter.convertFirmwareRuleToEnvModelRuleBean(ngRuleConverter.convertNew(firmwareRule));
+        EnvModelRuleBean bean = EnvModelRuleConverter.convertFirmwareRuleToEnvModelRuleBean(firmwareRule);
         RuleAction action = (RuleAction) firmwareRule.getApplicableAction();
         if (StringUtils.isNotBlank(action.getConfigId())) {
             bean.setFirmwareConfig(firmwareConfigDAO.getOne(action.getConfigId()));
@@ -102,7 +98,7 @@ public class EnvModelRuleService {
     }
 
     public FirmwareRule convertModelRuleBeanToFirmwareRule(EnvModelRuleBean bean) {
-        return ngRuleConverter.convertOld(EnvModelRuleLegacyConverter.convertModelRuleBeanToFirmwareRule(bean));
+        return EnvModelRuleConverter.convertModelRuleBeanToFirmwareRule(bean);
     }
 
     public EnvModelRuleBean getOne(String id) {

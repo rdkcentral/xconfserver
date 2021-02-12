@@ -21,7 +21,7 @@
  */
 package com.comcast.xconf.estbfirmware.util;
 
-import com.comcast.xconf.estbfirmware.FirmwareRule;
+import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.estbfirmware.SingletonFilterValue;
 import com.comcast.xconf.firmware.RuleAction;
 import org.apache.commons.lang.StringUtils;

@@ -24,7 +24,7 @@ package com.comcast.xconf.thucydides.util.telemetry;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
-import com.comcast.xconf.estbfirmware.FirmwareRule;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.logupload.UploadProtocol;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
@@ -99,7 +99,7 @@ public class TelemetryUtils {
         telemetryRule.setId(UUID.randomUUID().toString());
         telemetryRule.setName("testName");
         telemetryRule.setBoundTelemetryId(boundTelemetryId);
-        telemetryRule.setCondition(new Condition(FirmwareRule.MODEL,
+        telemetryRule.setCondition(new Condition(RuleFactory.MODEL,
                 StandardOperation.IS, FixedArg.from("1.1.1.1")));
 
         return telemetryRule;
@@ -115,9 +115,9 @@ public class TelemetryUtils {
     public static List<TelemetryRule> createAndSaveTargetingRules(String permanentProfileId) throws IOException {
         return Lists.newArrayList(
                 createAndSaveTargetingRule(permanentProfileId, "targetingRule123",
-                        RuleUtils.createCondition(FirmwareRule.VERSION, StandardOperation.IS, "firmwareVersion")),
+                        RuleUtils.createCondition(RuleFactory.VERSION, StandardOperation.IS, "firmwareVersion")),
                 createAndSaveTargetingRule(permanentProfileId, "targetingRule456",
-                        RuleUtils.createCondition(FirmwareRule.MAC, StandardOperation.IS, "AA:BB:CC:DD:EE:FF"))
+                        RuleUtils.createCondition(RuleFactory.MAC, StandardOperation.IS, "AA:BB:CC:DD:EE:FF"))
         );
     }
 

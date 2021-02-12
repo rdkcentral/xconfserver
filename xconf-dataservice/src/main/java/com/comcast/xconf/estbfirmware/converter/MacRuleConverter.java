@@ -19,7 +19,7 @@
  * Author: Igor Kostrov
  * Created: 18.01.2016
 */
-package com.comcast.xconf.estbfirmware.legacy;
+package com.comcast.xconf.estbfirmware.converter;
 
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.MacAddress;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
@@ -36,25 +36,7 @@ import com.google.common.collect.Sets;
 
 import java.util.Collection;
 
-public class MacRuleLegacyConverter {
-
-    public static FirmwareRule convertMacRuleBeanToFirmwareRule(MacRuleBean bean) {
-        FirmwareRule firmwareMacRule = new FirmwareRule();
-        firmwareMacRule.setId(bean.getId());
-        firmwareMacRule.setName(bean.getName());
-        firmwareMacRule.setType(TemplateNames.MAC_RULE);
-        if (bean.getFirmwareConfig() != null) {
-            firmwareMacRule.setApplicableAction(new RuleAction(bean.getFirmwareConfig().getId()));
-            firmwareMacRule.setApplicationType(bean.getFirmwareConfig().getApplicationType());
-        } else {
-            firmwareMacRule.setApplicableAction(new RuleAction());
-        }
-
-        Rule macRule = RuleFactory.newMacRule(bean.getMacListRef());
-        firmwareMacRule.setRule(macRule);
-
-        return firmwareMacRule;
-    }
+public class MacRuleConverter {
 
     public static MacRuleBeanWrapper convertFirmwareRuleToMacRuleBeanWrapper(FirmwareRule firmwareRule) {
         MacRuleBeanWrapper macRuleBean = new MacRuleBeanWrapper();
@@ -78,4 +60,23 @@ public class MacRuleLegacyConverter {
         }
         return macRuleBean;
     }
+
+    public static FirmwareRule convertMacRuleBeanToFirmwareRule(MacRuleBean bean) {
+        FirmwareRule firmwareMacRule = new FirmwareRule();
+        firmwareMacRule.setId(bean.getId());
+        firmwareMacRule.setName(bean.getName());
+        firmwareMacRule.setType(TemplateNames.MAC_RULE);
+        if (bean.getFirmwareConfig() != null) {
+            firmwareMacRule.setApplicableAction(new RuleAction(bean.getFirmwareConfig().getId()));
+            firmwareMacRule.setApplicationType(bean.getFirmwareConfig().getApplicationType());
+        } else {
+            firmwareMacRule.setApplicableAction(new RuleAction());
+        }
+
+        Rule macRule = RuleFactory.newMacRule(bean.getMacListRef());
+        firmwareMacRule.setRule(macRule);
+
+        return firmwareMacRule;
+    }
+
 }

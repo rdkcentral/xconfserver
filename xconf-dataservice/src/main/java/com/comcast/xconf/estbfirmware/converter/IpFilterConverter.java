@@ -19,28 +19,30 @@
  * Author: Igor Kostrov
  * Created: 18.01.2016
 */
-package com.comcast.xconf.estbfirmware.legacy;
+package com.comcast.xconf.estbfirmware.converter;
 
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
-import com.comcast.xconf.estbfirmware.FirmwareRule;
 import com.comcast.xconf.estbfirmware.IpFilter;
+import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.BlockingFilterAction;
+import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.util.RuleUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IpFilterLegacyConverter {
+public class IpFilterConverter {
 
     @Autowired
-    private LegacyConverterHelper converterHelper;
+    private ConverterHelper converterHelper;
 
-    public IpFilter convertFirmwareRuleToIpFilter(FirmwareRule firmwareRule){
+    public IpFilter convertFirmwareRuleToIpFilter(FirmwareRule firmwareRule) {
         IpFilter filter = new IpFilter();
 
         filter.setName(firmwareRule.getName());
         filter.setId(firmwareRule.getId());
-        for (Condition condition : RuleUtil.toConditions(firmwareRule)) {
+        for (Condition condition : RuleUtil.toConditions(firmwareRule.getRule())) {
             if (RuleFactory.IP.equals(condition.getFreeArg())) {
                 filter.setIpAddressGroup(converterHelper.getIpAddressGroup(condition));
             }
@@ -49,9 +51,12 @@ public class IpFilterLegacyConverter {
         return filter;
     }
 
-    public FirmwareRule convertIpFilterToFirmwareRule(IpFilter ipFilter){
+    public FirmwareRule convertIpFilterToFirmwareRule(IpFilter ipFilter) {
+        FirmwareRule rule = new FirmwareRule();
+        rule.setRule(RuleFactory.newIpFilter(ipFilter.getIpAddressGroup().getName()));
 
-        FirmwareRule rule = FirmwareRule.newIpFilter(ipFilter.getIpAddressGroup());
+        rule.setType(TemplateNames.IP_FILTER);
+        rule.setApplicableAction(new BlockingFilterAction());
         rule.setName(ipFilter.getName());
         rule.setId(ipFilter.getId());
         return rule;

@@ -60,9 +60,6 @@ public class MigrationInfoControllerTest extends BaseControllerTest {
         NamespacedList namespacedList = createNamespacedList();
         namespacedListDAO.setOne(namespacedList.getId(), namespacedList);
 
-        com.comcast.xconf.estbfirmware.FirmwareRule oldFirmwareRule = createOldFirmwareRule();
-        firmwareRuleDAO.setOne(oldFirmwareRule.getId(), oldFirmwareRule);
-
         FirmwareRule firmwareRule = createFirmwareRule();
         firmwareRuleDao.setOne(firmwareRule.getId(), firmwareRule);
 

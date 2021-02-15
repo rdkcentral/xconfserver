@@ -118,7 +118,9 @@ public class PercentageBeanConverter {
     }
 
     public FirmwareRule convertIntoRule(PercentageBean bean) {
-        Rule envModelRule = RuleFactory.newEnvModelRule(bean.getEnvironment(), bean.getModel());
+        Rule envModelRule = StringUtils.isNotBlank(bean.getEnvironment()) ?
+                RuleFactory.newEnvModelRule(bean.getEnvironment(), bean.getModel()) :
+                RuleFactory.newModelRule(bean.getModel());
         if (containsAnyCondition(bean.getOptionalConditions())) {
             envModelRule = Rule.Builder.of(envModelRule).and(bean.getOptionalConditions()).build();
         }
@@ -139,19 +141,6 @@ public class PercentageBeanConverter {
 
     private boolean containsAnyCondition(Rule rule) {
         return rule != null && (rule.getCondition() != null || CollectionUtils.isNotEmpty(rule.getCompoundParts()));
-    }
-
-    public List<PercentageBean> convertIntoBeans(PercentFilterValue percentFilterValue) {
-        List<PercentageBean> result = new ArrayList<>();
-        Map<String, EnvModelPercentage> envModelPercentages = percentFilterValue.getEnvModelPercentages();
-        for (String ruleName : envModelPercentages.keySet()) {
-            EnvModelPercentage envModelPercentage = envModelPercentages.get(ruleName);
-            FirmwareRule envModelRule = getEnvModelRuleByName(ruleName);
-            if (envModelRule != null) {
-                result.add(migrateIntoPercentageBean(envModelPercentage, envModelRule));
-            }
-        }
-        return result;
     }
 
     public FirmwareRule convertIntoRule(GlobalPercentage percentage) {

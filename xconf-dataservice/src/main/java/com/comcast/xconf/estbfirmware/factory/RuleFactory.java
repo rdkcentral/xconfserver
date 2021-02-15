@@ -94,6 +94,13 @@ public class RuleFactory {
         return builder.build();
     }
 
+    public static Rule newModelRule(String model) {
+        final Rule.Builder builder = Rule.Builder
+                .of(new Condition(MODEL, IS, FixedArg.from(model)));
+
+        return builder.build();
+    }
+
     public static Rule newIntermediateVersionRule(String environment, String model, String version) {
         final Rule.Builder builder = Rule.Builder
                 .of(new Condition(ENV, IS, FixedArg.from(environment)))

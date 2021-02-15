@@ -40,6 +40,7 @@ import com.comcast.xconf.search.SearchFields;
 import com.comcast.xconf.util.RuleUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
@@ -65,6 +66,14 @@ public class PercentageBeanControllerTest extends BaseControllerTest {
         performPostRequest(PercentageBeanController.URL_MAPPING, xhomeCookie, percentageBean)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("message").value(errorMsg));
+    }
+
+    @Test
+    public void createBeanWithModelOnly() throws Exception {
+        FirmwareConfig firmwareConfig = createAndSaveFirmwareConfig();
+        PercentageBean percentageBean = createPercentageBean(defaultModelId, null, firmwareConfig);
+        performPostRequest(PercentageBeanController.URL_MAPPING, percentageBean)
+                .andExpect(status().isCreated());
     }
 
     @Test

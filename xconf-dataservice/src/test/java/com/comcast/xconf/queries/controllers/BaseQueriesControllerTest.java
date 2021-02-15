@@ -967,23 +967,8 @@ public abstract class BaseQueriesControllerTest {
     }
 
     protected PercentageBean createPercentageBean(String applicationType) {
-        PercentageBean percentageBean = new PercentageBean();
-        percentageBean.setId("testId");
-        percentageBean.setName("testName");
-        percentageBean.setActive(true);
-        percentageBean.setEnvironment(createAndSaveEnvironment("ENV_ID").getId());
-        percentageBean.setModel(createAndSaveModel("MODEL_ID").getId());
-        percentageBean.setFirmwareCheckRequired(true);
-        GenericNamespacedList whitelist = createAndSaveGenericNamespacedList("percentageBeanWhitelist", GenericNamespacedListTypes.IP_LIST, "10.10.10.10");
-        percentageBean.setWhitelist(whitelist.getId());
-        FirmwareConfig firmwareConfig = createAndSaveFirmwareConfig("firmwareVersion", "MODEL_ID", FirmwareConfig.DownloadProtocol.http, applicationType);
-        percentageBean.setFirmwareVersions(Sets.newHashSet(firmwareConfig.getFirmwareVersion()));
-        percentageBean.setLastKnownGood(firmwareConfig.getId());
-        RuleAction.ConfigEntry configEntry = new RuleAction.ConfigEntry(firmwareConfig.getId(), 0.0, 66.0);
-        percentageBean.setDistributions(Collections.singletonList(configEntry));
-        percentageBean.setIntermediateVersion(firmwareConfig.getId());
-        percentageBean.setApplicationType(applicationType);
-        return percentageBean;
+        return createPercentageBean("testName", "ENV_ID", "MODEL_ID",
+                "percentageBeanWhitelist", "10.10.10.10", "firmwareVersion", applicationType);
     }
 
     protected PercentageBean createPercentageBean(String name, String envId, String modelId, String whitelistId, String whitelistData, String firmwareVersion, String applicationType) {

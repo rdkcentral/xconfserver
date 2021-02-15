@@ -21,13 +21,15 @@
 package com.comcast.apps.dataaccess.test.config;
 
 import com.comcast.apps.dataaccess.acl.AccessControlInfo;
+import com.comcast.apps.dataaccess.cache.DaoFactory;
 import com.comcast.apps.dataaccess.cache.dao.CachedListingDao;
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.apps.dataaccess.cache.DaoFactory;
 import com.comcast.apps.dataaccess.dao.ListingDao;
+import com.comcast.apps.dataaccess.dao.impl.CompressingDataDao;
 import com.comcast.apps.dataaccess.dao.impl.ListingDaoImpl;
 import com.comcast.apps.dataaccess.test.domain.CompressedUser;
 import com.comcast.apps.dataaccess.test.domain.User;
+import com.comcast.apps.dataaccess.test.legacy.NamespacedList;
 import com.datastax.driver.core.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +47,11 @@ public class DatastoreConfig {
     @Bean
     public ListingDao<String, String, CompressedUser> compressedUserDao() {
         return new ListingDaoImpl<>(session, CompressedUser.class);
+    }
+
+    @Bean
+    public CompressingDataDao<String, NamespacedList> namespacedListDao() {
+        return new CompressingDataDao<>(session, NamespacedList.class);
     }
 
     @Bean

@@ -19,6 +19,7 @@
 
 CREATE KEYSPACE IF NOT EXISTS demo WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
 
+USE demo;
 
 CREATE TABLE "ChangedKeys" (key bigint, column1 timeuuid, value VARCHAR, PRIMARY KEY (key, column1)) WITH default_time_to_live = 604800;
 CREATE TABLE "SimpleDaoCF" (key VARCHAR PRIMARY KEY, column1 text, value VARCHAR) WITH COMPACT STORAGE;

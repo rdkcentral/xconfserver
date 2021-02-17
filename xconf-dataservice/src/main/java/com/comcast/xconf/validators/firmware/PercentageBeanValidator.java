@@ -62,9 +62,6 @@ public class PercentageBeanValidator implements IValidator<PercentageBean> {
         if (StringUtils.isBlank(percentage.getName())) {
             throw new ValidationRuntimeException("Name could not be blank");
         }
-        if (StringUtils.isBlank(percentage.getEnvironment())) {
-            throw new ValidationRuntimeException("Environment could not be blank");
-        }
         if (StringUtils.isBlank(percentage.getModel())) {
             throw new ValidationRuntimeException("Model could not be blank");
         }

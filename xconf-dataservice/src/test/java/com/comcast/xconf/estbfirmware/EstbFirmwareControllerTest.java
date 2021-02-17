@@ -197,6 +197,27 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
     }
 
     @Test
+    public void ruleWithOnlyModelHasLowerPriority() throws Exception {
+        createAndSaveDefaultEnvModelRuleBean();
+
+        EnvModelRuleBean envModelRuleBean = createDefaultEnvModelRuleBean();
+        envModelRuleBean.setEnvironmentId(null);
+        FirmwareConfig firmwareConfig = createAndSaveFirmwareConfig("modelOnlyFirmwareConfig", defaultModelId, FirmwareConfig.DownloadProtocol.http, STB);
+        envModelRuleBean.setFirmwareConfig(firmwareConfig);
+        saveEnvModelRuleBean(envModelRuleBean);
+
+        mockMvc.perform(
+                post("/xconf/swu/stb")
+                        .param("param", "value")
+                        .param("model", defaultModelId)
+                        .param("env", defaultEnvironmentId)
+                        .param("firmwareVersion", defaultFirmwareVersion)
+                        .param("eStbMac", defaultMacAddress))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firmwareVersion").value(defaultFirmwareVersion));
+    }
+
+    @Test
     public void resultIsBlockedByIpFilter() throws Exception {
         IpRuleBean ipRuleBean = createAndSaveDefaultIpRuleBean();
         IpFilter ipFilter = createDefaultIpFilter();

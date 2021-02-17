@@ -431,18 +431,7 @@ public class EstbFirmwareRuleBase {
 
     public static List<FirmwareRule> sortByConditionsSize(Collection<FirmwareRule> rules) {
         List<FirmwareRule> firmwareRules = new ArrayList<>(rules);
-        Collections.sort(firmwareRules, new Comparator<FirmwareRule>() {
-            @Override
-            public int compare(FirmwareRule o1, FirmwareRule o2) {
-                if (getConditionsSize(o2.getRule()) > getConditionsSize(o1.getRule())) {
-                    return 1;
-                } else if (getConditionsSize(o2.getRule()) < getConditionsSize(o1.getRule())) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
+        firmwareRules.sort((o1, o2) -> Integer.compare(getConditionsSize(o2.getRule()), getConditionsSize(o1.getRule())));
         return firmwareRules;
     }
 

@@ -100,12 +100,9 @@ public class PercentFilterControllerTest extends BaseControllerTest {
     }
 
     private ResultMatcher getExportHeadersExistMatcher(final String... headers) {
-        return new ResultMatcher() {
-            @Override
-            public void match(MvcResult mvcResult) throws Exception {
-                for (String header : headers) {
-                    Assert.assertTrue("Header "  + header + " doesn't exist", mvcResult.getResponse().getHeaderNames().contains(header));
-                }
+        return mvcResult -> {
+            for (String header : headers) {
+                Assert.assertTrue("Header "  + header + " doesn't exist", mvcResult.getResponse().getHeaderNames().contains(header));
             }
         };
     }

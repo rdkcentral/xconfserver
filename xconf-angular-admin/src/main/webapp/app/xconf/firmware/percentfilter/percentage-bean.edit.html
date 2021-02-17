@@ -41,13 +41,14 @@
                         <p ng-show="percentageBeanForm.name.$invalid && percentageBeanForm.name.$touched" class="error-label" id="nameError">Name should be specified</p>
                     </div>
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-error': percentageBeanForm.environment.$invalid && percentageBeanForm.environment.$touched}">
+                        <div class="input-group">
                             <div class="input-group-addon">Environment</div>
                             <select name="environment" id="environment" class="form-control"
                                     ng-model="vm.percentageBean.environment"
-                                    ng-options="environment.id as environment.id for environment in vm.environments" required></select>
+                                    ng-options="environment.id as environment.id for environment in vm.environments">
+                                <option value=""></option>
+                            </select>
                         </div>
-                        <p ng-show="percentageBeanForm.environment.$invalid && percentageBeanForm.environment.$touched" class="error-label" id="environmentError">Environment should be specified</p>
                     </div>
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-error': percentageBeanForm.model.$invalid && percentageBeanForm.model.$touched}">

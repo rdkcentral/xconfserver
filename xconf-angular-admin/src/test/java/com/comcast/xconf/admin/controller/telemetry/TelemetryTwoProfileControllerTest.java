@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -122,7 +123,7 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        assertNull(permanentTelemetryDAO.getOne(telemetryProfile.getId()));
+        assertNull(telemetryTwoProfileDAO.getOne(telemetryProfile.getId()));
     }
 
     @Test
@@ -135,7 +136,7 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict());
 
-        assertNull(permanentTelemetryDAO.getOne(boundProfileId));
+        assertNotNull(telemetryTwoProfileDAO.getOne(boundProfileId));
     }
 
     @Test

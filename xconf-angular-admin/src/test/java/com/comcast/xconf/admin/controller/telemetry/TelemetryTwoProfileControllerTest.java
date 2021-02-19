@@ -22,17 +22,21 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.search.SearchFields;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
@@ -119,7 +123,20 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        assertNull(permanentTelemetryDAO.getOne(telemetryProfile.getId()));
+        assertNull(telemetryTwoProfileDAO.getOne(telemetryProfile.getId()));
+    }
+
+    @Test
+    public void deleteTelemetryProfileThatIsUsedInRule() throws Exception {
+        TelemetryTwoRule telemetryTwoRule = createTelemetryTwoRule();
+        telemetryTwoRuleDAO.setOne(telemetryTwoRule.getId(), telemetryTwoRule);
+        String boundProfileId = telemetryTwoRule.getBoundTelemetryIds().get(0);
+
+        mockMvc.perform(delete("/" + TelemetryTwoProfileController.URL_MAPPING + "/" + boundProfileId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
+
+        assertNotNull(telemetryTwoProfileDAO.getOne(boundProfileId));
     }
 
     @Test

@@ -20,55 +20,51 @@
  */
 package com.comcast.apps.dataaccess.test.dao;
 
+import com.comcast.apps.dataaccess.cache.dao.impl.TwoKeys;
 import com.comcast.apps.dataaccess.dao.ListingDao;
-import com.comcast.apps.dataaccess.dao.impl.ListingDaoImpl;
+import com.comcast.apps.dataaccess.test.config.AppConfig;
 import com.comcast.apps.dataaccess.test.domain.User;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
-import org.cassandraunit.CQLDataLoader;
-import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
-import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.*;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = {AppConfig.class})
 public class ListingDaoTest {
-    private Session session;
-    private ListingDao<String, String, User> dao;
+
+    @Autowired
+    private ListingDao<String, String, User> userDao;
+
     private String testKey = "firstName";
     private String testKey2 = "lastName";
     private int age = 20;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        EmbeddedCassandraServerHelper.startEmbeddedCassandra(50000L);
-        EmbeddedCassandraServerHelper.getCluster().getConfiguration().getSocketOptions().setReadTimeoutMillis(50000);
-        final Cluster cluster = new Cluster.Builder().addContactPoints("127.0.0.1").withPort(9142).build();
-        cluster.connect();
-    }
-
     @Before
-    public void setUp() {
-        session = EmbeddedCassandraServerHelper.getSession();
-        dao = new ListingDaoImpl<>(session, User.class);
-        CQLDataLoader cqlDataLoader = new CQLDataLoader(session);
-        cqlDataLoader.load(new ClassPathCQLDataSet("demo.cql", true, true, "demo"));
+    public void cleanUp() throws Exception {
+        Iterable<TwoKeys<String, String>> all = userDao.getKeys();
+        for (TwoKeys<String, String> key : all) {
+            userDao.deleteOne(key.getKey(), key.getKey2());
+        }
     }
 
     @Test
     public void setOne() {
         final User user = new User(testKey, testKey2, age);
-        dao.setOne(user.getFirstName(), user);
+        userDao.setOne(user.getFirstName(), user);
     }
 
     @Test
     public void getOne() {
         setOne();
-        final User user = dao.getOne(testKey, testKey2);
+        final User user = userDao.getOne(testKey, testKey2);
 
         Assert.assertEquals(testKey, user.getFirstName());
     }
@@ -77,7 +73,7 @@ public class ListingDaoTest {
     public void getAll() {
         final int count = 20;
         fillData(count);
-        final List<User> all = dao.getAll(testKey);
+        final List<User> all = userDao.getAll(testKey);
 
         Assert.assertEquals(count, all.size());
     }
@@ -85,18 +81,18 @@ public class ListingDaoTest {
     @Test
     public void deleteOne() {
         setOne();
-        dao.deleteOne(testKey, testKey2);
+        userDao.deleteOne(testKey, testKey2);
 
-        Assert.assertTrue(dao.getOne(testKey, testKey2) == null);
+        Assert.assertTrue(userDao.getOne(testKey, testKey2) == null);
     }
 
     @Test
     public void deleteAll() {
         final int count = 20;
         fillData(count);
-        dao.deleteAll(testKey);
+        userDao.deleteAll(testKey);
 
-        Assert.assertEquals(0, dao.getAll().size());
+        Assert.assertEquals(0, userDao.getAll().size());
     }
 
     private List<User> fillData(int count) {
@@ -106,7 +102,7 @@ public class ListingDaoTest {
             final String key2 = testKey2 + "_" + i;
             final User user = new User(testKey, key2, age++);
             result.add(user);
-            dao.setOne(user.getFirstName(), user);
+            userDao.setOne(user.getFirstName(), user);
         }
         return result;
     }

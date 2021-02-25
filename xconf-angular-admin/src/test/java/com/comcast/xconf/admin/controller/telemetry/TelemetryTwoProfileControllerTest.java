@@ -18,16 +18,23 @@
  *******************************************************************************/
 package com.comcast.xconf.admin.controller.telemetry;
 
+import com.comcast.apps.dataaccess.dao.SimpleDao;
 import com.comcast.apps.dataaccess.util.JsonUtil;
+import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
+import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeCrudService;
+import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.search.SearchFields;
 import com.google.common.collect.Lists;
-import org.junit.Test;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -36,7 +43,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
+	
+    @Autowired
+    protected SimpleDao<String, TelemetryTwoChange> changeDao;
 
+    @Autowired
+    protected SimpleDao<String, ApprovedTelemetryTwoChange> approvedDao;
+
+    @Autowired
+    private TelemetryTwoChangeCrudService<TelemetryTwoProfile> changeCrudService;
+
+    @Before
+    @After
+    public void cleanChangeData() {
+        List<SimpleDao<String, ? extends TelemetryTwoChange>> daoList = Arrays.asList(changeDao, approvedDao);
+        for (SimpleDao<String, ? extends IPersistable> dao : daoList) {
+            for (IPersistable iPersistable : dao.getAll()) {
+                dao.deleteOne(iPersistable.getId());
+            }
+        }
+    }
+    
     @Test
     public void create() throws Exception {
         TelemetryTwoProfile telemetryTwoProfile = createTelemetryTwoProfile();
@@ -44,6 +71,9 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .content(JsonUtil.toJson(telemetryTwoProfile)))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(JsonUtil.toJson(telemetryTwoProfile)));
+        
+        List<TelemetryTwoChange<TelemetryTwoProfile>> changesByEntityId = changeCrudService.getChangesByEntityId(telemetryTwoProfile.getId());
+        assertEquals(changesByEntityId.get(0).getNewEntity().getId(),telemetryTwoProfile.getId());
     }
 
     @Test
@@ -93,6 +123,9 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(telemetryProfile)))
                 .andExpect(status().isOk());
+        
+        List<TelemetryTwoChange<TelemetryTwoProfile>> changesByEntityId = changeCrudService.getChangesByEntityId(telemetryProfile.getId());
+        assertEquals(changesByEntityId.get(0).getNewEntity().getId(),telemetryProfile.getId());
     }
 
     @Test

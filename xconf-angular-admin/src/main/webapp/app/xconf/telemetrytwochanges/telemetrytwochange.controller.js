@@ -226,7 +226,6 @@
         }
 
         function cleanUpSelectedChanges(selectedChanges, changeIdsWithError) {
-            console.log(changeIdsWithError);
             _.each(selectedChanges, function(change) {
                 if (!changeIdsWithError.includes(change.id)) {
                     utilsService.removeItemFromListById(selectedChanges, change.id);
@@ -237,7 +236,7 @@
         function isAddedToMultipleOperation(change) {
             for(var i = 0; i < vm.changesForMultipleOperation.length; i++) {
                 if (angular.equals(vm.changesForMultipleOperation[i], change)) {
-                    return true
+                    return true;
                 }
             }
         }

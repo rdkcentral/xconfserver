@@ -54,7 +54,7 @@ public class TelemetryTwoProfileChangeService extends AbstractTelemetryTwoChange
     public List<String> getEntityNames(List<TelemetryTwoChange<TelemetryTwoProfile>> changes) {
         List<String> names = new ArrayList<>();
         for (TelemetryTwoChange<TelemetryTwoProfile> change : changes) {
-        	TelemetryTwoProfile profile = TelemetryTwoChangeUtils.getEntity(change);
+            TelemetryTwoProfile profile = TelemetryTwoChangeUtils.getEntity(change);
             if (profile != null) {
                 names.add(profile.getName());
             }

@@ -145,7 +145,7 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
     
     @Override
     public TelemetryTwoProfile delete(String id) {
-    	TelemetryTwoProfile delete = super.delete(id);
+        TelemetryTwoProfile delete = super.delete(id);
         approvedChangeCrudService.saveToApproved(buildToDelete(delete, EntityType.TELEMETRY_TWO_PROFILE, permissionService.getWriteApplication(), authService.getUserNameOrUnknown()));
         return delete;
     }

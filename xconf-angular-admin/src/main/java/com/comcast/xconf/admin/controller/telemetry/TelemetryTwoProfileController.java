@@ -68,7 +68,7 @@ public class TelemetryTwoProfileController extends ApplicationTypeAwayController
     @Override
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity create(@RequestBody TelemetryTwoProfile entity) {
-    	telemetryTwoProfileService.writeCreateChange(entity);
+        telemetryTwoProfileService.writeCreateChange(entity);
         logger.info("Successfully saved create change of TelemetryTwoProfile: {}", JsonUtil.toJson(entity));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }

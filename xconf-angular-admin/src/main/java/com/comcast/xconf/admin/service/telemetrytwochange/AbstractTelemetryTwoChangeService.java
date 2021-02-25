@@ -100,7 +100,7 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
     }
 
     private void saveToApprovedAndCleanUpChange(TelemetryTwoChange<T> change) {
-    	ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.saveToApproved(change);
+        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.saveToApproved(change);
         changeCrudService.delete(change.getId());
         logger.info("Change approved by {}: {}", authService.getUserName(), approvedChange);
     }
@@ -140,7 +140,7 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
         T currentEntity = change.getOldEntity();
         T entityToChange = getEntityService().getOne(change.getEntityId());
         if (entityToChange != null && equalPendingEntities(currentEntity, entityToChange)) {
-        	ApprovedTelemetryTwoChange<T> approvedChange;
+            ApprovedTelemetryTwoChange<T> approvedChange;
             change.setApprovedUser(authService.getUserNameOrUnknown());
             if (ChangeOperation.DELETE.equals(change.getOperation())) {
                 getEntityService().delete(change.getOldEntity().getId());
@@ -157,7 +157,7 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
     }
 
     public void revert(String approvedId) {
-    	ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(approvedId);
+        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(approvedId);
         if (ChangeOperation.DELETE.equals(approvedChange.getOperation())) {
             revertDelete(approvedId);
         } else {
@@ -172,7 +172,7 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
     }
 
     private TelemetryTwoChange<T> revertDelete(String changeId) {
-    	ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(changeId);
+        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(changeId);
         getEntityService().create(approvedChange.getOldEntity());
         approvedChangeCrudService.delete(changeId);
         return approvedChange;

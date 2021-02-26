@@ -22,8 +22,7 @@
 package com.comcast.xconf.estbfirmware;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.estbfirmware.converter.NgRuleConverter;
-import com.comcast.xconf.estbfirmware.legacy.IpFilterLegacyConverter;
+import com.comcast.xconf.estbfirmware.converter.IpFilterConverter;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.search.firmware.FirmwareRulePredicates;
 import org.apache.commons.lang.StringUtils;
@@ -42,10 +41,7 @@ import static com.comcast.xconf.search.ApplicationTypePredicate.byApplication;
 public class IpFilterService {
 
     @Autowired
-    private NgRuleConverter ngRuleConverter;
-
-    @Autowired
-    private IpFilterLegacyConverter ipFilterLegacyConverter;
+    private IpFilterConverter ipFilterConverter;
 
     @Autowired
     private CachedSimpleDao<String, FirmwareRule> firmwareRuleDao;
@@ -98,12 +94,12 @@ public class IpFilterService {
 
     public IpFilter convertFirmwareRuleToIpFilter(FirmwareRule firmwareRule){
 
-        return ipFilterLegacyConverter.convertFirmwareRuleToIpFilter(ngRuleConverter.convertNew(firmwareRule));
+        return ipFilterConverter.convertFirmwareRuleToIpFilter(firmwareRule);
     }
 
     public FirmwareRule convertIpFilterToFirmwareRule(IpFilter ipFilter){
 
-        return ngRuleConverter.convertOld(ipFilterLegacyConverter.convertIpFilterToFirmwareRule(ipFilter));
+        return ipFilterConverter.convertIpFilterToFirmwareRule(ipFilter);
     }
 
 }

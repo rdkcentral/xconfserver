@@ -22,8 +22,7 @@
 package com.comcast.xconf.estbfirmware;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.estbfirmware.converter.NgRuleConverter;
-import com.comcast.xconf.estbfirmware.legacy.RebootImmediatelyLegacyConverter;
+import com.comcast.xconf.estbfirmware.converter.RebootImmediatelyConverter;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.search.firmware.FirmwareRulePredicates;
 import org.apache.commons.lang.StringUtils;
@@ -42,10 +41,7 @@ import static com.comcast.xconf.search.ApplicationTypePredicate.byApplication;
 public class RebootImmediatelyFilterService {
 
     @Autowired
-    private NgRuleConverter ngRuleConverter;
-
-    @Autowired
-    private RebootImmediatelyLegacyConverter legacyConverter;
+    private RebootImmediatelyConverter legacyConverter;
 
     @Autowired
     private CachedSimpleDao<String, FirmwareRule> firmwareRuleDao;
@@ -101,12 +97,12 @@ public class RebootImmediatelyFilterService {
 
     public RebootImmediatelyFilter convertFirmwareRuleToRebootFilter(FirmwareRule firmwareRule) {
 
-        return legacyConverter.convertFirmwareRuleToRebootFilter(ngRuleConverter.convertNew(firmwareRule));
+        return legacyConverter.convertFirmwareRuleToRebootFilter(firmwareRule);
     }
 
     public FirmwareRule convertRebootFilterToFirmwareRule(RebootImmediatelyFilter filter) {
 
-        return ngRuleConverter.convertOld(legacyConverter.convertRebootFilterToFirmwareRule(filter));
+        return legacyConverter.convertRebootFilterToFirmwareRule(filter);
     }
 
 }

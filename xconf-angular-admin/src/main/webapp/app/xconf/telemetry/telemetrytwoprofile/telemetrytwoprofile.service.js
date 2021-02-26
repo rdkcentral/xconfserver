@@ -24,9 +24,9 @@
         .module('app.telemetrytwoprofile')
         .factory('telemetryTwoProfileService', service);
 
-    service.$inject = ['$http'];
+    service.$inject = ['$http', 'utilsService', 'syncHttpService'];
 
-    function service($http) {
+    function service($http, utilsService, syncHttpService) {
         var API_URL = 'api/telemetry/v2/profile/';
 
         return {
@@ -36,10 +36,13 @@
             getTelemetryTwoProfile: getTelemetryTwoProfile,
             deleteTelemetryTwoProfile: deleteTelemetryTwoProfile,
             exportOne: exportOne,
+            exportAll: exportAll,
             getAll: getAll,
             getTelemetryTwoProfilesByIdList: getTelemetryTwoProfilesByIdList,
             getProfileView: getProfileView,
-            getProfileName: getProfileName
+            getProfileName: getProfileName,
+            updateSyncEntities: updateSyncEntities,
+            createSyncEntities: createSyncEntities
         };
 
         function getAll() {
@@ -69,6 +72,10 @@
 
         function exportOne(id) {
             window.open(API_URL + id + '?export');
+        }
+
+        function exportAll() {
+            window.open(API_URL + '?export');
         }
 
         function getTelemetryTwoProfilesByIdList(idList) {
@@ -109,6 +116,15 @@
 
         function getProfileName(profile) {
             return profile['name'];
+        }
+        function updateSyncEntities(telemetryTwoProfiles) {
+            var requests = utilsService.generateRequestList(telemetryTwoProfiles, {url: API_URL + 'entities', method: 'PUT'});
+            return requests && requests.length ? syncHttpService.http(requests) : null;
+        }
+
+        function createSyncEntities(telemetryTwoProfile) {
+            var requests = utilsService.generateRequestList(telemetryTwoProfile, {url: API_URL + 'entities', method: 'POST'});
+            return requests && requests.length ? syncHttpService.http(requests) : null;
         }
     }
 })();

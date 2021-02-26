@@ -24,43 +24,36 @@ import com.comcast.apps.dataaccess.annotation.CF;
 import com.comcast.apps.dataaccess.dao.SimpleDao;
 import com.comcast.apps.dataaccess.dao.impl.SimpleDaoImpl;
 import com.comcast.apps.dataaccess.data.Persistable;
-import com.datastax.driver.core.Cluster;
+import com.comcast.apps.dataaccess.test.config.AppConfig;
 import com.datastax.driver.core.Session;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
-import org.cassandraunit.CQLDataLoader;
-import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.*;
 
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = {AppConfig.class})
 public class SimpleDaoTest {
-    private Session session;
+
     private SimpleDao<String, User> dao;
     private String testLogin = "testLogin";
     private String testFirstName = "testFirstName";
     private String testLastName = "testLastName";
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        EmbeddedCassandraServerHelper.startEmbeddedCassandra(50000L);
-        EmbeddedCassandraServerHelper.getCluster().getConfiguration().getSocketOptions().setReadTimeoutMillis(50000);
-        final Cluster cluster = new Cluster.Builder().addContactPoints("127.0.0.1").withPort(9142).build();
-        cluster.connect();
-    }
-
     @Before
     public void setUp() {
-        session = EmbeddedCassandraServerHelper.getSession();
+        Session session = EmbeddedCassandraServerHelper.getSession();
         dao = new SimpleDaoImpl<>(session, User.class);
-        CQLDataLoader cqlDataLoader = new CQLDataLoader(session);
-        cqlDataLoader.load(new ClassPathCQLDataSet("demo.cql", true, true, "demo"));
     }
 
     @Test
@@ -91,7 +84,7 @@ public class SimpleDaoTest {
         setOne();
         dao.deleteOne(testLogin);
 
-        Assert.assertTrue(dao.getOne(testLogin) == null);
+        Assert.assertNull(dao.getOne(testLogin));
     }
 
     @Test

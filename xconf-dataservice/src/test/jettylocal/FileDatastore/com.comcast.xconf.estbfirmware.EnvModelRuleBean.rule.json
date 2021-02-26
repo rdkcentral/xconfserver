@@ -1,1 +1,0 @@
-{"id":"1f023414-1775-4453-9618-aec39394046f","name":"VBN - PR150BNM - XG1","order":0,"type":"com.comcast.xconf.estbfirmware.EnvModelRuleBean","expression":"{\"targetedModelIds\":[],\"environmentId\":\"VBN\",\"modelId\":\"PR150BNM\",\"ipAddressGroup\":null}","outputId":"c1afe7e4-53ef-4e73-8718-330877503da4","filterIds":null,"listenerIds":null}

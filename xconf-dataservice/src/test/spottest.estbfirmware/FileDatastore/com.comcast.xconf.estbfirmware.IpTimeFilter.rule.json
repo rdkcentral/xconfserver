@@ -1,1 +1,0 @@
-{"id":"HARLOD","name":"harold","order":0,"type":"com.comcast.xconf.estbfirmware.IpTimeFilter","expression":"{\"firmwareConfig\":\"UUID-234\",\"ipMatch\":null,\"start\":\"13:33:09.000\",\"end\":\"05:33:38.000\",\"ipWhitelist\":null}","outputId":"UUID-234","filterIds":null,"listenerIds":null}

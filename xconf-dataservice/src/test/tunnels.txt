@@ -1,7 +1,0 @@
-DEV
-ssh -L 8810:ccpxcb-dt-a001-d.dt.ccp.cable.comcast.com:8080 jstein@ccpcap-dt-c001-i.dt.ccp.cable.comcast.com
-ssh -L 8815:ccpxcb-dt-a001-d.dt.ccp.cable.comcast.com:8085 jstein@ccpcap-dt-c001-i.dt.ccp.cable.comcast.com
-
-QA
-ssh -L 8811:ccpxcb-dt-a001-q.dt.ccp.cable.comcast.com:8080 jstein@ccpcap-dt-c001-i.dt.ccp.cable.comcast.com
-ssh -L 8815:ccpxcb-dt-a001-q.dt.ccp.cable.comcast.com:8085 jstein@ccpcap-dt-c001-i.dt.ccp.cable.comcast.com

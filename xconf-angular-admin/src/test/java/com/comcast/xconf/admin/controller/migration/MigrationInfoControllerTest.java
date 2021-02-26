@@ -25,7 +25,6 @@ import com.comcast.xconf.NamespacedList;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.logupload.DCMGenericRule;
-import com.comcast.xconf.logupload.Formula;
 import com.comcast.xconf.utils.MigrationInfo;
 import org.junit.Test;
 
@@ -51,17 +50,11 @@ public class MigrationInfoControllerTest extends BaseControllerTest {
         DCMGenericRule dcmRule = createFormula();
         dcmRuleDAO.setOne(dcmRule.getId(), dcmRule);
 
-        Formula formula = createOldFormula();
-        formulaDAO.setOne(formula.getId(), formula);
-
         IpAddressGroupExtended ipAddressGroupExtended = createIpAddressGroup("ipAddressGroupId");
         ipAddressGroupDAO.setOne(ipAddressGroupExtended.getId(), ipAddressGroupExtended);
 
         NamespacedList namespacedList = createNamespacedList();
         namespacedListDAO.setOne(namespacedList.getId(), namespacedList);
-
-        com.comcast.xconf.estbfirmware.FirmwareRule oldFirmwareRule = createOldFirmwareRule();
-        firmwareRuleDAO.setOne(oldFirmwareRule.getId(), oldFirmwareRule);
 
         FirmwareRule firmwareRule = createFirmwareRule();
         firmwareRuleDao.setOne(firmwareRule.getId(), firmwareRule);

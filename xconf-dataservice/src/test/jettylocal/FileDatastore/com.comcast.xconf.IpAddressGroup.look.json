@@ -1,5 +1,0 @@
-{"type":"com.comcast.xconf.IpAddressGroup","id":"82597c4a-d338-4e55-a364-057dd22c9936","value":"{\"id\":\"82597c4a-d338-4e55-a364-057dd22c9936\",\"name\":\"Warehouse 37\",\"ipAddresses\":[\"37.37.37.37/22\"]}"}
-{"type":"com.comcast.xconf.IpAddressGroup","id":"fd1abd28-73e0-40dc-86f8-149dbe643b51","value":"{\"id\":\"fd1abd28-73e0-40dc-86f8-149dbe643b51\",\"name\":\"Eastern Timezone\",\"ipAddresses\":[\"123.123.55.12\",\"44.55.66.77\"]}"}
-{"type":"com.comcast.xconf.IpAddressGroup","id":"6bdd34c7-81d2-4d6b-a68c-0991f9fc5586","value":"{\"id\":\"6bdd34c7-81d2-4d6b-a68c-0991f9fc5586\",\"name\":\"Central Timezone\",\"ipAddresses\":[\"99.24.33.123/10\"]}"}
-{"type":"com.comcast.xconf.IpAddressGroup","id":"7b64e1fd-15e8-4fcb-b975-6e00afa65f4a","value":"{\"id\":\"7b64e1fd-15e8-4fcb-b975-6e00afa65f4a\",\"name\":\"Pacific Timezone\",\"ipAddresses\":[\"44.55.11.9\",\"9.124.22.33/10\"]}"}
-{"type":"com.comcast.xconf.IpAddressGroup","id":"f4b03a26-153b-40c1-9def-f1cdd57f88ac","value":"{\"id\":\"f4b03a26-153b-40c1-9def-f1cdd57f88ac\",\"name\":\"Warehouse 200\",\"ipAddresses\":[\"200.3.44.55/24\",\"200.45.122.11/28\"]}"}

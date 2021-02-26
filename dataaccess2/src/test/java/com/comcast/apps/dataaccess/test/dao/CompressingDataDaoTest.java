@@ -21,49 +21,35 @@
 package com.comcast.apps.dataaccess.test.dao;
 
 import com.comcast.apps.dataaccess.dao.impl.CompressingDataDao;
+import com.comcast.apps.dataaccess.test.config.AppConfig;
 import com.comcast.apps.dataaccess.test.legacy.NamespacedList;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import org.cassandraunit.CQLDataLoader;
-import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
-import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = {AppConfig.class})
 public class CompressingDataDaoTest {
 
-    private Session session;
-    private CompressingDataDao<String, NamespacedList> dao;
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        EmbeddedCassandraServerHelper.startEmbeddedCassandra(50000L);
-        EmbeddedCassandraServerHelper.getCluster().getConfiguration().getSocketOptions().setReadTimeoutMillis(50000);
-        final Cluster cluster = new Cluster.Builder().addContactPoints("127.0.0.1").withPort(9142).build();
-        cluster.connect();
-    }
-
-    @Before
-    public void setUp() {
-        session = EmbeddedCassandraServerHelper.getSession();
-        dao = new CompressingDataDao<>(session, NamespacedList.class);
-        CQLDataLoader cqlDataLoader = new CQLDataLoader(session);
-        cqlDataLoader.load(new ClassPathCQLDataSet("demo.cql", true, true, "demo"));
-    }
+    @Autowired
+    private CompressingDataDao<String, NamespacedList> namespacedListDao;
 
     @Test
     public void getOne() throws Exception {
         String id = "abc";
         NamespacedList list = createAndSaveEnitty(id);
 
-        NamespacedList listFromDB = dao.getOne(id);
+        NamespacedList listFromDB = namespacedListDao.getOne(id);
 
         Assert.assertEquals(list, listFromDB);
     }
@@ -73,7 +59,7 @@ public class CompressingDataDaoTest {
         int count = 20;
         fillData(count);
 
-        List<NamespacedList> all = dao.getAll();
+        List<NamespacedList> all = namespacedListDao.getAll();
 
         Assert.assertEquals(count, all.size());
     }
@@ -83,9 +69,9 @@ public class CompressingDataDaoTest {
         String id = "abc";
         createAndSaveEnitty(id);
 
-        dao.deleteOne(id);
+        namespacedListDao.deleteOne(id);
 
-        Assert.assertNull(dao.getOne(id));
+        Assert.assertNull(namespacedListDao.getOne(id));
     }
 
     @Test
@@ -96,7 +82,7 @@ public class CompressingDataDaoTest {
         for (int i = 0; i < (count - 10); i++) {
             keys.add("" + i);
         }
-        final Map<String, Optional<NamespacedList>> allAsMap = dao.getAllAsMap(keys);
+        final Map<String, Optional<NamespacedList>> allAsMap = namespacedListDao.getAllAsMap(keys);
 
         Assert.assertEquals((count - 10), allAsMap.size());
     }
@@ -105,7 +91,7 @@ public class CompressingDataDaoTest {
     public void getKeys() {
         final int count = 20;
         fillData(count);
-        final Iterable<String> keys = dao.getKeys();
+        final Iterable<String> keys = namespacedListDao.getKeys();
 
         Assert.assertEquals(Iterables.size(keys), count);
     }
@@ -120,7 +106,7 @@ public class CompressingDataDaoTest {
 
     private NamespacedList createAndSaveEnitty(String id) {
         NamespacedList entity = createEntity(id);
-        dao.setOne(id, entity);
+        namespacedListDao.setOne(id, entity);
         return entity;
     }
 

@@ -21,18 +21,15 @@
 */
 package com.comcast.xconf.estbfirmware.converter;
 
-import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddress;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddressGroup;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.xconf.ConfigNames;
 import com.comcast.xconf.estbfirmware.DownloadLocationFilter;
-import com.comcast.xconf.estbfirmware.FilterAction;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
-import com.comcast.xconf.estbfirmware.legacy.LegacyConverterHelper;
 import com.comcast.xconf.firmware.DefinePropertiesAction;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.service.GenericNamespacedListLegacyService;
@@ -53,49 +50,6 @@ public class DownloadLocationFilterConverter {
 
     @Autowired
     private GenericNamespacedListLegacyService genericNamespacedListService;
-
-    @Autowired
-    private CachedSimpleDao<String, FilterAction> filterActionDAO;
-
-    public List<FirmwareRule> convert(com.comcast.xconf.estbfirmware.FirmwareRule oldRule) {
-        if (!oldRule.getType().equals(com.comcast.xconf.estbfirmware.FirmwareRule.RuleType.DOWNLOAD_LOCATION_FILTER)) {
-            throw new IllegalArgumentException("Could convert only DownloadLocationFilter");
-        }
-
-        FilterAction filterAction = filterActionDAO.getOne(oldRule.getBoundConfigId());
-        if (filterAction == null) {
-            return new ArrayList<>();
-        }
-        IpAddress ipv4Location = filterAction.getFirmwareLocation();
-        IpAddress ipv6Location = filterAction.getIpv6FirmwareLocation();
-        String httpLocation = filterAction.getHttpLocation();
-        boolean forceHttp = filterAction.getForceHttp() != null ? filterAction.getForceHttp() : false;
-
-        String listRef = getListRef(oldRule);
-        if (listRef == null) {
-            throw new IllegalArgumentException("No IP condition found in rule: " + oldRule.getName());
-        }
-        List<FirmwareRule> result = new ArrayList<>();
-        String id = oldRule.getId();
-        String name = oldRule.getName();
-        boolean isTftpEmpty = ipv4Location == null;
-        boolean isHttpEmpty = StringUtils.isBlank(httpLocation);
-
-        if (!forceHttp && !isTftpEmpty && !isHttpEmpty) {
-            String httpName = name + HTTP_SUFFIX;
-            Rule httpRule = RuleFactory.newDownloadLocationFilter(listRef, HTTP_PROTOCOL);
-            result.add(newFilter(httpRule, null, httpName, newHttpAction(httpLocation)));
-
-            String tftpName = name + TFTP_SUFFIX;
-            Rule tftpRule = RuleFactory.newDownloadLocationFilter(listRef, TFTP_PROTOCOL);
-            result.add(newFilter(tftpRule, null, tftpName, newTftpAction(ipv4Location, ipv6Location)));
-        } else if (forceHttp || isTftpEmpty) {
-            result.add(newFilter(RuleFactory.newDownloadLocationFilter(listRef), id, name, newHttpAction(httpLocation)));
-        } else {
-            result.add(newFilter(RuleFactory.newDownloadLocationFilter(listRef), id, name, newTftpAction(ipv4Location, ipv6Location)));
-        }
-        return result;
-    }
 
     public FirmwareRule convert(DownloadLocationFilter bean) {
         String ipList = bean.getIpAddressGroup().getName();
@@ -172,7 +126,7 @@ public class DownloadLocationFilterConverter {
         if (condition == null || condition.getFreeArg() == null) {
             return null;
         }
-        if (LegacyConverterHelper.isLegacyIpCondition(condition)) {
+        if (ConverterHelper.isLegacyIpCondition(condition)) {
             IpAddressGroup group = (IpAddressGroup) condition.getFixedArg().getValue();
             return group.getName();
         }  else if (RuleFactory.IN_LIST.equals(condition.getOperation()) && RuleFactory.IP.equals(condition.getFreeArg())) {

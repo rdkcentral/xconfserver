@@ -27,15 +27,9 @@ import com.comcast.xconf.dcm.formula.*;
 import com.comcast.xconf.dcm.ruleengine.TelemetryProfileControllerTest;
 import com.comcast.xconf.dcm.ruleengine.TelemetryProfileService;
 import com.comcast.xconf.estbfirmware.*;
-import com.comcast.xconf.estbfirmware.converter.DownloadLocationFilterConverterTest;
-import com.comcast.xconf.estbfirmware.converter.NgRuleConverterTest;
-import com.comcast.xconf.estbfirmware.converter.TimeFilterConverterTest;
+import com.comcast.xconf.estbfirmware.converter.*;
 import com.comcast.xconf.estbfirmware.evaluation.PercentFilterTest;
 import com.comcast.xconf.estbfirmware.evaluation.percentfilter.*;
-import com.comcast.xconf.estbfirmware.legacy.IpFilterLegacyConverterTest;
-import com.comcast.xconf.estbfirmware.legacy.MacRuleLegacyConverterTest;
-import com.comcast.xconf.estbfirmware.legacy.RebootImmediatelyLegacyConverterTest;
-import com.comcast.xconf.estbfirmware.legacy.TimeFilterLegacyConverterTest;
 import com.comcast.xconf.estbfirmware.migration.MigrationControllerTest;
 import com.comcast.xconf.featurecontrol.FeatureControlSettingTest;
 import com.comcast.xconf.filter.UpdateDeleteApiFilterTest;
@@ -72,12 +66,12 @@ import java.io.IOException;
         LocationQueriesControllerTest.class, MacRuleQueriesControllerTest.class,
         NsListQueriesControllerTest.class, RiFilterQueriesControllerTest.class,
         DcmRuleConverterTest.class,
-        DownloadLocationFilterConverterTest.class,
-        TimeFilterConverterTest.class, TimeFilterLegacyConverterTest.class,
-        IpFilterLegacyConverterTest.class, MacRuleLegacyConverterTest.class,
-        RebootImmediatelyLegacyConverterTest.class,
+        DownloadLocationFilterConverterTest.class, EnvModelRuleConverterTest.class,
+        IpFilterConverterTest.class, IpRuleConverterTest.class,
+        MacRuleConverterTest.class, PercentageBeanConverterTest.class,
+        RebootImmediatelyConverterTest.class, TimeFilterConverterTest.class,
         EnvironmentServiceTest.class, PercentFilterServiceTest.class,
-        NgRuleConverterTest.class, MigrationControllerTest.class,
+        MigrationControllerTest.class,
         UpdateDeleteApiFilterTest.class, UpdateDateAspectTest.class,
         PercentFilterTestCase1.class, PercentFilterTestCase2.class, PercentFilterTestCase3.class,
         PercentFilterTestCase4.class, PercentFilterTestCase5.class, PercentFilterTestCase6.class,

@@ -35,12 +35,7 @@ import com.comcast.xconf.firmware.FirmwareRuleTemplate;
 import com.comcast.xconf.logupload.*;
 import com.comcast.xconf.logupload.settings.SettingProfile;
 import com.comcast.xconf.logupload.settings.SettingRule;
-import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryRule;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
-import com.comcast.xconf.logupload.telemetry.TimestampedRule;
+import com.comcast.xconf.logupload.telemetry.*;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.FeatureRule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,18 +64,8 @@ public class DatastoreContext {
     }
 
     @Bean
-    CachedSimpleDao<String, FirmwareRule> firmwareRuleDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, FirmwareRule.class);
-    }
-
-    @Bean
     CachedSimpleDao<String, com.comcast.xconf.firmware.FirmwareRule> firmwareRuleDao() {
         return daoFactory.createCachedSimpleDao(String.class, com.comcast.xconf.firmware.FirmwareRule.class);
-    }
-
-    @Bean
-    CachedSimpleDao<String, com.comcast.xconf.firmware.legacy.FirmwareRule> firmwareRuleLegacyDao() {
-        return daoFactory.createCachedSimpleDao(String.class, com.comcast.xconf.firmware.legacy.FirmwareRule.class);
     }
 
     @Bean
@@ -124,11 +109,6 @@ public class DatastoreContext {
     }
 
     @Bean
-    CachedSimpleDao<String, Formula> formulaDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, Formula.class);
-    }
-
-    @Bean
     CachedSimpleDao<String, VodSettings> vodSettingsDAO() {
         return daoFactory.createCachedSimpleDao(String.class, VodSettings.class);
     }
@@ -146,11 +126,6 @@ public class DatastoreContext {
     @Bean
     CachedSimpleDao<String, SingletonFilterValue> singletonFilterValueDAO() {
         return daoFactory.createCachedSimpleDao(String.class, SingletonFilterValue.class);
-    }
-
-    @Bean
-    CachedSimpleDao<String, FilterAction> filterActionDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, FilterAction.class);
     }
 
     @Bean

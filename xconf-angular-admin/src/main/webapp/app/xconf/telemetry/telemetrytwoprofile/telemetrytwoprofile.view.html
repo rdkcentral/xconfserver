@@ -18,22 +18,25 @@
 * limitations under the License.
 *
 -->
-<h1 class="page-header">Telemetry 2.0 profile - View</h1>
-<div class="col-md-12">
-    <div class="col-md-5">
-        <div>
-            <label>Name</label>
-            <input type="text" id="name" class="form-control" ng-model="vm.telemetryTwoProfile.name" readonly/>
+<div class="modal-header" xmlns="http://www.w3.org/1999/html">
+    <h3 class="modal-title">View Telemetry 2 Profile</h3>
+    <button class="btn btn-danger ads-btn-clipboard-top-right ads-btn-symbol" ng-click="vm.dismiss()">
+        <span>&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Name</div>
+                    <input type="text" class="form-control" ng-model="vm.profile.name" readonly/>
+                </div>
+            </div>
         </div>
-        <div style="padding-top: 1em">
-            <label>JSON Config</label>
-            <textarea type="text" id="jsonconfig" class="form-control" rows="12" ng-model="vm.telemetryTwoProfile.jsonconfig" readonly/>
-        </div>
-    </div>
-
-    <div class="col-md-12" style="padding-top: 1em">
-        <div style="padding-top: 2em">
-            <button type="button" class="btn btn-default" ui-sref="telemetrytwoprofiles">Cancel</button>
+        <div class="col-md-12">
+            <label>JSON Config</label><br>
+            <textarea type="text" class="form-control" rows="25" ng-model="vm.profile.jsonconfig" readonly> </textarea>
         </div>
     </div>
 </div>

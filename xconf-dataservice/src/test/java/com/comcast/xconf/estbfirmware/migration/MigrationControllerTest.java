@@ -28,7 +28,6 @@ import com.comcast.xconf.firmware.FirmwareRuleTemplate;
 import com.comcast.xconf.migration.MigrationController;
 import com.comcast.xconf.queries.controllers.BaseQueriesControllerTest;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.junit.Assert;
@@ -46,11 +45,10 @@ public class MigrationControllerTest extends BaseQueriesControllerTest {
     /**
      * First create all templates, try to delete one template.
      * During startup this template should not be recreated if any other templates are exist.
-     * @throws Exception
      */
     @Test
-    public void initializeTemplatesDuringStartup() throws Exception {
-        migrationController.doMigrate();
+    public void initializeTemplatesDuringStartup() {
+        migrationController.initializeTemplates();
         firmwareRuleTemplateDao.deleteOne(TemplateNames.IP_RULE);
 
         migrationController.initializeTemplates();
@@ -63,12 +61,7 @@ public class MigrationControllerTest extends BaseQueriesControllerTest {
 
     private int getRuleTemplatesCount() {
         Iterable<FirmwareRuleTemplate> all = Optional.presentInstances(firmwareRuleTemplateDao.asLoadingCache().asMap().values());
-        return Lists.newArrayList(Iterables.filter(all, new Predicate<FirmwareRuleTemplate>() {
-            @Override
-            public boolean apply(FirmwareRuleTemplate input) {
-                return input.getApplicableAction() != null
-                        && input.getApplicableAction().getActionType() == ApplicableAction.Type.RULE_TEMPLATE;
-            }
-        })).size();
+        return Lists.newArrayList(Iterables.filter(all, input -> input.getApplicableAction() != null
+                && input.getApplicableAction().getActionType() == ApplicableAction.Type.RULE_TEMPLATE)).size();
     }
 }

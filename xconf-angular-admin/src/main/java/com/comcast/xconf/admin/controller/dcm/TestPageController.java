@@ -20,7 +20,7 @@ package com.comcast.xconf.admin.controller.dcm;
 
 import com.comcast.xconf.MacAddressUtil;
 import com.comcast.xconf.dcm.ruleengine.LogUploadRuleBase;
-import com.comcast.xconf.logupload.DCMRule;
+import com.comcast.xconf.logupload.DCMGenericRule;
 import com.comcast.xconf.logupload.LogUploaderContext;
 import com.comcast.xconf.logupload.Settings;
 import com.comcast.xconf.permissions.DcmPermissionService;
@@ -71,7 +71,7 @@ public class TestPageController {
         }
         allSettings.put("settings", eval);
         allSettings.put("ruleIds", eval.getRuleIDs());
-        allSettings.put("ruleType", DCMRule.class.getSimpleName());
+        allSettings.put("ruleType", DCMGenericRule.class.getSimpleName());
         return new ResponseEntity<>(allSettings, HttpStatus.OK);
     }
 }

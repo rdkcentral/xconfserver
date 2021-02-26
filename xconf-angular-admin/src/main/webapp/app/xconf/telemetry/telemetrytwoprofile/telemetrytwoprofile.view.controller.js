@@ -21,26 +21,18 @@
 
  	angular
  		.module('app.telemetrytwoprofile')
- 		.controller('TelmetryTwoProfileViewController', controller);
+ 		.controller('TelemetryTwoProfileViewController', controller);
 
-	controller.$inject = ['$rootScope', '$scope', '$controller', 'PROTOCOL', 'telemetryTwoProfileService', '$stateParams', '$state', 'alertsService', 'utilsService'];
+	controller.$inject = ['$rootScope', '$scope', '$controller', 'telemetryTwoProfileService', '$stateParams', '$state', 'alertsService', 'profile', '$uibModalInstance'];
 
-	function controller($rootScope, $scope, $controller, PROTOCOL, telemetryTwoProfileService, $stateParams, $state, alertsService, utilsService){
+	function controller($rootScope, $scope, $controller, telemetryTwoProfileService, $stateParams, $state, alertsService, profile, $uibModalInstance){
 		var vm = this;
 
-		vm.telemetryTwoProfile = null;
+		vm.profile = profile;
+		vm.dismiss = dismiss;
 
-		init();
-
-		function init() {
-			if($stateParams.telemetryProfileId){
-				telemetryTwoProfileService.getTelemetryTwoProfile($stateParams.telemetryProfileId)
-                .then(function(resp) {
-                    if (resp) {
-                        vm.telemetryTwoProfile = resp.data;
-                    }
-                }, alertsService.errorHandler);
-			}
+		function dismiss() {
+			$uibModalInstance.dismiss('close');
 		}
 	}
  })();

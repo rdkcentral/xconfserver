@@ -68,9 +68,9 @@ public class PercentFilter {
 
             if (envModelPercentage.isFirmwareCheckRequired() && firmwareVersionIsAbsentInFilter) {
                 if (envModelPercentage.isRebootImmediately()) {
-                    context.getForceFilters().add(FirmwareRule.RuleType.REBOOT_IMMEDIATELY_FILTER.toString());
+                    context.getForceFilters().add(TemplateNames.REBOOT_IMMEDIATELY_FILTER);
                 }
-                context.getBypassFilters().add(FirmwareRule.RuleType.TIME_FILTER.toString());
+                context.getBypassFilters().add(TemplateNames.TIME_FILTER);
 
                 FirmwareConfig config = getFirmwareConfig(envModelPercentage.getIntermediateVersion());
                 if (config != null && !StringUtils.equals(context.getFirmwareVersion(), config.getFirmwareVersion())) {

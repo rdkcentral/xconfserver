@@ -45,8 +45,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import static com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation.IN;
-import static com.comcast.xconf.estbfirmware.FirmwareRule.ENV;
-import static com.comcast.xconf.estbfirmware.FirmwareRule.IN_LIST;
+import static com.comcast.xconf.estbfirmware.factory.RuleFactory.ENV;
+import static com.comcast.xconf.estbfirmware.factory.RuleFactory.IN_LIST;
 
 @Component
 public class FormulaRuleBuilder {

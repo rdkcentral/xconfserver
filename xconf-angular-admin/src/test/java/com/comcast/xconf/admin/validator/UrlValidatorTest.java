@@ -38,6 +38,9 @@ public class UrlValidatorTest {
 
         valid = Utils.isValidUrl("https://www.abc.com");
         assertTrue(valid);
+
+        valid = Utils.isValidUrl("tftp://10.10.10.10");
+        assertTrue(valid);
     }
 
     @Test

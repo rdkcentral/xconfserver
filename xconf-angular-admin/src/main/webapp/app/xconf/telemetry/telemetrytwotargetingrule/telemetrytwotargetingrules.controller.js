@@ -23,9 +23,9 @@
         .module('app.telemetrytwotargetingrule')
         .controller('TelemetryTwoTargetingRulesController', controller);
 
-    controller.$inject = ['$scope', '$controller', 'telemetryTwoTargetingRuleService', 'alertsService', 'utilsService', 'dialogs', 'telemetryTwoProfileService', 'paginationService', 'RULE_SEARCH_OPTIONS'];
+    controller.$inject = ['$scope', '$controller', 'telemetryTwoTargetingRuleService', 'alertsService', 'utilsService', 'dialogs', 'telemetryTwoProfileService', 'paginationService', 'RULE_SEARCH_OPTIONS', '$uibModal'];
 
-    function controller($scope, $controller, telemetryTwoTargetingRuleService, alertsService, utilsService, dialogs, telemetryTwoProfileService, paginationService, RULE_SEARCH_OPTIONS) {
+    function controller($scope, $controller, telemetryTwoTargetingRuleService, alertsService, utilsService, dialogs, telemetryTwoProfileService, paginationService, RULE_SEARCH_OPTIONS, $modal) {
         var vm = this;
 
         angular.extend(vm, $controller('MainController', {
@@ -47,6 +47,7 @@
         vm.startParse = startParse;
         vm.getGeneralItemsNumber = getGeneralItemsNumber;
         vm.shiftItems = shiftItems;
+        vm.viewTelemetryTwoRule = viewTelemetryTwoRule;
 
         init();
 
@@ -123,6 +124,19 @@
                 paginationService.savePaginationSettingsInLocation(vm.pageNumber, vm.pageSize);
             }, function (error) {
                 alertsService.showError({title: 'Error', message: error.data.message});
+            });
+        }
+
+        function viewTelemetryTwoRule(telemetryRule) {
+            $modal.open({
+                templateUrl: 'app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.view.html',
+                controller: 'TelemetryTwoTargetingRuleViewController as vm',
+                size: 'lg',
+                resolve : {
+                    telemetryRule: function() {
+                        return telemetryRule;
+                    }
+                }
             });
         }
     }

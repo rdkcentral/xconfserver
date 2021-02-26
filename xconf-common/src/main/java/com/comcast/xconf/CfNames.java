@@ -23,7 +23,6 @@ package com.comcast.xconf;
 
 public interface CfNames {
     interface LogUpload {
-        String FORMULA = "Formula2"; // bean for logupload rule TODO refactor
         String DCM_RULE = "DcmRule";
         String UPLOAD_REPOSITORY = "UploadRepository";
         String LOG_UPLOAD_SETTINGS = "LogUploadSettings2";
@@ -36,9 +35,8 @@ public interface CfNames {
         String VOD_SETTINGS = "VodSettings2";
     }
     interface Firmware {
-        String FIRMWARE_RULE = "FirmwareRule2";
+        String FIRMWARE_RULE = "FirmwareRule4";
         String FIRMWARE_CONFIG = "FirmwareConfig";
-        String FILTER_ACTION = "FilterAction";
         String SINGLETON_FILTER_VALUE = "SingletonFilterValue";
         String MODEL = "Model";
     }

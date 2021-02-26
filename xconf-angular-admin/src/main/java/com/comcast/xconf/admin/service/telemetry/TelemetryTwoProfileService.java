@@ -28,14 +28,16 @@ import com.comcast.xconf.admin.validator.telemetry.TelemetryTwoProfileValidator;
 import com.comcast.xconf.auth.AuthService;
 import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.change.TelemetryTwoChange;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.permissions.PermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.TelemetryTwoProfilePredicates;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
-
+import com.google.common.base.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,6 +58,9 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
 
     @Autowired
     private CachedSimpleDao<String, TelemetryTwoProfile> telemetryTwoProfileDAO;
+
+    @Autowired
+    private CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO;
 
     @Autowired
     private TelemetryPermissionService permissionService;
@@ -148,5 +153,15 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
         TelemetryTwoProfile delete = super.delete(id);
         approvedChangeCrudService.saveToApproved(buildToDelete(delete, EntityType.TELEMETRY_TWO_PROFILE, permissionService.getWriteApplication(), authService.getUserNameOrUnknown()));
         return delete;
+    }
+
+    @Override
+    protected void validateUsage(String id) {
+        Iterable<TelemetryTwoRule> all = Optional.presentInstances(telemetryTwoRuleDAO.asLoadingCache().asMap().values());
+        for (TelemetryTwoRule rule : all) {
+            if (rule.getBoundTelemetryIds().contains(id)) {
+                throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
+            }
+        }
     }
 }

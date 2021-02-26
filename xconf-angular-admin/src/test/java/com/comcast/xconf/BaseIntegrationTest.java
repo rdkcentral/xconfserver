@@ -158,19 +158,11 @@ public class BaseIntegrationTest {
 
     @Autowired
     @Deprecated
-    protected CachedSimpleDao<String, Formula> formulaDAO;
-
-    @Autowired
-    @Deprecated
     protected CachedSimpleDao<String, IpAddressGroupExtended> ipAddressGroupDAO;
 
     @Autowired
     @Deprecated
     protected CachedSimpleDao<String, NamespacedList> namespacedListDAO;
-
-    @Autowired
-    @Deprecated
-    protected CachedSimpleDao<String, com.comcast.xconf.estbfirmware.FirmwareRule> firmwareRuleDAO;
 
     @Autowired
     protected FirmwarePermissionService firmwarePermissionService;
@@ -215,7 +207,7 @@ public class BaseIntegrationTest {
                 logUploadSettingsDAO, deviceSettingsDAO, firmwareRuleTemplateDao, firmwareConfigDAO,
                 firmwareRuleDao, vodSettingsDAO, permanentTelemetryDAO, telemetryRuleDAO, featureRuleDAO,
                 genericNamespacedListDAO, singletonFilterValueDAO, settingProfileDao, settingRuleDAO,
-                formulaDAO, ipAddressGroupDAO, namespacedListDAO, firmwareRuleDAO,
+                ipAddressGroupDAO, namespacedListDAO,
                 featureDAO, telemetryTwoProfileDAO, telemetryTwoRuleDAO
         );
         cleanData(daoList);

@@ -41,12 +41,7 @@ public class Utils {
     }
 
     public static boolean isValidUrl(String url) {
-        try {
-            new URL(url).toURI();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return urlValidator.isValid(url);
     }
 
     public static boolean isValidUrl(UploadProtocol protocol, String host) {

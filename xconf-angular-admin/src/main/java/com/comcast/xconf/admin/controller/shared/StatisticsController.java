@@ -51,7 +51,7 @@ public class StatisticsController {
 
     {
         String unusedList = "LogFile,LogFilesGroups,LogFileList,ConfigurationServiceURLs";
-        String legacyList = "XconfNamedList,IpAddressGroupExtended,Formula2,FirmwareRule2,FilterAction";
+        String legacyList = "XconfNamedList,IpAddressGroupExtended,Formula2";
         legacyCFs.addAll(Arrays.asList(unusedList.split("[,]")));
         legacyCFs.addAll(Arrays.asList(legacyList.split("[,]")));
     }

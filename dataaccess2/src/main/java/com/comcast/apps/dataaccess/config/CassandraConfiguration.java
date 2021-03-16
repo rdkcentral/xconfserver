@@ -120,6 +120,10 @@ public class CassandraConfiguration {
         KeyManagerFactory kmf = initKeyManagerFactory(ksf, keystorePassword);
 
         ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+
+        tsf.close();
+        ksf.close();
+
         return ctx;
     }
 

@@ -23,25 +23,43 @@ package com.comcast.apps.dataaccess.config;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.util.Collections;
+import java.util.Optional;
+
+import static com.comcast.apps.dataaccess.config.SslSettings.JKS;
+import static com.comcast.apps.dataaccess.config.SslSettings.SSL;
 
 
 @Configuration
 public class CassandraConfiguration {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CassandraConfiguration.class);
 
     protected CassandraSettings cassandraSettings;
+
+    protected SslSettings sslSettings;
 
     protected HostStateListener hostStateListener;
 
     protected ClusterLatencyListener clusterLatencyListener;
 
     @Autowired
-    public CassandraConfiguration(final CassandraSettings cassandraSettings, HostStateListener hostStateListener, ClusterLatencyListener clusterLatencyListener) {
+    public CassandraConfiguration(final CassandraSettings cassandraSettings, final SslSettings sslSettings, HostStateListener hostStateListener, ClusterLatencyListener clusterLatencyListener) {
         this.cassandraSettings = cassandraSettings;
+        this.sslSettings = sslSettings;
         this.hostStateListener = hostStateListener;
         this.clusterLatencyListener = clusterLatencyListener;
     }
@@ -52,8 +70,14 @@ public class CassandraConfiguration {
     }
 
     protected Cluster cluster(String username, String password) {
-        Cluster.Builder builder = Cluster.builder()
-                .addContactPoints(cassandraSettings.getContactPoints())
+
+        Optional<JdkSSLOptions> sslOptions = getSslOptions();
+
+        Cluster.Builder clusterBuilder = Cluster.builder();
+
+        sslOptions.ifPresent(sslOption -> clusterBuilder.withSSL(sslOption));
+
+        clusterBuilder.addContactPoints(cassandraSettings.getContactPoints())
                 .withPort(cassandraSettings.getPort())
                 .withInitialListeners(Collections.singleton(hostStateListener))
                 .withCredentials(username, password)
@@ -63,12 +87,39 @@ public class CassandraConfiguration {
             DCAwareRoundRobinPolicy roundRobinPolicy = DCAwareRoundRobinPolicy.builder()
                     .withLocalDc(cassandraSettings.getLocalDataCenter())
                     .build();
-            builder.withLoadBalancingPolicy(roundRobinPolicy);
+            clusterBuilder.withLoadBalancingPolicy(roundRobinPolicy);
         }
-        Cluster cluster = builder.build();
+
+        Cluster cluster = clusterBuilder.build();
         cluster.register(clusterLatencyListener);
         return cluster;
+    }
 
+    protected Optional<JdkSSLOptions> getSslOptions() {
+        JdkSSLOptions sslOptions = null;
+        try {
+            SSLContext sslContext = getSSLContext(sslSettings.getTruststorePath(), sslSettings.getTruststorePassword(), sslSettings.getKeystorePath(), sslSettings.getKeystorePassword());
+            sslOptions = JdkSSLOptions.builder()
+                    .withSSLContext(sslContext)
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error("SSL property exception", e);
+        }
+        return Optional.ofNullable(sslOptions);
+    }
+
+    protected SSLContext getSSLContext(String truststorePath, String truststorePassword, String keystorePath, String keystorePassword) throws Exception {
+        InputStream tsf = new FileInputStream(truststorePath);
+        InputStream ksf = new FileInputStream(keystorePath);
+
+        SSLContext ctx = SSLContext.getInstance(SSL);
+
+        TrustManagerFactory tmf = initTrustManagerFactory(tsf, truststorePassword);
+
+        KeyManagerFactory kmf = initKeyManagerFactory(ksf, keystorePassword);
+
+        ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+        return ctx;
     }
 
     @Bean
@@ -76,5 +127,21 @@ public class CassandraConfiguration {
         return cluster().connect(cassandraSettings.getKeyspaceName());
     }
 
+    protected TrustManagerFactory initTrustManagerFactory(InputStream tsf, String truststorePassword) throws KeyStoreException, NoSuchAlgorithmException, IOException, CertificateException {
+        KeyStore ts = KeyStore.getInstance(JKS);
+        ts.load(tsf, truststorePassword.toCharArray());
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(ts);
 
+        return tmf;
+    }
+
+    protected KeyManagerFactory initKeyManagerFactory(InputStream ksf, String keystorePassword) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException {
+        KeyStore ks = KeyStore.getInstance(JKS);
+        ks.load(ksf, keystorePassword.toCharArray());
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmf.init(ks, keystorePassword.toCharArray());
+
+        return kmf;
+    }
 }

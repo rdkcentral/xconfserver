@@ -71,7 +71,7 @@ public class CassandraConfiguration {
 
     protected Cluster cluster(String username, String password) {
 
-        Optional<JdkSSLOptions> sslOptions = getSslOptions();
+        Optional<RemoteEndpointAwareJdkSSLOptions> sslOptions = getSslOptions();
 
         Cluster.Builder clusterBuilder = Cluster.builder();
 
@@ -95,12 +95,13 @@ public class CassandraConfiguration {
         return cluster;
     }
 
-    protected Optional<JdkSSLOptions> getSslOptions() {
-        JdkSSLOptions sslOptions = null;
+    protected Optional<RemoteEndpointAwareJdkSSLOptions> getSslOptions() {
+        RemoteEndpointAwareJdkSSLOptions sslOptions = null;
         try {
             SSLContext sslContext = getSSLContext(sslSettings.getTruststorePath(), sslSettings.getTruststorePassword(), sslSettings.getKeystorePath(), sslSettings.getKeystorePassword());
-            sslOptions = JdkSSLOptions.builder()
+            sslOptions = RemoteEndpointAwareJdkSSLOptions.builder()
                     .withSSLContext(sslContext)
+                    .withCipherSuites(sslSettings.getCipherSuites())
                     .build();
         } catch (Exception e) {
             LOGGER.error("SSL property exception", e);

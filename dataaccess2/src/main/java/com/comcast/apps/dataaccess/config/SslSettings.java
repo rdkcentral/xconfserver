@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Component
@@ -33,6 +34,7 @@ public class SslSettings {
 
     public static final String SSL = "SSL";
     public static final String JKS = "JKS";
+    public static final String DEFAULT_SSL_CIPHER_SUITES = "TLS_RSA_WITH_AES_256_CBC_SHA";
 
     @Value("${ssl.truststore.path}")
     private String truststorePath;
@@ -45,6 +47,9 @@ public class SslSettings {
 
     @Value("${ssl.keystore.password}")
     private String keystorePassword;
+
+    @Value("#{'${ssl.cipherSuites:TLS_RSA_WITH_AES_256_CBC_SHA}'.split(',')}")
+    private String[] cipherSuites;
 
     public String getTruststorePath() {
         return truststorePath;
@@ -78,17 +83,27 @@ public class SslSettings {
         this.keystorePassword = keystorePassword;
     }
 
+    public String[] getCipherSuites() {
+        return cipherSuites;
+    }
+
+    public void setCipherSuites(String[] cipherSuites) {
+        this.cipherSuites = cipherSuites;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SslSettings that = (SslSettings) o;
-        return Objects.equals(truststorePath, that.truststorePath) && Objects.equals(truststorePassword, that.truststorePassword) && Objects.equals(keystorePath, that.keystorePath) && Objects.equals(keystorePassword, that.keystorePassword);
+        return Objects.equals(truststorePath, that.truststorePath) && Objects.equals(truststorePassword, that.truststorePassword) && Objects.equals(keystorePath, that.keystorePath) && Objects.equals(keystorePassword, that.keystorePassword) && Arrays.equals(cipherSuites, that.cipherSuites);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(truststorePath, truststorePassword, keystorePath, keystorePassword);
+        int result = Objects.hash(truststorePath, truststorePassword, keystorePath, keystorePassword);
+        result = 31 * result + Arrays.hashCode(cipherSuites);
+        return result;
     }
 
     @Override
@@ -96,6 +111,7 @@ public class SslSettings {
         return "SslSettings{" +
                 "truststorePath='" + truststorePath + '\'' +
                 ", keystorePath='" + keystorePath + '\'' +
+                ", cipherSuites=" + Arrays.toString(cipherSuites) +
                 '}';
     }
 }

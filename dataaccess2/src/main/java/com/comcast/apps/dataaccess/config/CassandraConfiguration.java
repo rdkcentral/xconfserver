@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.comcast.apps.dataaccess.config.SslSettings.JKS;
@@ -96,35 +97,32 @@ public class CassandraConfiguration {
     }
 
     protected Optional<RemoteEndpointAwareJdkSSLOptions> getSslOptions() {
-        RemoteEndpointAwareJdkSSLOptions sslOptions = null;
-        try {
-            SSLContext sslContext = getSSLContext(sslSettings.getTruststorePath(), sslSettings.getTruststorePassword(), sslSettings.getKeystorePath(), sslSettings.getKeystorePassword());
-            sslOptions = RemoteEndpointAwareJdkSSLOptions.builder()
-                    .withSSLContext(sslContext)
-                    .withCipherSuites(sslSettings.getCipherSuites())
-                    .build();
-        } catch (Exception e) {
-            LOGGER.error("SSL property exception", e);
-        }
-        return Optional.ofNullable(sslOptions);
+        SSLContext sslContext = getSSLContext(sslSettings.getTruststorePath(), sslSettings.getTruststorePassword(), sslSettings.getKeystorePath(), sslSettings.getKeystorePassword());
+
+        if (Objects.isNull(sslContext)) return Optional.empty();
+
+        RemoteEndpointAwareJdkSSLOptions sslOptions = RemoteEndpointAwareJdkSSLOptions.builder()
+                .withSSLContext(sslContext)
+                .withCipherSuites(sslSettings.getCipherSuites())
+                .build();
+
+        return Optional.of(sslOptions);
     }
 
-    protected SSLContext getSSLContext(String truststorePath, String truststorePassword, String keystorePath, String keystorePassword) throws Exception {
-        InputStream tsf = new FileInputStream(truststorePath);
-        InputStream ksf = new FileInputStream(keystorePath);
+    protected SSLContext getSSLContext(String truststorePath, String truststorePassword, String keystorePath, String keystorePassword) {
+        try (InputStream tsf = new FileInputStream(truststorePath);
+             InputStream ksf = new FileInputStream(keystorePath)) {
 
-        SSLContext ctx = SSLContext.getInstance(SSL);
+            SSLContext sslContext = SSLContext.getInstance(SSL);
+            TrustManagerFactory tmf = initTrustManagerFactory(tsf, truststorePassword);
+            KeyManagerFactory kmf = initKeyManagerFactory(ksf, keystorePassword);
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+            return sslContext;
 
-        TrustManagerFactory tmf = initTrustManagerFactory(tsf, truststorePassword);
-
-        KeyManagerFactory kmf = initKeyManagerFactory(ksf, keystorePassword);
-
-        ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
-
-        tsf.close();
-        ksf.close();
-
-        return ctx;
+        } catch (Exception e) {
+            LOGGER.error("SSL Context Initialization Exception:", e);
+        }
+        return null;
     }
 
     @Bean

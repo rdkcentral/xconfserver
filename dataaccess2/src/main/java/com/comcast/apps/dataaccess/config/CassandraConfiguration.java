@@ -32,17 +32,14 @@ import org.springframework.context.annotation.Configuration;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.comcast.apps.dataaccess.config.SslSettings.JKS;
-import static com.comcast.apps.dataaccess.config.SslSettings.SSL;
+import static com.comcast.apps.dataaccess.config.SslSettings.*;
 
 
 @Configuration
@@ -68,6 +65,11 @@ public class CassandraConfiguration {
     @Bean
     public Cluster cluster() {
         return cluster(cassandraSettings.getUsername(), cassandraSettings.getPassword());
+    }
+
+    @Bean
+    public Session session() {
+        return cluster().connect(cassandraSettings.getKeyspaceName());
     }
 
     protected Cluster cluster(String username, String password) {
@@ -97,7 +99,7 @@ public class CassandraConfiguration {
     }
 
     protected Optional<RemoteEndpointAwareJdkSSLOptions> getSslOptions() {
-        SSLContext sslContext = getSSLContext(sslSettings.getTruststorePath(), sslSettings.getTruststorePassword(), sslSettings.getKeystorePath(), sslSettings.getKeystorePassword());
+        SSLContext sslContext = getSSLContext();
 
         if (Objects.isNull(sslContext)) return Optional.empty();
 
@@ -109,14 +111,11 @@ public class CassandraConfiguration {
         return Optional.of(sslOptions);
     }
 
-    protected SSLContext getSSLContext(String truststorePath, String truststorePassword, String keystorePath, String keystorePassword) {
-        try (InputStream tsf = new FileInputStream(truststorePath);
-             InputStream ksf = new FileInputStream(keystorePath)) {
+    protected SSLContext getSSLContext() {
+        try (InputStream tsf = readTruststore();
+             InputStream ksf = readKeystore()) {
 
-            SSLContext sslContext = SSLContext.getInstance(SSL);
-            TrustManagerFactory tmf = initTrustManagerFactory(tsf, truststorePassword);
-            KeyManagerFactory kmf = initKeyManagerFactory(ksf, keystorePassword);
-            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+            SSLContext sslContext = initSslContext(tsf, sslSettings.getTruststorePassword(), ksf, sslSettings.getKeystorePassword());
             return sslContext;
 
         } catch (Exception e) {
@@ -125,9 +124,20 @@ public class CassandraConfiguration {
         return null;
     }
 
-    @Bean
-    public Session session() {
-        return cluster().connect(cassandraSettings.getKeyspaceName());
+    protected InputStream readKeystore() throws FileNotFoundException {
+        return readSecureStoreFileAsVaultProperty(sslSettings.getKeystorePath()) ? new ByteArrayInputStream(sslSettings.getDecodedKeystore()) : new FileInputStream(sslSettings.getKeystorePath());
+    }
+
+    protected InputStream readTruststore() throws FileNotFoundException {
+        return readSecureStoreFileAsVaultProperty(sslSettings.getTruststorePath()) ? new ByteArrayInputStream(sslSettings.getDecodedTruststore()) : new FileInputStream(sslSettings.getTruststorePath());
+    }
+
+    protected SSLContext initSslContext(InputStream truststoreInputStream, String truststorePassword, InputStream keystoreInputStream, String keystorePassword) throws Exception {
+        SSLContext sslContext = SSLContext.getInstance(SSL);
+        TrustManagerFactory tmf = initTrustManagerFactory(truststoreInputStream, truststorePassword);
+        KeyManagerFactory kmf = initKeyManagerFactory(keystoreInputStream, keystorePassword);
+        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
+        return sslContext;
     }
 
     protected TrustManagerFactory initTrustManagerFactory(InputStream tsf, String truststorePassword) throws KeyStoreException, NoSuchAlgorithmException, IOException, CertificateException {

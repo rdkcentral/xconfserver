@@ -92,7 +92,7 @@
         }
 
        	function handleUpdateSuccessfulResponse(response) {
-            alertsService.showSuccessMessage({message: response.data.name + ' profile updated.'});
+            alertsService.showSuccessMessage({message: response.config.data.name + ' profile updated.'});
             $state.go('telemetrytwoprofiles');
         }
 

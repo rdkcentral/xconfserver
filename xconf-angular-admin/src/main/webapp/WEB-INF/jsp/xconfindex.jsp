@@ -346,6 +346,10 @@
             <script src="<c:url value="/app/xconf/changes/change.service.js"/>"></script>
             <script src="<c:url value="/app/xconf/changes/change.controller.js"/>"></script>
 
+            <script src="<c:url value="/app/xconf/telemetrytwochanges/telemetrytwochange.module.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetrytwochanges/telemetrytwochange.service.js"/>"></script>
+            <script src="<c:url value="/app/xconf/telemetrytwochanges/telemetrytwochange.controller.js"/>"></script>
+
             <script src="<c:url value="/app/shared/pages/testpage/testpage.module.js"/>"></script>
             <script src="<c:url value="/app/shared/pages/testpage/testpage.service.js"/>"></script>
             <script src="<c:url value="/app/shared/pages/testpage/testpage.controller.js"/>"></script>
@@ -536,7 +540,15 @@
                             </ul>
                         </li>
                         <li class="dropdown" ng-show="authUtils.canReadChanges()">
-                            <a ui-sref="changes" class="dropdown-toggle" role="button" aria-haspopup="false" aria-expanded="false">Changes</a>
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Changes <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                              <li>
+                                    <a ui-sref="changes">Telemetry Profile Changes</a>
+                              </li>
+                              <li>
+                                    <a ui-sref="telemetrytwochanges">Telemetry 2.0 Profile Changes</a>
+                              </li>
+                            </ul>
                         </li>
                     </ul>
                     <div class="navbar-right">

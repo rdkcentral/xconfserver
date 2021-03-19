@@ -90,6 +90,7 @@
         'app.distributionFilter',
         'app.controller',
         'app.activation-version',
-        'app.change'
+        'app.change',
+        'app.telemetrytwochange'
     ])
 })();

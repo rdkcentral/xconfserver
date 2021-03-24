@@ -28,6 +28,7 @@ import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.contextconfig.TestContextConfig;
 import com.comcast.xconf.admin.service.telemetry.PermanentTelemetryProfileService;
+import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.Model;
 import com.comcast.xconf.estbfirmware.PercentageBeanService;
@@ -180,7 +181,10 @@ public class BaseIntegrationTest {
 
     @Autowired
     protected PermanentTelemetryProfileService telemetryProfileService;
-
+    
+    @Autowired
+    protected TelemetryTwoProfileService telemetryTwoProfileService;
+    
     @Autowired
     protected SimpleDao<String, GenericNamespacedList> nonCachedNamespacedListDao;
 

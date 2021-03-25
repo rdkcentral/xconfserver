@@ -58,7 +58,7 @@ public class SslSettings {
     @Value("${ssl.truststore}")
     private String truststore;
 
-    @Value("${ssl.keystore:}")
+    @Value("${ssl.keystore}")
     private String keystore;
 
     @Value("#{'${ssl.cipherSuites:TLS_RSA_WITH_AES_256_CBC_SHA}'.split(',')}")

@@ -73,12 +73,12 @@ public class CassandraConfiguration {
     }
 
     protected Cluster cluster(String username, String password) {
-
-        Optional<RemoteEndpointAwareJdkSSLOptions> sslOptions = getSslOptions();
-
         Cluster.Builder clusterBuilder = Cluster.builder();
 
-        sslOptions.ifPresent(sslOption -> clusterBuilder.withSSL(sslOption));
+        if (cassandraSettings.isUseSsl()) {
+            Optional<RemoteEndpointAwareJdkSSLOptions> sslOptions = getSslOptions();
+            sslOptions.ifPresent(sslOption -> clusterBuilder.withSSL(sslOption));
+        }
 
         clusterBuilder.addContactPoints(cassandraSettings.getContactPoints())
                 .withPort(cassandraSettings.getPort())

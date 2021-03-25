@@ -28,7 +28,6 @@ import com.comcast.apps.hesperius.ruleengine.main.api.FreeArg;
 import com.comcast.apps.hesperius.ruleengine.main.api.Operation;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
-import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.xconf.IpAddressGroupExtended;
 import com.comcast.xconf.dcm.core.Utils;
 import com.comcast.xconf.dcm.manager.web.FormulaDataObject;
@@ -56,9 +55,6 @@ public class FormulaRuleBuilder {
     public static final String PROP_ESTB_MAC = "estbMacAddress";
     public static final String PROP_ECM_MAC = "ecmMacAddress";
     public static final String PROP_ENV = "env";
-
-    @Autowired
-    private CachedSimpleDao<String, IpAddressGroupExtended> ipAddressGroupDAO;
 
     @Autowired
     private GenericNamespacedListLegacyService genericNamespacedListLegacyService;
@@ -89,10 +85,6 @@ public class FormulaRuleBuilder {
 
     private String getIpAddressGroupName(FormulaDataObject dataObject) {
         IpAddressGroupExtended ipAddressGroup = genericNamespacedListLegacyService.getIpAddressGroup(dataObject.getEstbIP());
-        // try to read old ipAddressGroup CF
-        if (ipAddressGroup == null) {
-            ipAddressGroup = ipAddressGroupDAO.getOne(dataObject.getEstbIP());
-        }
         return ipAddressGroup.getName();
     }
 

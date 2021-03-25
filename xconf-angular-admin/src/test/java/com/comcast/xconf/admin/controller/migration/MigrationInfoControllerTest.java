@@ -20,8 +20,6 @@ package com.comcast.xconf.admin.controller.migration;
 
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.GenericNamespacedList;
-import com.comcast.xconf.IpAddressGroupExtended;
-import com.comcast.xconf.NamespacedList;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.logupload.DCMGenericRule;
@@ -50,12 +48,6 @@ public class MigrationInfoControllerTest extends BaseControllerTest {
         DCMGenericRule dcmRule = createFormula();
         dcmRuleDAO.setOne(dcmRule.getId(), dcmRule);
 
-        IpAddressGroupExtended ipAddressGroupExtended = createIpAddressGroup("ipAddressGroupId");
-        ipAddressGroupDAO.setOne(ipAddressGroupExtended.getId(), ipAddressGroupExtended);
-
-        NamespacedList namespacedList = createNamespacedList();
-        namespacedListDAO.setOne(namespacedList.getId(), namespacedList);
-
         FirmwareRule firmwareRule = createFirmwareRule();
         firmwareRuleDao.setOne(firmwareRule.getId(), firmwareRule);
 
@@ -68,9 +60,6 @@ public class MigrationInfoControllerTest extends BaseControllerTest {
         List<MigrationInfo> migrationInfo = new ArrayList<>();
         migrationInfo.add(new MigrationInfo("FirmwareRule", "FirmwareRule", "/rules", 1, 1, true));
         migrationInfo.add(new MigrationInfo("Formula", "DCMGenericRule", "/formulas", 1, 1, true));
-        migrationInfo.add(new MigrationInfo("NamespacedList", "MAC_LIST", "/namespacedLists", 1, 1, true));
-        migrationInfo.add(new MigrationInfo("IpAddressGroupExtended", "IP_LIST", "/ipAddressGroups", 1, 1, true));
-
         return migrationInfo;
     }
 

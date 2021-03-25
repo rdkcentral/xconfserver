@@ -126,8 +126,6 @@ public abstract class BaseQueriesControllerTest {
     @Autowired
     protected CachedSimpleDao<String, LogFileList> logFileListDAO;
     @Autowired
-    protected CachedSimpleDao<String, IpAddressGroupExtended> ipAddressGroupDAO;
-    @Autowired
     protected CachedSimpleDao<String, FirmwareRuleTemplate> firmwareRuleTemplateDao;
     @Autowired
     protected CachedSimpleDao<String, Feature> featureDAO;
@@ -239,7 +237,7 @@ public abstract class BaseQueriesControllerTest {
     protected void deleteAllEntities() {
         ArrayList<? extends CachedSimpleDao<String, ? extends IPersistable>> daoList = Lists.newArrayList(
                 firmwareConfigDAO,
-                modelDAO, ipAddressGroupDAO, environmentDAO,
+                modelDAO, environmentDAO,
                 dcmRuleDAO, vodSettingsDAO,
                 deviceSettingsDAO, logUploadSettingsDAO,
                 genericNamespacedListDAO, logFileDAO, logFileListDAO,

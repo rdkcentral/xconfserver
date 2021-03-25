@@ -21,7 +21,6 @@
  */
 package com.comcast.xconf;
 
-import com.comcast.apps.dataaccess.annotation.CF;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.MacAddress;
 import com.comcast.hydra.astyanax.data.XMLPersistable;
 import org.apache.commons.collections.comparators.NullComparator;
@@ -34,13 +33,6 @@ import java.util.Set;
  *
  * @author PBura
  */
-//@AccessControlled(uiName = "Xconf Named Lists")
-@CF(
-        cfName = CfNames.Common.NS_LIST,
-        defaultColumnName = "NamedListData",
-        compressionPolicy = CF.CompressionPolicy.COMPRESS_AND_SPLIT,
-        compressionChunkSize = 64
-)
 public class NamespacedList extends XMLPersistable implements Comparable<NamespacedList> {
 
     private Set<String> data;

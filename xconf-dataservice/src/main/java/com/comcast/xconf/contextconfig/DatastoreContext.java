@@ -24,8 +24,6 @@ import com.comcast.apps.dataaccess.dao.ListingDao;
 import com.comcast.apps.dataaccess.dao.SimpleDao;
 import com.comcast.xconf.Environment;
 import com.comcast.xconf.GenericNamespacedList;
-import com.comcast.xconf.IpAddressGroupExtended;
-import com.comcast.xconf.NamespacedList;
 import com.comcast.xconf.change.ApprovedChange;
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.estbfirmware.*;
@@ -97,11 +95,6 @@ public class DatastoreContext {
     }
 
     @Bean
-    CachedSimpleDao<String, IpAddressGroupExtended> ipAddressGroupDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, IpAddressGroupExtended.class);
-    }
-
-    @Bean
     CachedSimpleDao<String, Environment> environmentDAO() {
         return daoFactory.createCachedSimpleDao(String.class, Environment.class);
     }
@@ -134,11 +127,6 @@ public class DatastoreContext {
     @Bean
     ListingDao<String, String, ConfigChangeLog> configChangeLogDAO() {
         return daoFactory.createListingDao(ConfigChangeLog.class);
-    }
-
-    @Bean
-    CachedSimpleDao<String, NamespacedList> namespacedListDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, NamespacedList.class);
     }
 
     @Bean

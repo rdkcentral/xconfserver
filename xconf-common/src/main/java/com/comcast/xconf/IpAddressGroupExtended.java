@@ -22,13 +22,11 @@
 package com.comcast.xconf;
 
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddressGroup;
-import com.comcast.apps.dataaccess.annotation.CF;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import org.apache.commons.collections.comparators.NullComparator;
 
 import java.util.Date;
 
-@CF(cfName = CfNames.Common.IP_ADDRESS_GROUP)
 public class IpAddressGroupExtended extends IpAddressGroup implements IPersistable, Comparable<IpAddressGroupExtended> {
 
     public IpAddressGroupExtended(){

@@ -156,14 +156,6 @@ public class BaseIntegrationTest {
     protected ChangedKeysProcessingDaoImpl changeLogDao;
 
     @Autowired
-    @Deprecated
-    protected CachedSimpleDao<String, IpAddressGroupExtended> ipAddressGroupDAO;
-
-    @Autowired
-    @Deprecated
-    protected CachedSimpleDao<String, NamespacedList> namespacedListDAO;
-
-    @Autowired
     protected FirmwarePermissionService firmwarePermissionService;
 
     @Autowired
@@ -203,7 +195,6 @@ public class BaseIntegrationTest {
                 logUploadSettingsDAO, deviceSettingsDAO, firmwareRuleTemplateDao, firmwareConfigDAO,
                 firmwareRuleDao, vodSettingsDAO, permanentTelemetryDAO, telemetryRuleDAO, featureRuleDAO,
                 genericNamespacedListDAO, singletonFilterValueDAO, settingProfileDao, settingRuleDAO,
-                ipAddressGroupDAO, namespacedListDAO,
                 featureDAO, telemetryTwoProfileDAO, telemetryTwoRuleDAO
         );
         cleanData(daoList);

@@ -71,6 +71,7 @@ public class FirmwareRulePredicates extends XRulePredicates<FirmwareRule> {
 
     public Predicate<FirmwareRule> byActionType(String type) {
         return firmwareRule -> Objects.nonNull(firmwareRule)
+                && Objects.nonNull(firmwareRule.getApplicableAction())
                 && Objects.equals(firmwareRule.getApplicableAction().getActionType(), readFromString(type));
     }
 

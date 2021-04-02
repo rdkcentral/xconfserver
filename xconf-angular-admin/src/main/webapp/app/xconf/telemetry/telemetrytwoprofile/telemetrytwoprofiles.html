@@ -58,8 +58,7 @@
 
     </div>
 </h1>
-
-<div class="row">
+<div class="row" ng-if="!vm.telemetryTwoProfiles.length == 0">
     <div class="col-md-12" style="margin-top: 3em">
         <div ng-if="vm.startParse()" class="panel-default panel">
             <table class="table">
@@ -109,16 +108,16 @@
             </table>
         </div>
     </div>
-    <xconf-pagination ng-if="vm.startParse()"
-                      page-size="vm.pageSize"
-                      page-number="vm.pageNumber"
-                      pagination-storage-key="vm.paginationStorageKey"
-                      get-general-items-number="vm.getGeneralItemsNumber()"
-                      get-page="vm.getTelemetryTwoProfiles()">
-    </xconf-pagination>
-</div><!--gdejes200 - Is this DIV supposed to end here? There was a DIV tag missing and wasn't sure where it belonged-->
-<div class="row">
-    <div id="notFoundResults" ng-if="!vm.startParse()" class="ads-no-results">
+</div>
+<div class="row" ng-if="vm.telemetryTwoProfiles.length == 0">
+    <div id="notFoundResults" class="ads-no-results">
         <h4>No results found</h4>
     </div>
 </div>
+<xconf-pagination ng-if="vm.startParse()"
+                  page-size="vm.pageSize"
+                  page-number="vm.pageNumber"
+                  pagination-storage-key="vm.paginationStorageKey"
+                  get-general-items-number="vm.getGeneralItemsNumber()"
+                  get-page="vm.getTelemetryTwoProfiles()">
+</xconf-pagination>

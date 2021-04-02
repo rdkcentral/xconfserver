@@ -22,6 +22,7 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.IpRuleBean;
 import com.comcast.xconf.estbfirmware.IpRuleService;
+import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.queries.QueriesHelper;
 import com.comcast.xconf.queries.QueryConstants;
 import org.junit.Assert;
@@ -34,8 +35,9 @@ import java.util.*;
 import static com.comcast.xconf.firmware.ApplicationType.STB;
 import static com.comcast.xconf.firmware.ApplicationType.XHOME;
 import static com.comcast.xconf.queries.QueriesHelper.nullifyUnwantedFields;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class IpRuleQueriesControllerTest extends BaseQueriesControllerTest {
@@ -137,6 +139,30 @@ public class IpRuleQueriesControllerTest extends BaseQueriesControllerTest {
                         .content(JsonUtil.toJson(ipRuleBean)))
                 .andExpect(status().isOk());
         assertEquals(ipRuleBean, ipRuleService.getOne(ipRuleBean.getId()));
+    }
+
+    @Test
+    public void createIpRuleWithoutFirmwareConfigActionTypeShouldNotBeNull() throws Exception {
+        IpRuleBean ipRuleBean = createDefaultIpRuleBean();
+        ipRuleBean.setFirmwareConfig(null);
+
+        mockMvc.perform(
+                post("/" + QueryConstants.UPDATE_RULES_IPS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(ipRuleBean)))
+                .andExpect(status().isOk());
+
+        assertEquals(ipRuleBean, ipRuleService.getOne(ipRuleBean.getId()));
+
+        FirmwareRule ipRule = firmwareRuleDao.getOne(ipRuleBean.getId());
+        assertNotNull(ipRule.getApplicableAction());
+        assertTrue(ipRule.isNoop());
+
+        mockMvc.perform(get("/" + QueryConstants.QUERIES_RULES_IPS + "/" + ipRuleBean.getName())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(ipRuleBean.getId()))
+                .andExpect(jsonPath("$.name").value(ipRuleBean.getName()));
     }
 
     @Test

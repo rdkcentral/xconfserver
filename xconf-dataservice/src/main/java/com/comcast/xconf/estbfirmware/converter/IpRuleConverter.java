@@ -71,6 +71,8 @@ public class IpRuleConverter {
 
         if (bean.getFirmwareConfig() != null) {
             ipRule.setApplicableAction(new RuleAction(bean.getFirmwareConfig().getId()));
+        } else {
+            ipRule.setApplicableAction(new RuleAction());
         }
 
         return ipRule;

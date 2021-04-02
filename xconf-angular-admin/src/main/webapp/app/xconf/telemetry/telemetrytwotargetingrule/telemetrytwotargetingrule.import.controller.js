@@ -27,9 +27,9 @@
         .module('app.telemetrytwotargetingrule')
         .controller('TelemetryTwoTargetingRuleImportController', controller);
 
-    controller.$inject = ['$scope', '$log', 'alertsService', 'utilsService', 'importService', 'telemetryTwoTargetingRuleService', 'telemetryTwoProfileService', 'paginationService'];
+    controller.$inject = ['$scope', '$log', '$uibModal', 'alertsService', 'utilsService', 'importService', 'telemetryTwoTargetingRuleService', 'telemetryTwoProfileService', 'paginationService'];
 
-    function controller($scope, $log, alertsService, utilsService, importService, telemetryTwoRuleService, telemetryTwoProfileService, paginationService) {
+    function controller($scope, $log, $modal, alertsService, utilsService, importService, telemetryTwoRuleService, telemetryTwoProfileService, paginationService) {
         var vm = this;
 
         vm.retrieveFile = retrieveFile;
@@ -45,6 +45,7 @@
         vm.selectPage = selectPage;
         vm.getGeneralItemsNumber = getGeneralItemsNumber;
         vm.progressBarControl = importService.progressBarControl;
+        vm.viewTelemetryTwoRule = viewTelemetryTwoRule;
 
         $scope.$on('$locationChangeSuccess', function () {
             if (paginationService.paginationSettingsInLocationHaveChanged(vm.pageNumber, vm.pageSize)) {
@@ -71,7 +72,7 @@
                 telemetryTwoRuleService.update(wrappedTelemetryTwoRule.entity).then(function () {
                     alertsService.successfullySaved(wrappedTelemetryTwoRule.entity.name);
                     utilsService.removeSelectedItemFromListById(vm.wrappedTelemetryTwoRules, wrappedTelemetryTwoRule.entity.id);
-                }, alertsService.errorHander);
+                }, alertsService.errorHandler);
             } else {
                 telemetryTwoRuleService.create(wrappedTelemetryTwoRule.entity).then(function () {
                     alertsService.successfullySaved(wrappedTelemetryTwoRule.entity.name);
@@ -94,6 +95,19 @@
         function selectPage() {
             paginationService.savePaginationSettingsInLocation(vm.pageNumber, vm.pageSize);
             computeStartAndEndIndex();
+        }
+
+        function viewTelemetryTwoRule(telemetryRule) {
+            $modal.open({
+                templateUrl: 'app/xconf/telemetry/telemetrytwotargetingrule/telemetrytwotargetingrule.view.html',
+                controller: 'TelemetryTwoTargetingRuleViewController as vm',
+                size: 'lg',
+                resolve : {
+                    telemetryRule: function() {
+                        return telemetryRule;
+                    }
+                }
+            });
         }
 
         function computeStartAndEndIndex() {

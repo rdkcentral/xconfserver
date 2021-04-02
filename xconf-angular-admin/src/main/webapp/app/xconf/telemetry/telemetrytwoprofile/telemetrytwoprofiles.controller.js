@@ -79,7 +79,7 @@
         function getTelemetryTwoProfiles() {
             telemetryTwoProfileService.getTelemetryTwoProfiles(vm.pageNumber, vm.pageSize, vm.searchParam).then(function(result) {
                 vm.telemetryTwoProfiles = result.data;
-                vm.generalItemsNumber = result.headers.length;
+                vm.generalItemsNumber = result.headers('numberOfItems');
                 paginationService.savePaginationSettingsInLocation(vm.pageNumber, vm.pageSize);
             },
             function(error) {

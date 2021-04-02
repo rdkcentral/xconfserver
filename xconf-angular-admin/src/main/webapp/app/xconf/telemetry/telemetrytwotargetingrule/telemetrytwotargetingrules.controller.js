@@ -40,7 +40,7 @@
         vm.searchParam = {};
         vm.searchOptions = RULE_SEARCH_OPTIONS;
         vm.getRules = getRules;
-        vm.paginationStorageKey = 'targetingRulePageSize';
+        vm.paginationStorageKey = 'telemetryTwoRulePageSize';
         vm.pageSize = paginationService.getPageSize(vm.paginationStorageKey);
         vm.pageNumber = paginationService.getPageNumber();
         vm.generalItemsNumber = 0;
@@ -72,7 +72,7 @@
             telemetryTwoTargetingRuleService.getPage(vm.pageSize, vm.pageNumber, vm.searchParam)
                 .then(function (result) {
                     vm.rules = result.data;
-                    vm.generalItemsNumber = result.headers.length;
+                    vm.generalItemsNumber = result.headers('numberOfItems');
                     paginationService.savePaginationSettingsInLocation(vm.pageNumber, vm.pageSize);
                 },
                 function (error) {

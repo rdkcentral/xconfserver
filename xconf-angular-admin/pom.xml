@@ -250,8 +250,8 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v7.4.0</nodeVersion>
-                            <npmVersion>4.0.5</npmVersion>
+                            <nodeVersion>v15.13.0</nodeVersion>
+                            <npmVersion>7.8.0</npmVersion>
                         </configuration>
                     </execution>
                     <execution>

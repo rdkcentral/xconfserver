@@ -23,7 +23,6 @@ import com.comcast.xconf.logupload.*;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.http.HttpHeaders;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,11 +51,6 @@ public class Utils {
     public static LogFile nullifyUnwantedFields(LogFile logFile) {
         logFile.setUpdated(null);
         return logFile;
-    }
-
-    public static LogFilesGroup nullifyUnwantedFields(LogFilesGroup logFilesGroup) {
-        logFilesGroup.setUpdated(null);
-        return logFilesGroup;
     }
 
     public static DCMRuleWithSettings nullifyUnwantedFields(DCMRuleWithSettings dcmRuleWithSettings) {

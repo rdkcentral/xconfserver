@@ -23,18 +23,14 @@
 package com.comcast.xconf.queries.controllers;
 
 
-import com.comcast.xconf.dcm.ruleengine.LogFileService;
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.xconf.dcm.core.Utils;
+import com.comcast.xconf.dcm.ruleengine.LogFileService;
 import com.comcast.xconf.logupload.LogFile;
 import com.comcast.xconf.logupload.LogUploadSettings;
 import com.comcast.xconf.logupload.Schedule;
 import com.comcast.xconf.queries.QueryConstants;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -44,10 +40,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(QueryConstants.UPDATES_LOG_UPLOAD_SETTINGS)
@@ -57,7 +51,7 @@ public class LogUploadSettingsQueriesController {
     private CachedSimpleDao<String, LogFile> logFileDAO;
 
     @Autowired
-    LogFileService indexesLogFilesDAO;
+    private LogFileService logFileService;
 
     @Autowired
     private CachedSimpleDao<String, LogUploadSettings> logUploadSettingsDAO;
@@ -73,42 +67,25 @@ public class LogUploadSettingsQueriesController {
         if (schedule == null) {
             return new ResponseEntity<>("Schedule is empty", HttpStatus.BAD_REQUEST);
         }
-        if (schedule != null && checkDateStrLength(schedule.getStartDate()) && checkDateStrLength(schedule.getEndDate())) {
-            boolean startValid = Utils.isValidDate(schedule.getStartDate());
-            if (!startValid) {
-                return new ResponseEntity("Start date is invalid", HttpStatus.BAD_REQUEST);
-            }
-            boolean endValid = Utils.isValidDate(schedule.getEndDate());
-            if (!endValid) {
-                return new ResponseEntity<>("End date is invalid", HttpStatus.BAD_REQUEST);
-            }
-            if (startValid && endValid && Utils.compareDates(schedule.getStartDate(), schedule.getEndDate()) >= 0) {
-                return new ResponseEntity<>("Start date is greater/equal to End date", HttpStatus.BAD_REQUEST);
-            }
+
+        String scheduleErrorMessage = validateDates(schedule.getStartDate(), schedule.getEndDate());
+        if (StringUtils.isNotBlank(scheduleErrorMessage)) {
+            return new ResponseEntity<>(scheduleErrorMessage, HttpStatus.BAD_REQUEST);
         }
 
         if (StringUtils.isBlank(logUploadSettings.getFromDateTime())) {
-            return new ResponseEntity("Start date is blank", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Start date is blank", HttpStatus.BAD_REQUEST);
         }
         if (StringUtils.isBlank(logUploadSettings.getToDateTime())) {
-            return new ResponseEntity("End date is blank", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("End date is blank", HttpStatus.BAD_REQUEST);
         }
 
-        if (checkDateStrLength(logUploadSettings.getFromDateTime()) && checkDateStrLength(logUploadSettings.getToDateTime())) {
-            boolean startValid = Utils.isValidDate(logUploadSettings.getFromDateTime());
-            if (!startValid) {
-                return new ResponseEntity("Start date is invalid", HttpStatus.BAD_REQUEST);
-            }
-            boolean endValid = Utils.isValidDate(logUploadSettings.getToDateTime());
-            if (!endValid) {
-                return new ResponseEntity<>("End date is invalid", HttpStatus.BAD_REQUEST);
-            }
-            if (startValid && endValid && Utils.compareDates(logUploadSettings.getFromDateTime(), logUploadSettings.getToDateTime()) >= 0) {
-                return new ResponseEntity<>("Start date is greater/equal to End date", HttpStatus.BAD_REQUEST);
-            }
+        String lusErrorMessage = validateDates(logUploadSettings.getFromDateTime(), logUploadSettings.getToDateTime());
+        if (StringUtils.isNotBlank(lusErrorMessage)) {
+            return new ResponseEntity<>(lusErrorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        if(logUploadSettings.getModeToGetLogFiles() == null) {
+        if (logUploadSettings.getModeToGetLogFiles() == null) {
             return new ResponseEntity<>("File mode is empty", HttpStatus.BAD_REQUEST);
         }
 
@@ -123,33 +100,18 @@ public class LogUploadSettingsQueriesController {
 
         try {
             if (logUploadSettings.getModeToGetLogFiles().equals(LogUploadSettings.MODE_TO_GET_LOG_FILES[0])) {
-                Set<String> keys = new HashSet<String>();
-                keys.addAll(logUploadSettings.getLogFileIds());
+                Set<String> keys = new HashSet<>(logUploadSettings.getLogFileIds());
 
-                // TODO: get rid of code duplication
                 Map<String, Optional<LogFile>> logFiles = logFileDAO.getAllAsMap(keys);
                 Map<String, LogFile> logFilesMap = Maps.transformEntries(logFiles, LogFile.LOG_FILE_TRANSFORMER);
 
-                indexesLogFilesDAO.deleteAll(logUploadSettings.getId());
-                indexesLogFilesDAO.setMultiple(logUploadSettings.getId(), Lists.newArrayList(
-                        Iterables.filter(
-                                Iterables.transform(logFilesMap.values(), new Function<LogFile, LogFile>() {
-                                    @Nullable
-                                    @Override
-                                    public LogFile apply(@Nullable LogFile input) {
-                                        return input;
-                                    }
-                                }),
-                                Predicates.notNull()
-                        )
-                ));
+                logFileService.setMultiple(logUploadSettings.getId(), logFilesMap.values().stream().filter(Objects::nonNull).collect(Collectors.toList()));
             }
 
             if (!checkDateStrLength(logUploadSettings.getFromDateTime()) || !checkDateStrLength(logUploadSettings.getToDateTime())) {
                 logUploadSettings.setFromDateTime("");
                 logUploadSettings.setToDateTime("");
-            } else
-            if ((timezone!=null) && (!timezone.equals("UTC"))) {
+            } else if ((timezone!=null) && (!timezone.equals("UTC"))) {
                 logUploadSettings.setFromDateTime(Utils.converterDateTimeToUTC(logUploadSettings.getFromDateTime(),timezone));
                 logUploadSettings.setToDateTime(Utils.converterDateTimeToUTC(logUploadSettings.getToDateTime(),timezone));
             }
@@ -157,8 +119,7 @@ public class LogUploadSettingsQueriesController {
             if (!checkDateStrLength(schedule.getStartDate()) || !checkDateStrLength(schedule.getEndDate())) {
                 schedule.setStartDate("");
                 schedule.setEndDate("");
-            } else
-            if ((scheduleTimezone != null) && (!scheduleTimezone.equals("UTC"))) {
+            } else if ((scheduleTimezone != null) && (!scheduleTimezone.equals("UTC"))) {
                 schedule.setStartDate(Utils.converterDateTimeToUTC(schedule.getStartDate(),scheduleTimezone));
                 schedule.setEndDate(Utils.converterDateTimeToUTC(schedule.getEndDate(),scheduleTimezone));
             }
@@ -167,16 +128,33 @@ public class LogUploadSettingsQueriesController {
 
         } catch (Exception e) {
             log.error(e.toString());
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity(logUploadSettings, HttpStatus.CREATED);
+        return new ResponseEntity<>(logUploadSettings, HttpStatus.CREATED);
     }
 
     private String validateName(final LogUploadSettings logUploadSettings) {
         final LogUploadSettings lus = getLogUploadSettingsByName(StringUtils.trim(logUploadSettings.getName()));
         if (lus != null && !lus.getId().equals(logUploadSettings.getId())) {
             return "Name is already used";
+        }
+        return null;
+    }
+
+    private String validateDates(String start, String end) {
+        if (checkDateStrLength(start) && checkDateStrLength(end)) {
+            boolean startValid = Utils.isValidDate(start);
+            if (!startValid) {
+                return "Start date is invalid";
+            }
+            boolean endValid = Utils.isValidDate(end);
+            if (!endValid) {
+                return "End date is invalid";
+            }
+            if (Utils.compareDates(start, end) >= 0) {
+                return "Start date is greater/equal to End date";
+            }
         }
         return null;
     }

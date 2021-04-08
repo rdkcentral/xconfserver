@@ -22,28 +22,23 @@
 
 package com.comcast.xconf.admin.controller;
 
+import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddress;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.api.*;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
-import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.*;
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.estbfirmware.*;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
-import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.firmware.*;
 import com.comcast.xconf.logupload.*;
 import com.comcast.xconf.logupload.settings.SettingProfile;
 import com.comcast.xconf.logupload.settings.SettingRule;
 import com.comcast.xconf.logupload.settings.SettingType;
-import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryRule;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
+import com.comcast.xconf.logupload.telemetry.*;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.WhitelistProperty;
 import com.google.common.collect.Lists;
@@ -667,18 +662,6 @@ public class BaseControllerTest extends BaseIntegrationTest {
         telemetryRuleDAO.setOne(rule.getId(), rule);
 
         return rule;
-    }
-
-    protected LogFilesGroup createLogFilesGroup() {
-        LogFilesGroup logFilesGroup = new LogFilesGroup();
-        logFilesGroup.setId("testId");
-        logFilesGroup.setGroupName("groupName");
-        List<String> logFileIds = new ArrayList<>();
-        for (LogFile logFile : createLogFileList()) {
-            logFileIds.add(logFile.getId());
-        }
-        logFilesGroup.setLogFileIds(logFileIds);
-        return logFilesGroup;
     }
 
     protected List<LogFile> createLogFileList() {

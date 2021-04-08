@@ -48,7 +48,7 @@ public class LogUploadSettingsService extends AbstractApplicationTypeAwareServic
     private CachedSimpleDao<String, LogUploadSettings> logUploadSettingsDAO;
 
     @Autowired
-    private LogFileService indexesLogFilesDAO;
+    private LogFileService logFileService;
 
     @Autowired
     private CachedSimpleDao<String, UploadRepository> uploadRepositoryDAO;
@@ -79,7 +79,7 @@ public class LogUploadSettingsService extends AbstractApplicationTypeAwareServic
     @Override
     public LogUploadSettings delete(final String id) {
         LogUploadSettings logUploadSettings = super.delete(id);
-        indexesLogFilesDAO.deleteAll(id);
+        logFileService.deleteAll(id);
         return logUploadSettings;
     }
 

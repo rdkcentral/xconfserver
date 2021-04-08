@@ -29,8 +29,6 @@ public interface CfNames {
         String CONFIGURATION_SERVICE_URLs = "ConfigurationServiceURLs";
         String LOG_FILE = "LogFile";
         String LOG_FILE_LIST = "LogFileList";
-        String INDEXED_LOG_FILES = "IndexedLogFiles";
-        String LOG_FILES_GROUPS = "LogFilesGroups";
         String DEVICE_SETTINGS = "DeviceSettings2";
         String VOD_SETTINGS = "VodSettings2";
     }

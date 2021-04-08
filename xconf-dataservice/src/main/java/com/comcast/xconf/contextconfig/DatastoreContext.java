@@ -87,11 +87,6 @@ public class DatastoreContext {
     }
 
     @Bean
-    CachedSimpleDao<String, LogFilesGroup> logFilesGroupDAO() {
-        return daoFactory.createCachedSimpleDao(String.class, LogFilesGroup.class);
-    }
-
-    @Bean
     CachedSimpleDao<String, LogFileList> logFileListDAO() {
         return daoFactory.createCachedSimpleDao(String.class, LogFileList.class);
     }

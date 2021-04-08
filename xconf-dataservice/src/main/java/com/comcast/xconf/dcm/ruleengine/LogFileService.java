@@ -70,16 +70,9 @@ public class LogFileService {
     }
 
     public List<LogFile> setMultiple(String rowKey, List<LogFile> list) {
-        LogFileList one = getLogFileList(rowKey);
-        for (Iterator<LogFile> iterator = one.getData().iterator(); iterator.hasNext(); ) {
-            LogFile logFile = iterator.next();
-            for (LogFile newLogFile : list) {
-                if (StringUtils.equals(newLogFile.getId(), logFile.getId())) {
-                    iterator.remove();
-                }
-            }
-        }
-        one.getData().addAll(list);
+        LogFileList one = new LogFileList();
+        one.setId(rowKey);
+        one.setData(list);
         logFileListDAO.setOne(rowKey, one);
         return list;
     }

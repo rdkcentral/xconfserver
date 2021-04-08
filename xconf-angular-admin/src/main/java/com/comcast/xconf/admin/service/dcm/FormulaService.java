@@ -66,7 +66,7 @@ public class FormulaService extends AbstractApplicationTypeAwareService<DCMGener
     private CachedSimpleDao<String, LogUploadSettings> logUploadSettingsDAO;
 
     @Autowired
-    private LogFileService indexesLogFilesDAO;
+    private LogFileService logFileService;
 
     @Autowired
     private DeviceSettingsService deviceSettingsService;
@@ -157,7 +157,7 @@ public class FormulaService extends AbstractApplicationTypeAwareService<DCMGener
         }
         try{
             //removing LogFiles associated to LogUploadSettings
-            indexesLogFilesDAO.deleteAll(id);
+            logFileService.deleteAll(id);
         } catch (Exception e) {
             log.error("Failed to delete LogUploadSettings with id=" + id + "  ", e);
         }

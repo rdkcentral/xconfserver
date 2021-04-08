@@ -37,7 +37,7 @@ public class SettingsDAO {
     @Autowired
     private CachedSimpleDao<String, LogUploadSettings> logUploadSettingsDAO;
     @Autowired
-    private LogFileService indexesLogFilesDAO;
+    private LogFileService logFileService;
     @Autowired
     private CachedSimpleDao<String, LogFile> logFileDAO;
     @Autowired
@@ -80,11 +80,11 @@ public class SettingsDAO {
             if (logUploadSettings.getModeToGetLogFiles() != null) {
                 List<LogFile> listLogFilesForLogUplSettings = null;
                 if (logUploadSettings.getModeToGetLogFiles().equals(LogUploadSettings.MODE_TO_GET_LOG_FILES[0])) {
-                    listLogFilesForLogUplSettings = indexesLogFilesDAO.getAll(logUploadSettings.getId(), Integer.MAX_VALUE/100);
+                    listLogFilesForLogUplSettings = logFileService.getAll(logUploadSettings.getId(), Integer.MAX_VALUE/100);
                 } else if (logUploadSettings.getModeToGetLogFiles().equals(LogUploadSettings.MODE_TO_GET_LOG_FILES[1])) {
                     String keyFileGroup = logUploadSettings.getLogFilesGroupId();
                     if (keyFileGroup != null && !keyFileGroup.isEmpty()) {
-                        listLogFilesForLogUplSettings = indexesLogFilesDAO.getAll(keyFileGroup, Integer.MAX_VALUE/100);
+                        listLogFilesForLogUplSettings = logFileService.getAll(keyFileGroup, Integer.MAX_VALUE/100);
                     }
                 } else if (logUploadSettings.getModeToGetLogFiles().equals(LogUploadSettings.MODE_TO_GET_LOG_FILES[2])) {
                     listLogFilesForLogUplSettings = logFileDAO.getAll();

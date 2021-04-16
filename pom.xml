@@ -24,12 +24,12 @@
     <name>XConf OSS</name>
     <groupId>com.comcast.coast.xconf.oss</groupId>
     <artifactId>xconf</artifactId>
-    <version>99.0.0</version>
+    <version>99.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
         <connection>scm:git:ssh://git@github.com:rdkcentral/xconfserver.git</connection>
-        <tag>v99.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>

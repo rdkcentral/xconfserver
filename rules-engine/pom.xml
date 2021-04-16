@@ -22,7 +22,7 @@
      <parent>
     	<groupId>com.comcast.coast.xconf.oss</groupId>
     	<artifactId>xconf</artifactId>
-       <version>99.0.0-SNAPSHOT</version>
+       <version>99.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>

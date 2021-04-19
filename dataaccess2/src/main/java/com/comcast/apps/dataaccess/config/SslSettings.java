@@ -38,8 +38,6 @@ public class SslSettings {
     public static final String JKS = "JKS";
     public static final String DEFAULT_SSL_CIPHER_SUITES = "TLS_RSA_WITH_AES_256_CBC_SHA";
 
-    private static final String VAULT_PREFIX = "vault";
-
     @Value("${ssl.authKey}")
     private String authKey;
 
@@ -127,8 +125,12 @@ public class SslSettings {
         return Base64.getDecoder().decode(getKeystore());
     }
 
-    public static boolean readSecureStoreFileAsVaultProperty(String path) {
-        return StringUtils.startsWith(path, VAULT_PREFIX);
+    public boolean isKeystoreSetAsProperty() {
+        return StringUtils.isNotBlank(getKeystore());
+    }
+
+    public boolean isTruststoreSetAsProperty() {
+        return StringUtils.isNotBlank(getTruststore());
     }
 
     @Override

@@ -39,7 +39,8 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.comcast.apps.dataaccess.config.SslSettings.*;
+import static com.comcast.apps.dataaccess.config.SslSettings.JKS;
+import static com.comcast.apps.dataaccess.config.SslSettings.SSL;
 
 
 @Configuration
@@ -125,11 +126,11 @@ public class CassandraConfiguration {
     }
 
     protected InputStream readKeystore() throws FileNotFoundException {
-        return readSecureStoreFileAsVaultProperty(sslSettings.getKeystorePath()) ? new ByteArrayInputStream(sslSettings.getDecodedKeystore()) : new FileInputStream(sslSettings.getKeystorePath());
+        return sslSettings.isKeystoreSetAsProperty() ? new ByteArrayInputStream(sslSettings.getDecodedKeystore()) : new FileInputStream(sslSettings.getKeystorePath());
     }
 
     protected InputStream readTruststore() throws FileNotFoundException {
-        return readSecureStoreFileAsVaultProperty(sslSettings.getTruststorePath()) ? new ByteArrayInputStream(sslSettings.getDecodedTruststore()) : new FileInputStream(sslSettings.getTruststorePath());
+        return sslSettings.isTruststoreSetAsProperty() ? new ByteArrayInputStream(sslSettings.getDecodedTruststore()) : new FileInputStream(sslSettings.getTruststorePath());
     }
 
     protected SSLContext initSslContext(InputStream truststoreInputStream, String truststorePassword, InputStream keystoreInputStream, String keystorePassword) throws Exception {

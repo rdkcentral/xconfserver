@@ -58,6 +58,9 @@ public class CassandraSettings {
     @Value("${cassandra.localDataCenter:#{null}}")
     private String localDataCenter;
 
+    @Value("${cassandra.useSsl:false}")
+    private boolean useSsl;
+
     public CassandraSettings() {}
 
     public CassandraSettings(final CassandraSettings settings) {
@@ -142,5 +145,13 @@ public class CassandraSettings {
 
     public void setLocalDataCenter(String localDataCenter) {
         this.localDataCenter = localDataCenter;
+    }
+
+    public boolean isUseSsl() {
+        return useSsl;
+    }
+
+    public void setUseSsl(boolean useSsl) {
+        this.useSsl = useSsl;
     }
 }

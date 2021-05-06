@@ -23,8 +23,8 @@ package com.comcast.xconf.estbfirmware;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.apps.dataaccess.util.CloneUtil;
-import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.firmware.RuleAction;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,14 +40,16 @@ public class PercentageBeanQueriesHelper {
 
     public PercentageBean replaceConfigIdWithFirmwareVersion(PercentageBean bean) {
         PercentageBean result = CloneUtil.clone(bean);
-        List<RuleAction.ConfigEntry> resultDistribution = new ArrayList<>();
-        for (RuleAction.ConfigEntry entry : bean.getDistributions()) {
-            String firmwareVersion = getFirmwareVersion(entry.getConfigId());
-            RuleAction.ConfigEntry configEntry = new RuleAction.ConfigEntry(firmwareVersion, entry.getStartPercentRange(), entry.getEndPercentRange());
-            configEntry.setPercentage(entry.getPercentage());
-            resultDistribution.add(configEntry);
+        if (CollectionUtils.isNotEmpty(bean.getDistributions())) {
+            List<RuleAction.ConfigEntry> resultDistribution = new ArrayList<>();
+            for (RuleAction.ConfigEntry entry : bean.getDistributions()) {
+                String firmwareVersion = getFirmwareVersion(entry.getConfigId());
+                RuleAction.ConfigEntry configEntry = new RuleAction.ConfigEntry(firmwareVersion, entry.getStartPercentRange(), entry.getEndPercentRange());
+                configEntry.setPercentage(entry.getPercentage());
+                resultDistribution.add(configEntry);
+            }
+            result.setDistributions(resultDistribution);
         }
-        result.setDistributions(resultDistribution);
         result.setLastKnownGood(getFirmwareVersion(bean.getLastKnownGood()));
         result.setIntermediateVersion(getFirmwareVersion(bean.getIntermediateVersion()));
         return result;

@@ -312,3 +312,5 @@ fixedArg value meaning.
 
 If rule has only one condition there are no `compoundParts`, `relation` field is empty.
 If there are more than one condition - they are located in `compoundParts` object. First condition does not have any relation, next one has a relation.
+
+Test write.

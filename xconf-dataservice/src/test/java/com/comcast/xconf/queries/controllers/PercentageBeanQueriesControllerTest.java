@@ -61,6 +61,18 @@ public class PercentageBeanQueriesControllerTest extends BaseQueriesControllerTe
     }
 
     @Test
+    public void getAll_dontProduceNpeWhenDistributionIsNull() throws Exception {
+        PercentageBean percentageBean = createPercentageBean(STB);
+        percentageBean.setDistributions(null);
+        savePercentageBean(percentageBean);
+        String fullUrl = "/" + QueryConstants.QUERIES_PERCENTAGE_BEAN;
+
+        mockMvc.perform(get(fullUrl)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void getAllByApplicationType() throws Exception {
         Map<String, PercentageBean> percentageBeans = createAndSavePercentageBeans(STB, XHOME);
 

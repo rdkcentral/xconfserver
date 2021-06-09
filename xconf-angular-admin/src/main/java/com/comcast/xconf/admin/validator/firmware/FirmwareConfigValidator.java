@@ -21,18 +21,21 @@
  */
 package com.comcast.xconf.admin.validator.firmware;
 
-import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.ModelQueriesService;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.permissions.PermissionHelper;
 import com.comcast.xconf.validators.IValidator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
@@ -64,6 +67,8 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
             throw new ValidationRuntimeException("Application type is empty");
         }
 
+        validateParameters(firmwareConfig.getParameters());
+
         PermissionHelper.validateWrite(permissionService, firmwareConfig.getApplicationType());
 
         for (String modelId : firmwareConfig.getSupportedModelIds()) {
@@ -78,6 +83,16 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
         for (final FirmwareConfig entity : existingEntities) {
             if (ApplicationType.equals(firmwareConfig.getApplicationType(), entity.getApplicationType()) && !entity.getId().equals(firmwareConfig.getId()) && entity.getDescription().equalsIgnoreCase(firmwareConfig.getDescription())) {
                 throw new EntityConflictException("This description " + firmwareConfig.getDescription() + " is already used");
+            }
+        }
+    }
+
+    private void validateParameters(Map<String, String> parameters) {
+        if (MapUtils.isNotEmpty(parameters)) {
+            for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+                if (StringUtils.isBlank(parameter.getKey())) {
+                    throw new ValidationRuntimeException("Key is empty");
+                }
             }
         }
     }

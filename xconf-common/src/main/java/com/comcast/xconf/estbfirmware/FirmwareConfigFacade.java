@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
@@ -60,12 +61,19 @@ public class FirmwareConfigFacade {
         putIfPresent(map, ConfigNames.IPV6_FIRMWARE_LOCATION, firmwareConfig.getIpv6FirmwareLocation());
         putIfPresent(map, ConfigNames.UPGRADE_DELAY, firmwareConfig.getUpgradeDelay());
         putIfPresent(map, ConfigNames.REBOOT_IMMEDIATELY, firmwareConfig.getRebootImmediately());
+        putFirmwareConfigParameters(map, firmwareConfig.getParameters());
         properties = map;
     }
 
     public void putIfPresent(Map<String, Object> map, String key, Object value) {
         if (!isEmpty(value)) {
             map.put(key, value);
+        }
+    }
+
+    public void putFirmwareConfigParameters(Map<String, Object> properties, Map<String, String> configParameters) {
+        if (MapUtils.isNotEmpty(configParameters)) {
+            properties.putAll(configParameters);
         }
     }
 

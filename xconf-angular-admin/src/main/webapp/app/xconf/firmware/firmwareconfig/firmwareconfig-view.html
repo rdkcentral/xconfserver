@@ -46,4 +46,16 @@
             ng-repeat="modelId in vm.firmwareConfig.supportedModelIds"
             ng-bind="modelId"></li>
     </ul>
+
+    <div ng-if="vm.parametersAreNotEmpty(vm.firmwareConfig.parameters)">
+        <label for="version">Parameters:</label>
+        <table class="table table-striped">
+            <colgroup width="200"/>
+            <colgroup />
+            <tr ng-repeat="(key, value) in vm.firmwareConfig.parameters">
+                <td ng-bind="key"></td>
+                <td ng-bind="value"></td>
+            </tr>
+        </table>
+    </div>
 </div>

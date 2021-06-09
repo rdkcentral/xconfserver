@@ -19,21 +19,24 @@
 *
 -->
 <div class="editable-map-container">
-    <div class="form-inline" ng-repeat="property in parameters track by $id(property)">
-        <button type="button" class="btn btn-warning" ng-disabled="parameters.length === 1" ng-click="removeParameterEntry(property)">
+    <div class="alert alert-info" ng-if="parameters.length === 0" style="margin-bottom: 0">
+        <span>There are no parameters. Press "+" to add new parameter.</span>
+    </div>
+    <div class="form-inline" ng-repeat="property in parameters track by $id(property)" style="margin-bottom: 3px">
+        <button type="button" class="btn btn-warning" ng-click="removeParameterEntry(property)" style="padding-top: 5px">
             <i class=ri-delete-bin-7-line></i>
         </button>
         <div class="form-group" id="parameterEntries">
             <input type="text" class="form-control" ng-model="property.key"
                    uib-typeahead="autoValue for autoValue in autoCompleteValues"
                    typeahead-min-length="0"
-                   placeholder="Key"/>
-            <input type="text" class="form-control" ng-model="property.value" placeholder="Value"/>
+                   placeholder="Key"
+            style="width: 200px"/>
+            <input type="text" class="form-control" ng-model="property.value" placeholder="Value" style="width: 483px"/>
         </div>
     </div>
 
-    <!-- Buttons -->
-    <div class="btn-group" style="margin-top: 1em">
+    <div class="btn-group">
         <button id="addParameter" type="button" class="btn btn-success" ng-click="addParameterEntry()">
             <i class="ri-add-fill ri-sm"></i>
         </button>

@@ -1340,6 +1340,28 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.firmwareVersion").value(lkgConfig.getFirmwareVersion()));
     }
 
+    @Test
+    public void firmwareConfigsParametersAreReturned() throws Exception {
+        Map<String, String> parameters = new HashMap<>();
+        String configKey = "bindingUrl";
+        String configValue = "http://test.url.com";
+        parameters.put(configKey, configValue);
+
+        FirmwareConfig firmwareConfig = createFirmwareConfig(defaultFirmwareVersion, defaultModelId, FirmwareConfig.DownloadProtocol.http);
+        firmwareConfig.setParameters(parameters);
+        firmwareConfigDAO.setOne(firmwareConfig.getId(), firmwareConfig);
+
+        createAndSaveUseAccountPercentageBean(firmwareConfig);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setFirmwareVersion(defaultFirmwareVersion);
+
+        mockMvc.perform(postContext("/xconf/swu/stb", context))
+                .andExpect(status().isOk()).
+                andExpect(jsonPath("$.firmwareVersion").value(firmwareConfig.getFirmwareVersion()))
+                .andExpect(jsonPath("$.bindingUrl").value(configValue));
+    }
+
     private PercentageBean createAndSaveUseAccountPercentageBean(FirmwareConfig lkgConfig) {
         PercentageBean useAccountBean = createPercentageBean("useAccountName", defaultEnvironmentId, defaultModelId, null, null, defaultFirmwareVersion, STB);
         useAccountBean.setUseAccountIdPercentage(true);
@@ -1460,6 +1482,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
         config.setId(null);
         config.setDescription(null);
         config.setSupportedModelIds(null);
+        config.setParameters(null);
         config.setUpdated(null);
         config.setApplicationType(null);
     }

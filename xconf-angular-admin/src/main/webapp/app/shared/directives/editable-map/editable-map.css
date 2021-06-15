@@ -1,0 +1,18 @@
+.edit-form {
+    margin-bottom: 3px;
+}
+.key-input {
+    width: 200px;
+}
+
+.value-input {
+    width: 483px;
+}
+
+.remove-parameter {
+    padding-top: 5px
+}
+
+.no-parameters {
+    margin-bottom: 0;
+}

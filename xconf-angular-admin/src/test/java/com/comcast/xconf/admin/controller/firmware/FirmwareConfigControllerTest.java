@@ -302,17 +302,17 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
     @Test
     public void getFirmwareConfigWithParameters() throws Exception {
         Model model = createAndSaveModel(defaultModelId.toUpperCase());
-        Map<String, String> parameters = Collections.singletonMap("testKey", "testValue");
+        Map<String, String> properties = Collections.singletonMap("testKey", "testValue");
 
         FirmwareConfig firmwareConfig = createFirmwareConfig();
-        firmwareConfig.setParameters(parameters);
+        firmwareConfig.setProperties(properties);
         saveFirmwareConfig(firmwareConfig);
 
         nullifyUnwantedFields(firmwareConfig);
 
         mockMvc.perform(get("/" + FirmwareConfigController.URL_MAPPING + "/" + firmwareConfig.getId())
                 .accept(MediaType.APPLICATION_JSON)).andExpect(content().json(JsonUtil.toJson(firmwareConfig)))
-                .andExpect(jsonPath("$.parameters.testKey").value("testValue"))
+                .andExpect(jsonPath("$.properties.testKey").value("testValue"))
                 .andExpect(status().isOk());
     }
 
@@ -320,14 +320,14 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
     public void createFirmwareConfigWithParameters() throws Exception {
         Model model = createAndSaveModel(defaultModelId.toUpperCase());
         FirmwareConfig firmwareConfig = createFirmwareConfig();
-        firmwareConfig.setParameters(Collections.singletonMap("testKey", "testValue"));
+        firmwareConfig.setProperties(Collections.singletonMap("testKey", "testValue"));
 
         mockMvc.perform(post("/" + FirmwareConfigController.URL_MAPPING)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(firmwareConfig)))
                 .andExpect(status().isCreated());
 
-        assertEquals(firmwareConfig.getParameters(), firmwareConfigDAO.getOne(firmwareConfig.getId()).getParameters());
+        assertEquals(firmwareConfig.getProperties(), firmwareConfigDAO.getOne(firmwareConfig.getId()).getProperties());
     }
 
     @Test
@@ -336,19 +336,19 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
         FirmwareConfig firmwareConfig = createFirmwareConfig();
         saveFirmwareConfig(firmwareConfig);
 
-        assertTrue(MapUtils.isEmpty(firmwareConfigDAO.getOne(firmwareConfig.getId()).getParameters()));
+        assertTrue(MapUtils.isEmpty(firmwareConfigDAO.getOne(firmwareConfig.getId()).getProperties()));
 
         Map<String, String> parameters = Collections.singletonMap("testKey", "testValue");
 
         FirmwareConfig firmwareConfigToUpdate = new FirmwareConfig(firmwareConfig);
-        firmwareConfigToUpdate.setParameters(parameters);
+        firmwareConfigToUpdate.setProperties(parameters);
 
         mockMvc.perform(put("/" + FirmwareConfigController.URL_MAPPING)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(firmwareConfigToUpdate)))
                 .andExpect(status().isOk());
 
-        assertEquals(parameters, firmwareConfigDAO.getOne(firmwareConfigToUpdate.getId()).getParameters());
+        assertEquals(parameters, firmwareConfigDAO.getOne(firmwareConfigToUpdate.getId()).getProperties());
     }
 
     @Test
@@ -357,27 +357,27 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
         Map<String, String> parameters = Collections.singletonMap("testKey", "testValue");
 
         FirmwareConfig firmwareConfig = createFirmwareConfig();
-        firmwareConfig.setParameters(parameters);
+        firmwareConfig.setProperties(parameters);
         saveFirmwareConfig(firmwareConfig);
 
-        assertEquals(parameters, firmwareConfigDAO.getOne(firmwareConfig.getId()).getParameters());
+        assertEquals(parameters, firmwareConfigDAO.getOne(firmwareConfig.getId()).getProperties());
 
         FirmwareConfig firmwareConfigToUpdate = new FirmwareConfig(firmwareConfig);
-        firmwareConfigToUpdate.setParameters(new HashMap<>());
+        firmwareConfigToUpdate.setProperties(new HashMap<>());
 
         mockMvc.perform(put("/" + FirmwareConfigController.URL_MAPPING)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(firmwareConfigToUpdate)))
                 .andExpect(status().isOk());
 
-        assertTrue(MapUtils.isEmpty(firmwareConfigDAO.getOne(firmwareConfigToUpdate.getId()).getParameters()));
+        assertTrue(MapUtils.isEmpty(firmwareConfigDAO.getOne(firmwareConfigToUpdate.getId()).getProperties()));
     }
 
     @Test
     public void createFirmwareConfigWithEmptyKeyParameter() throws Exception {
         Model model = createAndSaveModel(defaultModelId.toUpperCase());
         FirmwareConfig firmwareConfig = createFirmwareConfig();
-        firmwareConfig.setParameters(Collections.singletonMap("", "testValue"));
+        firmwareConfig.setProperties(Collections.singletonMap("", "testValue"));
 
         mockMvc.perform(post("/" + FirmwareConfigController.URL_MAPPING)
                 .contentType(MediaType.APPLICATION_JSON)

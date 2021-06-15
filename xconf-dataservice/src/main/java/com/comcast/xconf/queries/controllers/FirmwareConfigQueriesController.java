@@ -203,8 +203,8 @@ public class FirmwareConfigQueriesController extends BaseQueriesController {
             }
         }
 
-        if (MapUtils.isNotEmpty(firmwareConfig.getParameters())) {
-            for (Map.Entry<String, String> parameter : firmwareConfig.getParameters().entrySet()) {
+        if (MapUtils.isNotEmpty(firmwareConfig.getProperties())) {
+            for (Map.Entry<String, String> parameter : firmwareConfig.getProperties().entrySet()) {
                 if (StringUtils.isBlank(parameter.getKey())) {
                     throw new ValidationRuntimeException("Key is empty");
                 }

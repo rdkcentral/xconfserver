@@ -67,7 +67,7 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
             throw new ValidationRuntimeException("Application type is empty");
         }
 
-        validateParameters(firmwareConfig.getParameters());
+        validateParameters(firmwareConfig.getProperties());
 
         PermissionHelper.validateWrite(permissionService, firmwareConfig.getApplicationType());
 

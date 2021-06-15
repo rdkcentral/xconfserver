@@ -43,7 +43,7 @@
             supportedModelIds: [],
             applicationType: $rootScope.applicationType
         };
-        vm.parameters = [{key: '', value: ''}];
+        vm.properties = [{key: '', value: ''}];
         vm.PERMISSION = PERMISSION;
 
         vm.save = save;
@@ -83,10 +83,10 @@
                             }
                         }
                     });
-                    vm.parameters = [];
-                    vm.firmwareConfig.parameters = resp.data.parameters;
-                    for (var key in vm.firmwareConfig.parameters) {
-                        vm.parameters.push({key: key, value: vm.firmwareConfig.parameters[key]});
+                    vm.properties = [];
+                    vm.firmwareConfig.properties = resp.data.properties;
+                    for (var key in vm.firmwareConfig.properties) {
+                        vm.properties.push({key: key, value: vm.firmwareConfig.properties[key]});
                     }
                 }, function(error) {
                     alertsService.showError({title: 'Error', message: 'Error by loading FirmwareConfig'});
@@ -106,8 +106,8 @@
         }
 
         function save() {
-            if (validateFirmwareConfig(vm.firmwareConfig) && validateParameters(vm.parameters)) {
-                vm.firmwareConfig.parameters = keyValueObjectToMap(vm.parameters);
+            if (validateFirmwareConfig(vm.firmwareConfig) && validateProperties(vm.properties)) {
+                vm.firmwareConfig.properties = keyValueObjectToMap(vm.properties);
 
                 if (vm.firmwareConfig.id) {
                     firmwareConfigService.update(vm.firmwareConfig).then(function (resp) {
@@ -127,9 +127,9 @@
             }
         }
 
-        function keyValueObjectToMap(parameters) {
+        function keyValueObjectToMap(properties) {
             let mapObject = {};
-            parameters.forEach(function (item) {
+            properties.forEach(function (item) {
                 if (item.key) {
                     mapObject[item.key] = item.value;
                 }
@@ -159,13 +159,13 @@
             return true;
         }
 
-        function validateParameters(parameters) {
-            if (!validateParameterKeyUniqueness(parameters)) {
+        function validateProperties(properties) {
+            if (!validatePropertyKeyUniqueness(properties)) {
                 alertsService.showError({title: 'Error', message: 'Keys are not unique'});
                 return false;
             }
 
-            if (!validateKeysAreNotEmpty(parameters)) {
+            if (!validateKeysAreNotEmpty(properties)) {
                 alertsService.showError({title: 'Error', message: 'Key is empty'});
                 return false;
             }
@@ -173,14 +173,14 @@
             return true;
         }
 
-        function validateParameterKeyUniqueness(parameters) {
-            let keys = _.map(parameters, function(entry) {return entry.key});
+        function validatePropertyKeyUniqueness(properties) {
+            let keys = _.map(properties, function(entry) {return entry.key});
             let uniqKeys = _.uniq(keys);
             return keys.length === uniqKeys.length;
         }
 
-        function validateKeysAreNotEmpty(parameters) {
-            let emptyIndex = _.findIndex(parameters, function(entry) {return utilsService.isEmptyString(entry.key)});
+        function validateKeysAreNotEmpty(properties) {
+            let emptyIndex = _.findIndex(properties, function(entry) {return utilsService.isEmptyString(entry.key)});
             return emptyIndex === -1;
         }
     }

@@ -50,6 +50,7 @@
             <link href="<c:url value="/app/xconf/xconf_base.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/styles/shared.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/directives/custom-viewer-panel/custom-viewer-panel.css"/>" rel="stylesheet" />
+            <link href="<c:url value="/app/shared/directives/editable-map/editable-map.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/changelog/changelog.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/statistics/statistics.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/xconf/styles/rules.css"/>" rel="stylesheet" />

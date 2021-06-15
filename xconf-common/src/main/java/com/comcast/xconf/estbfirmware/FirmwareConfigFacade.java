@@ -36,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,6 +46,7 @@ import java.util.Map;
 public class FirmwareConfigFacade {
 
     private Map<String, Object> properties = new LinkedHashMap<>();
+    private Map<String, String> customProperties = new HashMap<>();
 
     public FirmwareConfigFacade() {}
 
@@ -61,7 +63,7 @@ public class FirmwareConfigFacade {
         putIfPresent(map, ConfigNames.IPV6_FIRMWARE_LOCATION, firmwareConfig.getIpv6FirmwareLocation());
         putIfPresent(map, ConfigNames.UPGRADE_DELAY, firmwareConfig.getUpgradeDelay());
         putIfPresent(map, ConfigNames.REBOOT_IMMEDIATELY, firmwareConfig.getRebootImmediately());
-        putFirmwareConfigParameters(map, firmwareConfig.getParameters());
+        putCustomProperties(customProperties, firmwareConfig.getProperties());
         properties = map;
     }
 
@@ -71,9 +73,9 @@ public class FirmwareConfigFacade {
         }
     }
 
-    public void putFirmwareConfigParameters(Map<String, Object> properties, Map<String, String> configParameters) {
-        if (MapUtils.isNotEmpty(configParameters)) {
-            properties.putAll(configParameters);
+    public void putCustomProperties(Map<String, String> properties, Map<String, String> configProperties) {
+        if (MapUtils.isNotEmpty(configProperties)) {
+            properties.putAll(configProperties);
         }
     }
 
@@ -148,6 +150,9 @@ public class FirmwareConfigFacade {
         return flag != null && flag instanceof Boolean ? (Boolean) flag : false;
     }
 
+    public Map<String, String> getCustomProperties() {
+        return customProperties;
+    }
     /**
      * Will exclude from response fields, like id, description, supportedModelIds, updated.
      * And also empty values and blank strings.
@@ -188,6 +193,10 @@ public class FirmwareConfigFacade {
             if (!isRedundantEntry(entry)) {
                 map.put(entry.getKey(), entry.getValue());
             }
+        }
+
+        if (MapUtils.isNotEmpty(getCustomProperties())) {
+            map.putAll(getCustomProperties());
         }
 
         return new FirmwareConfigFacade(map);

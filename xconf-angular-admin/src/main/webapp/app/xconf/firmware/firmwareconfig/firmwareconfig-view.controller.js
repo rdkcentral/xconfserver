@@ -30,13 +30,13 @@
         vm.firmwareConfig = firmwareConfig;
 
         vm.dismiss = dismiss;
-        vm.parametersAreNotEmpty = parametersAreNotEmpty;
+        vm.propertiesAreNotEmpty = propertiesAreNotEmpty;
 
         function dismiss() {
             $modalInstance.dismiss();
         }
 
-        function parametersAreNotEmpty(parameters) {
+        function propertiesAreNotEmpty(parameters) {
             return !utilsService.isMapEmpty(parameters);
         }
     }

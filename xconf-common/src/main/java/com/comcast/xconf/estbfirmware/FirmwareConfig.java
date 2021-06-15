@@ -77,7 +77,7 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
 
     private String applicationType = ApplicationType.STB;
 
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> properties = new HashMap<>();
 
     public FirmwareConfig() {
     }
@@ -97,7 +97,7 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
         upgradeDelay = c.upgradeDelay;
         rebootImmediately = c.rebootImmediately;
         setSupportedModelIds(new HashSet<String>(c.supportedModelIds));
-        parameters = c.getParameters();
+        properties = c.getProperties();
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -186,12 +186,12 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
         this.applicationType = applicationType;
     }
 
-    public Map<String, String> getParameters() {
-        return parameters;
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
-    public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 
     @Override

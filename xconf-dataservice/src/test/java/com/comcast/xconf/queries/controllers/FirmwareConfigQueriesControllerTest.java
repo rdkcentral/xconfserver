@@ -255,8 +255,6 @@ public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTe
         assertEquals(firmwareConfig.getProperties(), firmwareConfigDAO.getOne(firmwareConfig.getId()).getProperties());
     }
 
-    public static final long telemetryProfileServiceExpireTimeMs = 1000L;
-
     @Test
     public void createFirmwareConfigWithMoreThanMaxAllowedParametersSize() throws Exception {
         Model model = createAndSaveModel(defaultModelId.toUpperCase());

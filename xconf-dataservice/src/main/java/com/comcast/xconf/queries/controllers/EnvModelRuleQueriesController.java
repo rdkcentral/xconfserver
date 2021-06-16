@@ -124,8 +124,8 @@ public class EnvModelRuleQueriesController extends BaseQueriesController {
             if (ruleBean.getName().equalsIgnoreCase(bean.getName()) && !ruleBean.getId().equalsIgnoreCase(bean.getId())) {
                 return new ResponseEntity<>("Name is already used", HttpStatus.BAD_REQUEST);
             }
-            if (ruleBean.getEnvironmentId().equalsIgnoreCase(bean.getEnvironmentId()) &&
-                    ruleBean.getModelId().equalsIgnoreCase(bean.getModelId())) {
+            if (StringUtils.equalsIgnoreCase(ruleBean.getEnvironmentId(), bean.getEnvironmentId())
+                    && StringUtils.equalsIgnoreCase(ruleBean.getModelId(), bean.getModelId())) {
                 return new ResponseEntity<>("Env/Model overlap with rule: " + ruleBean.getName(), HttpStatus.BAD_REQUEST);
             }
         }

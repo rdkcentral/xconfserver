@@ -113,6 +113,25 @@ public class EnvModelRuleQueriesControllerTest extends BaseQueriesControllerTest
     }
 
     @Test
+    public void addEnvironmentToEnvModelRule() throws Exception {
+        EnvModelRuleBean envModelRuleBean = createDefaultEnvModelRuleBean();
+        envModelRuleBean.setEnvironmentId(null);
+        envModelRuleService.save(envModelRuleBean, STB);
+
+        assertNull(envModelRuleService.getOne(envModelRuleBean.getId()).getEnvironmentId());
+
+        EnvModelRuleBean envModelRuleBeanWithEnvironment = createDefaultEnvModelRuleBean();
+
+        mockMvc.perform(post("/" + QueryConstants.UPDATE_RULES_ENV_MODEL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(envModelRuleBeanWithEnvironment)))
+                .andExpect(status().isOk());
+
+        assertEquals(envModelRuleBean, envModelRuleService.getOne(envModelRuleBeanWithEnvironment.getId()));
+        assertEquals(defaultEnvironmentId.toUpperCase(), envModelRuleService.getOne(envModelRuleBeanWithEnvironment.getId()).getEnvironmentId());
+    }
+
+    @Test
     public void deleteEnvModelTest() throws Exception {
         EnvModelRuleBean bean = createDefaultEnvModelRuleBean();
         envModelRuleService.save(bean, STB);

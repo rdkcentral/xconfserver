@@ -45,6 +45,9 @@ import java.util.stream.Collectors;
 @RestController
 public class FirmwareConfigQueriesController extends BaseQueriesController {
 
+    public static final String MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE = "Max allowed number of properties is %s";
+    public static final int MAX_ALLOWED_NUMBER_OF_PROPERTIES = 20;
+
     @Autowired
     private CachedSimpleDao<String, FirmwareConfig> firmwareConfigDAO;
 
@@ -203,12 +206,17 @@ public class FirmwareConfigQueriesController extends BaseQueriesController {
             }
         }
 
-        if (MapUtils.isNotEmpty(firmwareConfig.getProperties())) {
+        Map<String, String> properties = firmwareConfig.getProperties();
+        if (MapUtils.isNotEmpty(properties)) {
             for (Map.Entry<String, String> parameter : firmwareConfig.getProperties().entrySet()) {
                 if (StringUtils.isBlank(parameter.getKey())) {
                     throw new ValidationRuntimeException("Key is empty");
                 }
             }
+        }
+
+        if (MapUtils.isNotEmpty(properties) && properties.size() > MAX_ALLOWED_NUMBER_OF_PROPERTIES) {
+            throw new ValidationRuntimeException(String.format(MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE, MAX_ALLOWED_NUMBER_OF_PROPERTIES));
         }
 
         return null;

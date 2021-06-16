@@ -39,7 +39,11 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static com.comcast.xconf.admin.validator.firmware.FirmwareConfigValidator.MAX_ALLOWED_NUMBER_OF_PROPERTIES;
+import static com.comcast.xconf.admin.validator.firmware.FirmwareConfigValidator.MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE;
 import static com.comcast.xconf.estbfirmware.FirmwareConfigQueriesService.EXISTED_VERSIONS;
 import static com.comcast.xconf.estbfirmware.FirmwareConfigQueriesService.NOT_EXISTED_VERSIONS;
 import static com.comcast.xconf.queries.QueriesHelper.nullifyUnwantedFields;
@@ -328,6 +332,21 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
                 .andExpect(status().isCreated());
 
         assertEquals(firmwareConfig.getProperties(), firmwareConfigDAO.getOne(firmwareConfig.getId()).getProperties());
+    }
+
+    @Test
+    public void createFirmwareConfigWithMoreThanMaxAllowedParametersSize() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        FirmwareConfig firmwareConfig = createFirmwareConfig();
+
+        Map<String, String> properties = IntStream.range(0, MAX_ALLOWED_NUMBER_OF_PROPERTIES + 1).boxed().collect(Collectors.toMap(number -> "key" + number, number -> "value" + number));
+        firmwareConfig.setProperties(properties);
+
+        mockMvc.perform(post("/" + FirmwareConfigController.URL_MAPPING)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(firmwareConfig)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(String.format(MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE, MAX_ALLOWED_NUMBER_OF_PROPERTIES)));
     }
 
     @Test

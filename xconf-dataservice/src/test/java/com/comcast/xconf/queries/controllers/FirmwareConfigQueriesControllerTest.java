@@ -30,10 +30,14 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.comcast.xconf.firmware.ApplicationType.STB;
 import static com.comcast.xconf.firmware.ApplicationType.XHOME;
 import static com.comcast.xconf.queries.QueriesHelper.nullifyUnwantedFields;
+import static com.comcast.xconf.queries.controllers.FirmwareConfigQueriesController.MAX_ALLOWED_NUMBER_OF_PROPERTIES;
+import static com.comcast.xconf.queries.controllers.FirmwareConfigQueriesController.MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -249,6 +253,24 @@ public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTe
                 .andExpect(status().isOk());
 
         assertEquals(firmwareConfig.getProperties(), firmwareConfigDAO.getOne(firmwareConfig.getId()).getProperties());
+    }
+
+    public static final long telemetryProfileServiceExpireTimeMs = 1000L;
+
+    @Test
+    public void createFirmwareConfigWithMoreThanMaxAllowedParametersSize() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        FirmwareConfig firmwareConfig = createDefaultFirmwareConfig();
+
+        Map<String, String> properties = IntStream.range(0, MAX_ALLOWED_NUMBER_OF_PROPERTIES + 1).boxed().collect(Collectors.toMap(number -> "key" + number, number -> "value" + number));
+        firmwareConfig.setProperties(properties);
+
+        String expectedErrorMsg = String.format(MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE, MAX_ALLOWED_NUMBER_OF_PROPERTIES);
+        mockMvc.perform(post("/" + QueryConstants.UPDATE_FIRMWARES)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(firmwareConfig)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("\"" + expectedErrorMsg + "\""));
     }
 
     @Test

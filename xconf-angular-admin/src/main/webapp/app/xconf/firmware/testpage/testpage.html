@@ -20,25 +20,24 @@
 -->
 <h1 class="page-header">Firmware Test page</h1>
 <div id="firmwareRuleTestPage" class="row" style="margin-top: -10px">
-    <div class="col-md-5">
+    <div class="col-md-12">
         <div class="form-group" style="font-size: 1.5em;">Parameters</div>
-        <editable-map parameters="vm.parameters"
-                      auto-complete-values="vm.autoCompleteValues" quick-add="vm.quickAddValues"></editable-map>
-        <div style="padding-top: 1em;">
-            <button id="test" type="button" class="btn btn-primary"
-                    ng-click="vm.matchRules()">Test With Parameters</button>
-        </div>
-    </div>
-    <div class="col-md-7" ng-if="!vm.result">
-        <div class="form-group" style="font-size: 1.5em;">Tips</div>
         <div class="alert alert-info">
             <span>Enter context parameters like estbMac or env/model.
                 Use toggle near plus sign to add predefined capabilities (RCDL, rebootDecoupled, supportsFullHttpUrl).
                 Hit 'Test with parameters' button to see results.
             </span>
         </div>
+        <editable-map parameters="vm.parameters"
+                      auto-complete-values="vm.autoCompleteValues" quick-add="vm.quickAddValues"></editable-map>
+        <div class="form-group" style="margin-top: 10px">
+            <button id="test" type="button" class="btn btn-primary"
+                    ng-click="vm.matchRules()">Test With Parameters</button>
+        </div>
     </div>
-    <div class="col-md-7" ng-if="vm.result">
+</div>
+<div class="row">
+    <div class="col-md-12" ng-if="vm.result">
         <div ng-if="vm.context">
             <div class="form-group" style="font-size: 1.5em;">Context</div>
             <div class="alert alert-info break-word">

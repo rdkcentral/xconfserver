@@ -21,7 +21,10 @@
 <h1 class="page-header">Test page</h1>
 <div id="dcmTestPage">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <span>Enter context parameters like estbMacAddress or env/model. Hit 'Test with parameters' button to see results.</span>
+            </div>
             <div class="form-group" style="font-size: 1.5em;">Parameters</div>
             <editable-map parameters="vm.parameters"
                           auto-complete-values="vm.autoCompleteValues"></editable-map>
@@ -29,16 +32,11 @@
                 <button id="testButton" type="button" class="btn btn-primary"
                         ng-disabled=""
                         ng-click="vm.matchRule()">Test With Parameters</button>
-            </div>
         </div>
-        <div class="col-md-7" ng-if="!vm.context">
-            <div class="form-group" style="font-size: 1.5em;">Tips</div>
-            <div class="alert alert-info">
-            <span>Enter context parameters like estbMacAddress or env/model. Hit 'Test with parameters' button to see results.
-            </span>
-            </div>
         </div>
-        <div class="col-md-7">
+    </div>
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 10px">
             <div ng-if="vm.context">
                 <div class="form-group" style="font-size: 1.5em;">Context</div>
                 <div class="alert alert-info break-word">
@@ -154,5 +152,6 @@
                 </table>
             </div>
         </div>
+    </div>
     </div>
 </div>

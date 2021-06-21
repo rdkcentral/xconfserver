@@ -186,6 +186,7 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
         this.applicationType = applicationType;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public Map<String, String> getProperties() {
         return properties;
     }

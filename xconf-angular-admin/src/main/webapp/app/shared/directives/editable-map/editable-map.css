@@ -1,12 +1,12 @@
 .edit-form {
-    margin-bottom: 3px;
+    margin-bottom: 3px !important;
 }
 .key-input {
-    width: 200px;
+    width: 200px !important;
 }
 
 .value-input {
-    width: 483px;
+    width: 483px !important;
 }
 
 .remove-parameter {

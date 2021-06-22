@@ -19,11 +19,10 @@
 *
 -->
 <div class="editable-map-container">
-    <div class="alert alert-info no-parameters" ng-if="parameters.length === 0">
-        <span>There are no parameters. Press "+" to add new parameter.</span>
-    </div>
     <div class="form-inline edit-form" ng-repeat="property in parameters track by $id(property)">
-        <button type="button" class="btn btn-warning remove-parameter" ng-click="removeParameterEntry(property)">
+        <button type="button" class="btn btn-warning remove-parameter"
+                ng-disabled="parameters.length === 1"
+                ng-click="removeParameterEntry(property)">
             <i class=ri-delete-bin-7-line></i>
         </button>
         <div class="form-group" id="parameterEntries">

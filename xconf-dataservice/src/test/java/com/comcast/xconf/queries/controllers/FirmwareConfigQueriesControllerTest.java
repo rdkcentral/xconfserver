@@ -216,8 +216,8 @@ public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTe
 
         mockMvc.perform(get("/" + QueryConstants.QUERIES_FIRMWARES + "/" + firmwareConfig.getId())
                 .accept(MediaType.APPLICATION_JSON)).andExpect(content().json(JsonUtil.toJson(firmwareConfig)))
-                .andExpect(jsonPath("$.properties.testKey").value("testValue"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.properties.testKey").value("testValue"));
     }
 
     @Test

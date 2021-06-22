@@ -165,11 +165,6 @@
                 return false;
             }
 
-            if (!validateKeysAreNotEmpty(properties)) {
-                alertsService.showError({title: 'Error', message: 'Key is empty'});
-                return false;
-            }
-
             return true;
         }
 
@@ -177,11 +172,6 @@
             let keys = _.map(properties, function(entry) {return entry.key});
             let uniqKeys = _.uniq(keys);
             return keys.length === uniqKeys.length;
-        }
-
-        function validateKeysAreNotEmpty(properties) {
-            let emptyIndex = _.findIndex(properties, function(entry) {return utilsService.isEmptyString(entry.key)});
-            return emptyIndex === -1;
         }
     }
 

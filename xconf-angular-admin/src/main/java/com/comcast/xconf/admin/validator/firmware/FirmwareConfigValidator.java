@@ -70,7 +70,7 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
             throw new ValidationRuntimeException("Application type is empty");
         }
 
-        validatePropertyKeys(firmwareConfig.getProperties());
+        validatePropertiesDoNotHaveEmptyValues(firmwareConfig.getProperties());
         validatePropertiesSize(firmwareConfig.getProperties());
 
         PermissionHelper.validateWrite(permissionService, firmwareConfig.getApplicationType());
@@ -91,11 +91,14 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
         }
     }
 
-    private void validatePropertyKeys(Map<String, String> parameters) {
+    private void validatePropertiesDoNotHaveEmptyValues(Map<String, String> parameters) {
         if (MapUtils.isNotEmpty(parameters)) {
             for (Map.Entry<String, String> parameter : parameters.entrySet()) {
                 if (StringUtils.isBlank(parameter.getKey())) {
                     throw new ValidationRuntimeException("Key is empty");
+                }
+                if (StringUtils.isBlank(parameter.getValue())) {
+                    throw new ValidationRuntimeException("Value is blank for key: " + parameter.getKey());
                 }
             }
         }

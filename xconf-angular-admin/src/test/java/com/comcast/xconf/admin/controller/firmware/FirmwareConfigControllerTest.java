@@ -22,6 +22,7 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
+import com.comcast.xconf.dcm.ruleengine.TelemetryProfileService;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.FirmwareConfigData;
 import com.comcast.xconf.estbfirmware.Model;
@@ -33,11 +34,13 @@ import com.comcast.xconf.search.SearchFields;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.MapUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -393,7 +396,7 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void createFirmwareConfigWithEmptyKeyParameter() throws Exception {
+    public void createFirmwareConfigWithEmptyKey() throws Exception {
         Model model = createAndSaveModel(defaultModelId.toUpperCase());
         FirmwareConfig firmwareConfig = createFirmwareConfig();
         firmwareConfig.setProperties(Collections.singletonMap("", "testValue"));
@@ -401,7 +404,28 @@ public class FirmwareConfigControllerTest extends BaseControllerTest {
         mockMvc.perform(post("/" + FirmwareConfigController.URL_MAPPING)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(firmwareConfig)))
-                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value("Key is empty"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Key is empty"));
+    }
+
+    public static final long telemetryProfileServiceExpireTimeMs = 1000L;
+
+    @BeforeClass
+    public static void setUpProperties() throws IOException {
+        TelemetryProfileService.expireTime = telemetryProfileServiceExpireTimeMs;
+    }
+
+    @Test
+    public void createFirmwareConfigWithEmptyValue() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        FirmwareConfig firmwareConfig = createFirmwareConfig();
+        firmwareConfig.setProperties(Collections.singletonMap("testKey", ""));
+
+        mockMvc.perform(post("/" + FirmwareConfigController.URL_MAPPING)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(firmwareConfig)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Value is blank for key: testKey"));
     }
 
     private void assertSearchByContext(Map<String, String> searchContext, List<FirmwareConfig> expectedFirmwareConfigs) throws Exception {

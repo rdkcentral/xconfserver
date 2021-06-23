@@ -294,7 +294,7 @@ public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTe
     }
 
     @Test
-    public void createFirmwareConfigWithEmptyKeyParameter() throws Exception {
+    public void createFirmwareConfigWithEmptyKey() throws Exception {
         Model model = createAndSaveModel(defaultModelId.toUpperCase());
         FirmwareConfig firmwareConfig = createDefaultFirmwareConfig();
         firmwareConfig.setProperties(Collections.singletonMap("", "testValue"));
@@ -302,7 +302,21 @@ public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTe
         mockMvc.perform(post("/" + QueryConstants.UPDATE_FIRMWARES)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(firmwareConfig)))
-                .andExpect(status().isBadRequest()).andExpect(content().string("\"Key is empty\""));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("\"Key is empty\""));
+    }
+
+    @Test
+    public void createFirmwareConfigWithEmptyValue() throws Exception {
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+        FirmwareConfig firmwareConfig = createDefaultFirmwareConfig();
+        firmwareConfig.setProperties(Collections.singletonMap("testKey", ""));
+
+        mockMvc.perform(post("/" + QueryConstants.UPDATE_FIRMWARES)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(firmwareConfig)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("\"Value is blank for key: testKey\""));
     }
 
     private Map<String, FirmwareConfig> createAndSaveFirmwareConfigs(String stbDescription, String xhomeDescription) throws Exception {

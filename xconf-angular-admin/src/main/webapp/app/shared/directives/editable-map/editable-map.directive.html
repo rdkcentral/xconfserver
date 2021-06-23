@@ -36,7 +36,7 @@
     </div>
 
     <div class="btn-group">
-        <button id="addParameter" type="button" class="btn btn-success" ng-click="addParameterEntry()">
+        <button id="addParameter" type="button" class="btn btn-success" ng-click="addParameterEntry()" ng-disabled="parameters.length === maxNumberOfItems">
             <i class="ri-add-fill ri-sm"></i>
         </button>
         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false" ng-if="quickAdd.length > 0">

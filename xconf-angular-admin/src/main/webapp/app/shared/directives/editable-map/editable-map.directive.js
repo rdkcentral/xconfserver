@@ -29,7 +29,8 @@
                 scope: {
                     parameters: '=',
                     autoCompleteValues: '=',
-                    quickAdd: '='
+                    quickAdd: '=',
+                    maxNumberOfItems: '='
                 },
                 templateUrl: 'app/shared/directives/editable-map/editable-map.directive.html',
                 link: function(scope) {

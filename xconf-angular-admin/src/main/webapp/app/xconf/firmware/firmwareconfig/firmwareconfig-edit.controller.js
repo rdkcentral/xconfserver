@@ -23,9 +23,9 @@
         .module('app.firmwareconfig')
         .controller('FirmwareConfigEditController', controller);
 
-    controller.$inject = ['$rootScope', '$scope', '$controller', 'firmwareConfigService', 'modelService', '$stateParams', 'alertsService', '$state', 'authUtilsService', 'PERMISSION'];
+    controller.$inject = ['$rootScope', '$scope', '$controller', 'firmwareConfigService', 'modelService', '$stateParams', 'alertsService', '$state', 'authUtilsService', 'PERMISSION', 'utilsService'];
 
-    function controller($rootScope, $scope, $controller, firmwareConfigService, modelService, $stateParams, alertsService, $state, authUtils, PERMISSION) {
+    function controller($rootScope, $scope, $controller, firmwareConfigService, modelService, $stateParams, alertsService, $state, authUtils, PERMISSION, utilsService) {
         var vm = this;
 
         angular.extend(vm, $controller('EditController', {
@@ -43,7 +43,9 @@
             supportedModelIds: [],
             applicationType: $rootScope.applicationType
         };
+        vm.properties = [{key: '', value: ''}];
         vm.PERMISSION = PERMISSION;
+
         vm.save = save;
         vm.selectModel = selectModel;
         vm.authUtils = authUtils;
@@ -81,6 +83,11 @@
                             }
                         }
                     });
+                    vm.properties = [];
+                    vm.firmwareConfig.properties = resp.data.properties;
+                    for (var key in vm.firmwareConfig.properties) {
+                        vm.properties.push({key: key, value: vm.firmwareConfig.properties[key]});
+                    }
                 }, function(error) {
                     alertsService.showError({title: 'Error', message: 'Error by loading FirmwareConfig'});
                 });
@@ -99,7 +106,9 @@
         }
 
         function save() {
-            if (validateFirmwareConfig(vm.firmwareConfig)) {
+            if (validateFirmwareConfig(vm.firmwareConfig) && validateProperties(vm.properties)) {
+                vm.firmwareConfig.properties = keyValueObjectToMap(vm.properties);
+
                 if (vm.firmwareConfig.id) {
                     firmwareConfigService.update(vm.firmwareConfig).then(function (resp) {
                         alertsService.successfullySaved(resp.data.description);
@@ -116,6 +125,16 @@
                     });
                 }
             }
+        }
+
+        function keyValueObjectToMap(properties) {
+            let mapObject = {};
+            properties.forEach(function (item) {
+                if (item.key) {
+                    mapObject[item.key] = item.value;
+                }
+            });
+            return mapObject;
         }
 
         function validateFirmwareConfig(firmwareConfig) {
@@ -138,6 +157,21 @@
                 return false;
             }
             return true;
+        }
+
+        function validateProperties(properties) {
+            if (!validatePropertyKeyUniqueness(properties)) {
+                alertsService.showError({title: 'Error', message: 'Keys are not unique'});
+                return false;
+            }
+
+            return true;
+        }
+
+        function validatePropertyKeyUniqueness(properties) {
+            let keys = _.map(properties, function(entry) {return entry.key});
+            let uniqKeys = _.uniq(keys);
+            return keys.length === uniqKeys.length;
         }
     }
 

@@ -19,6 +19,7 @@
 package com.comcast.xconf.queries.controllers;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.xconf.ApiVersionUtils;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.FirmwareConfigQueriesService;
@@ -28,6 +29,7 @@ import com.comcast.xconf.queries.QueriesHelper;
 import com.comcast.xconf.queries.QueryConstants;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +39,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 public class FirmwareConfigQueriesController extends BaseQueriesController {
+
+    public static final String MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE = "Max allowed number of properties is %s";
+    public static final int MAX_ALLOWED_NUMBER_OF_PROPERTIES = 20;
 
     @Autowired
     private CachedSimpleDao<String, FirmwareConfig> firmwareConfigDAO;
@@ -203,7 +205,23 @@ public class FirmwareConfigQueriesController extends BaseQueriesController {
                 return "Model: " + modelId + " is not exist";
             }
         }
+
+        Map<String, String> properties = firmwareConfig.getProperties();
+        if (MapUtils.isNotEmpty(properties)) {
+            for (Map.Entry<String, String> property : firmwareConfig.getProperties().entrySet()) {
+                if (StringUtils.isBlank(property.getKey())) {
+                    throw new ValidationRuntimeException("Key is empty");
+                }
+                if (StringUtils.isBlank(property.getValue())) {
+                    throw new ValidationRuntimeException("Value is blank for key: " + property.getKey());
+                }
+            }
+        }
+
+        if (MapUtils.isNotEmpty(properties) && properties.size() > MAX_ALLOWED_NUMBER_OF_PROPERTIES) {
+            throw new ValidationRuntimeException(String.format(MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE, MAX_ALLOWED_NUMBER_OF_PROPERTIES));
+        }
+
         return null;
     }
-
 }

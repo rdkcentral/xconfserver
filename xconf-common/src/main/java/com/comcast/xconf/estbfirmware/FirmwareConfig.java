@@ -1,4 +1,4 @@
-/* 
+/*
  * If not stated otherwise in this file or this component's Licenses.txt file the 
  * following copyright and licenses apply:
  *
@@ -36,9 +36,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Firmware configuration for eSTBs.
@@ -79,6 +77,8 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
 
     private String applicationType = ApplicationType.STB;
 
+    private Map<String, String> properties = new HashMap<>();
+
     public FirmwareConfig() {
     }
 
@@ -97,6 +97,7 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
         upgradeDelay = c.upgradeDelay;
         rebootImmediately = c.rebootImmediately;
         setSupportedModelIds(new HashSet<String>(c.supportedModelIds));
+        properties = c.getProperties();
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -183,6 +184,15 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
     @Override
     public void setApplicationType(String applicationType) {
         this.applicationType = applicationType;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 
     @Override

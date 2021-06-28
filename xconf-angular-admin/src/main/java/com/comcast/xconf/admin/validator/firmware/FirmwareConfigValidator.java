@@ -21,21 +21,27 @@
  */
 package com.comcast.xconf.admin.validator.firmware;
 
-import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.ModelQueriesService;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.permissions.PermissionHelper;
 import com.comcast.xconf.validators.IValidator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
+
+    public static final String MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE = "Max allowed number of properties is %s";
+    public static final int MAX_ALLOWED_NUMBER_OF_PROPERTIES = 20;
 
     @Autowired
     private FirmwarePermissionService permissionService;
@@ -64,6 +70,9 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
             throw new ValidationRuntimeException("Application type is empty");
         }
 
+        validatePropertiesDoNotHaveEmptyValues(firmwareConfig.getProperties());
+        validatePropertiesSize(firmwareConfig.getProperties());
+
         PermissionHelper.validateWrite(permissionService, firmwareConfig.getApplicationType());
 
         for (String modelId : firmwareConfig.getSupportedModelIds()) {
@@ -79,6 +88,25 @@ public class FirmwareConfigValidator implements IValidator<FirmwareConfig> {
             if (ApplicationType.equals(firmwareConfig.getApplicationType(), entity.getApplicationType()) && !entity.getId().equals(firmwareConfig.getId()) && entity.getDescription().equalsIgnoreCase(firmwareConfig.getDescription())) {
                 throw new EntityConflictException("This description " + firmwareConfig.getDescription() + " is already used");
             }
+        }
+    }
+
+    private void validatePropertiesDoNotHaveEmptyValues(Map<String, String> parameters) {
+        if (MapUtils.isNotEmpty(parameters)) {
+            for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+                if (StringUtils.isBlank(parameter.getKey())) {
+                    throw new ValidationRuntimeException("Key is empty");
+                }
+                if (StringUtils.isBlank(parameter.getValue())) {
+                    throw new ValidationRuntimeException("Value is blank for key: " + parameter.getKey());
+                }
+            }
+        }
+    }
+
+    private void validatePropertiesSize(Map<String, String> properties) {
+        if (MapUtils.isNotEmpty(properties) && properties.size() > MAX_ALLOWED_NUMBER_OF_PROPERTIES) {
+            throw new ValidationRuntimeException(String.format(MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE, MAX_ALLOWED_NUMBER_OF_PROPERTIES));
         }
     }
 }

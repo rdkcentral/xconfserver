@@ -38,10 +38,7 @@ import com.comcast.xconf.estbfirmware.converter.TimeFilterConverter;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.estbfirmware.factory.TemplateFactory;
 import com.comcast.xconf.estbfirmware.util.LogsCompatibilityUtils;
-import com.comcast.xconf.firmware.ApplicableAction;
-import com.comcast.xconf.firmware.DefinePropertiesAction;
-import com.comcast.xconf.firmware.FirmwareRule;
-import com.comcast.xconf.firmware.FirmwareRuleTemplate;
+import com.comcast.xconf.firmware.*;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.queries.QueryConstants;
 import com.comcast.xconf.queries.beans.DownloadLocationFilterWrapper;
@@ -1340,6 +1337,76 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$.firmwareVersion").value(lkgConfig.getFirmwareVersion()));
     }
 
+    @Test
+    public void firmwareConfigsParametersAreReturned() throws Exception {
+        Map<String, String> parameters = new HashMap<>();
+        String configKey = "bindingUrl";
+        String configValue = "http://test.url.com";
+        parameters.put(configKey, configValue);
+
+        FirmwareConfig firmwareConfig = createFirmwareConfig(defaultFirmwareVersion, defaultModelId, FirmwareConfig.DownloadProtocol.http);
+        firmwareConfig.setProperties(parameters);
+        firmwareConfigDAO.setOne(firmwareConfig.getId(), firmwareConfig);
+
+        createAndSaveUseAccountPercentageBean(firmwareConfig);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setFirmwareVersion(defaultFirmwareVersion);
+
+        mockMvc.perform(postContext("/xconf/swu/stb", context))
+                .andExpect(status().isOk()).
+                andExpect(jsonPath("$.firmwareVersion").value(firmwareConfig.getFirmwareVersion()))
+                .andExpect(jsonPath("$.bindingUrl").value(configValue));
+    }
+
+    @Test
+    public void firmwareConfigsParametersCanNotBeOverridenByDefinePropertiesRule() throws Exception {
+        Map<String, String> parameters = new HashMap<>();
+        String configKey = "bindingUrl";
+        String configValue = "http://test.url.com";
+        parameters.put(configKey, configValue);
+
+        String definePropertiesModelId = "DEFIDE_PROPERTIES_MODEL_ID";
+        FirmwareConfig firmwareConfig = createFirmwareConfig(defaultFirmwareVersion, definePropertiesModelId, FirmwareConfig.DownloadProtocol.http);
+        firmwareConfig.setProperties(parameters);
+        firmwareConfigDAO.setOne(firmwareConfig.getId(), firmwareConfig);
+
+        PercentageBean percentageBean = createPercentageBean("test percentage bean", defaultEnvironmentId, definePropertiesModelId, null, null, defaultFirmwareVersion, STB);
+        percentageBean.setLastKnownGood(firmwareConfig.getId());
+        percentageBean.getFirmwareVersions().add(firmwareConfig.getFirmwareVersion());
+        percentageBeanQueriesService.save(percentageBean);
+
+        Map<String, String> defineProperties = new HashMap<>();
+        defineProperties.put(configKey, "CHANGED VALUE BY DEFINE PROPERTY RULE");
+        defineProperties.put("definePropertyKey", "definePropertyValue");
+
+        DefinePropertiesTemplateAction definePropertiesTemplateAction = new DefinePropertiesTemplateAction(buildDefinePropertyTemplateAction(defineProperties, false));
+
+        FirmwareRuleTemplate definePropertiesTemplate = createFirmwareRuleTemplate("OVERRIDE_FIRMWARE_CONFIG_PARAMETERS", Rule.Builder.of(new Condition(MODEL, IS, FixedArg.from(definePropertiesModelId))).build(), definePropertiesTemplateAction);
+        firmwareRuleTemplateDao.setOne(definePropertiesTemplate.getId(), definePropertiesTemplate);
+
+        createAndSaveFirmwareRule(UUID.randomUUID().toString(), definePropertiesTemplate.getId(), new DefinePropertiesAction(defineProperties), definePropertiesTemplate.getRule());
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setFirmwareVersion(defaultFirmwareVersion);
+        context.setModel(definePropertiesModelId);
+
+        mockMvc.perform(postContext("/xconf/swu/stb", context))
+                .andExpect(status().isOk()).
+                andExpect(jsonPath("$.firmwareVersion").value(firmwareConfig.getFirmwareVersion()))
+                .andExpect(jsonPath("$.bindingUrl").value(configValue))
+                .andExpect(jsonPath("$.definePropertyKey").value("definePropertyValue"));
+    }
+
+    private Map<String, DefinePropertiesTemplateAction.PropertyValue> buildDefinePropertyTemplateAction(Map<String, String> parameters, boolean requiredAll) {
+        Map<String, DefinePropertiesTemplateAction.PropertyValue> propertyValues = new HashMap<>();
+        for (Map.Entry<String, String> propertyEntry : parameters.entrySet()) {
+            DefinePropertiesTemplateAction.PropertyValue propertyValue = DefinePropertiesTemplateAction.PropertyValue.create(propertyEntry.getValue(), requiredAll, DefinePropertiesTemplateAction.ValidationType.STRING);
+            propertyValues.put(propertyEntry.getKey(), propertyValue);
+        }
+        return propertyValues;
+    }
+
     private PercentageBean createAndSaveUseAccountPercentageBean(FirmwareConfig lkgConfig) {
         PercentageBean useAccountBean = createPercentageBean("useAccountName", defaultEnvironmentId, defaultModelId, null, null, defaultFirmwareVersion, STB);
         useAccountBean.setUseAccountIdPercentage(true);
@@ -1460,6 +1527,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
         config.setId(null);
         config.setDescription(null);
         config.setSupportedModelIds(null);
+        config.setProperties(null);
         config.setUpdated(null);
         config.setApplicationType(null);
     }

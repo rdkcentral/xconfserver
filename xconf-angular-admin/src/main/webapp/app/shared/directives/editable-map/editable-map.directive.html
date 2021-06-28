@@ -19,22 +19,24 @@
 *
 -->
 <div class="editable-map-container">
-    <div class="form-inline" ng-repeat="property in parameters track by $id(property)">
-        <button type="button" class="btn btn-warning" ng-disabled="parameters.length === 1" ng-click="removeParameterEntry(property)">
+    <div class="form-inline edit-form" ng-repeat="property in parameters track by $id(property)">
+        <button type="button" class="btn btn-warning remove-parameter"
+                ng-disabled="parameters.length === 1"
+                ng-click="removeParameterEntry(property)">
             <i class=ri-delete-bin-7-line></i>
         </button>
         <div class="form-group" id="parameterEntries">
-            <input type="text" class="form-control" ng-model="property.key"
+            <input type="text" class="form-control key-input" ng-model="property.key"
                    uib-typeahead="autoValue for autoValue in autoCompleteValues"
                    typeahead-min-length="0"
-                   placeholder="Key"/>
-            <input type="text" class="form-control" ng-model="property.value" placeholder="Value"/>
+                   placeholder="Key"
+            />
+            <input type="text" class="form-control value-input" ng-model="property.value" placeholder="Value"/>
         </div>
     </div>
 
-    <!-- Buttons -->
-    <div class="btn-group" style="margin-top: 1em">
-        <button id="addParameter" type="button" class="btn btn-success" ng-click="addParameterEntry()">
+    <div class="btn-group">
+        <button id="addParameter" type="button" class="btn btn-success" ng-click="addParameterEntry()" ng-disabled="parameters.length === maxNumberOfItems">
             <i class="ri-add-fill ri-sm"></i>
         </button>
         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false" ng-if="quickAdd.length > 0">

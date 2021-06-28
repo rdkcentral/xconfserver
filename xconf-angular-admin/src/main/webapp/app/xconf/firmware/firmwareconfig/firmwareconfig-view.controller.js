@@ -23,14 +23,21 @@
         .module('app.firmwareconfig')
         .controller('FirmwareConfigViewController', controller);
 
-    controller.$inject = ['$uibModalInstance', 'firmwareConfig'];
+    controller.$inject = ['$uibModalInstance', 'firmwareConfig', 'utilsService'];
 
-    function controller($modalInstance, firmwareConfig) {
+    function controller($modalInstance, firmwareConfig, utilsService) {
         var vm = this;
-        vm.dismiss = dismiss;
         vm.firmwareConfig = firmwareConfig;
+
+        vm.dismiss = dismiss;
+        vm.propertiesAreNotEmpty = propertiesAreNotEmpty;
+
         function dismiss() {
             $modalInstance.dismiss();
+        }
+
+        function propertiesAreNotEmpty(parameters) {
+            return !utilsService.isMapEmpty(parameters);
         }
     }
 })();

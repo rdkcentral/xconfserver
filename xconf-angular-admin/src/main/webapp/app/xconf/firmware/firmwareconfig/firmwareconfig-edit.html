@@ -19,38 +19,54 @@
 *
 -->
 <h1 class="page-header">Firmware config</h1>
-<div class="col-md-8">
-    <div class="input-group">
-        <span class="input-group-addon">Description</span>
-        <input title="Description" class="form-control" ng-model="vm.firmwareConfig.description" type="text"/>
-    </div>
-    <br>
-    <div class="input-group">
-        <span class="input-group-addon">File name</span>
-        <input title="File name" class="form-control" ng-model="vm.firmwareConfig.firmwareFilename" type="text">
-    </div>
-    <br>
-    <div class="input-group">
-        <span class="input-group-addon">Version</span>
-        <input title="Version" class="form-control" type="text" ng-model="vm.firmwareConfig.firmwareVersion"/>
-    </div>
-    <br>
-    <div class="form-group">
-        <label>Models:</label>
-        <div class="row">
-            <div class="col-md-12">
-                <ul id="supportedModelList" class="xconf-list">
-                    <li class="ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list"
-                        ng-repeat="val in vm.models"
-                        ng-class="{'checked-in-list': val.selected}"
-                        ng-bind="val.modelId"
-                        ng-click="vm.selectModel(val)"></li>
-                </ul>
+<div class="row">
+    <div class="col-md-8">
+        <div class="input-group">
+            <span class="input-group-addon">Description</span>
+            <input title="Description" class="form-control" ng-model="vm.firmwareConfig.description" type="text"/>
+        </div>
+        <br>
+        <div class="input-group">
+            <span class="input-group-addon">File name</span>
+            <input title="File name" class="form-control" ng-model="vm.firmwareConfig.firmwareFilename" type="text">
+        </div>
+        <br>
+        <div class="input-group">
+            <span class="input-group-addon">Version</span>
+            <input title="Version" class="form-control" type="text" ng-model="vm.firmwareConfig.firmwareVersion"/>
+        </div>
+        <br>
+        <div class="form-group">
+            <label>Models:</label>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul id="supportedModelList" class="xconf-list">
+                        <li class="ads-list-item ads-list-item-horizontal xconf-list-item xconf-list-item-grey edit-list"
+                            ng-repeat="val in vm.models"
+                            ng-class="{'checked-in-list': val.selected}"
+                            ng-bind="val.modelId"
+                            ng-click="vm.selectModel(val)"></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <div>
-        <button type="button" class="btn btn-success" ng-click="vm.save()" title="Save">Save</button>
-        <button type="button" class="btn btn-default" ui-sref="firmwareconfigs">Cancel</button>
+</div>
+<div class="row">
+    <div class="col-md-10">
+        <div class="form-group">
+            <div>
+                <label>Properties:</label>
+                <editable-map parameters="vm.properties" max-number-of-items="20"></editable-map>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-10">
+        <div class="form-group">
+            <button type="button" class="btn btn-success" ng-click="vm.save()" title="Save">Save</button>
+            <button type="button" class="btn btn-default" ui-sref="firmwareconfigs">Cancel</button>
+        </div>
     </div>
 </div>

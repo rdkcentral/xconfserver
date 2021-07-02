@@ -598,6 +598,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
 
         FirmwareConfig expectedResult = createDefaultFirmwareConfig();
         expectedResult.setRebootImmediately(true);
+        expectedResult.setMandatoryUpdate(true);
         verifyFirmwareConfig(expectedResult, actualResult);
     }
 
@@ -614,8 +615,10 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
         savePercentFilter(createPercentFilter(null, 0, Collections.singletonMap(envModelRuleBean.getName(), envModelPercentage)));
 
         String actualResult = mockMvc.perform(postContext("/xconf/swu/stb", context)).andReturn().getResponse().getContentAsString();
+        FirmwareConfig expectedConfig = envModelRuleBean.getFirmwareConfig();
+        expectedConfig.setMandatoryUpdate(true);
 
-        verifyFirmwareConfig(envModelRuleBean.getFirmwareConfig(), actualResult);
+        verifyFirmwareConfig(expectedConfig, actualResult);
     }
 
     @Test
@@ -1451,6 +1454,8 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
         mockMvc.perform(postContext("/xconf/swu/stb", context))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mandatoryUpdate").value(Boolean.FALSE));
+
+        firmwareRuleTemplateDao.deleteOne(template.getId());
     }
 
     private PercentageBean createAndSaveUseAccountPercentageBean(FirmwareConfig lkgConfig) {
@@ -1681,7 +1686,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
 
     private void verifyFirmwareConfig(FirmwareConfig expectedConfig, String actualResult) throws Exception {
         nullifyRedundantFirmwareConfigFieldsBeforeAssert(expectedConfig);
-        JSONAssert.assertEquals(JsonUtil.toJson(expectedConfig), actualResult, true);
+        JSONAssert.assertEquals(JsonUtil.toJson(new FirmwareConfigFacade(expectedConfig)), actualResult, true);
     }
 
     private void verifyExplanationForDistributionRule(FirmwareRule expectedRule, String actualResult) {

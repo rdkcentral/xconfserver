@@ -412,7 +412,6 @@ public class EstbFirmwareRuleBase {
         return blocked;
     }
 
-    //TODO: if percent filter is applied but firmware version is in min check should we set mandatoryUpdate flag to FALSE?
     private void applyMandatoryUpdateFlag(EvaluationResult evaluationResult, EstbFirmwareContext context, Map<String, Object> properties) {
         String currentFirmwareVersion = context.getFirmwareVersion();
         if (StringUtils.isBlank(currentFirmwareVersion) && evaluationResult.getMatchedRule().getApplicableAction() instanceof RuleAction) {

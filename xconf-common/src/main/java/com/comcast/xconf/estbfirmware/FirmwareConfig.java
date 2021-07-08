@@ -26,6 +26,7 @@ import com.comcast.hydra.astyanax.data.XMLPersistable;
 import com.comcast.xconf.Applicationable;
 import com.comcast.xconf.CfNames;
 import com.comcast.xconf.firmware.ApplicationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
@@ -75,6 +76,8 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
 
     private Boolean rebootImmediately = false;
 
+    private boolean mandatoryUpdate = false;
+
     private String applicationType = ApplicationType.STB;
 
     private Map<String, String> properties = new HashMap<>();
@@ -96,6 +99,7 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
         firmwareVersion = c.firmwareVersion;
         upgradeDelay = c.upgradeDelay;
         rebootImmediately = c.rebootImmediately;
+        mandatoryUpdate = c.mandatoryUpdate;
         setSupportedModelIds(new HashSet<String>(c.supportedModelIds));
         properties = c.getProperties();
     }
@@ -174,6 +178,15 @@ public class FirmwareConfig extends XMLPersistable implements Comparable<Firmwar
 
     public void setRebootImmediately(Boolean rebootImmediately) {
         this.rebootImmediately = rebootImmediately;
+    }
+
+    @JsonIgnore
+    public boolean isMandatoryUpdate() {
+        return mandatoryUpdate;
+    }
+
+    public void setMandatoryUpdate(boolean mandatoryUpdate) {
+        this.mandatoryUpdate = mandatoryUpdate;
     }
 
     @Override

@@ -380,15 +380,17 @@ public class EstbFirmwareRuleBase {
         // download protocol should be setup in download location filter
         contextProperties.put(StbContext.DOWNLOAD_PROTOCOL, firmwareConfig.getFirmwareDownloadProtocol());
         contextProperties.put(StbContext.MATCHED_RULE_TYPE, evaluationResult.getMatchedRule().getType());
-        Map<String, Object> map;
+        Map<String, Object> properties = new HashMap<>();
         if (isPercentFilter(evaluationResult.getMatchedRule())) {
-            map = applyMatchedFilters(rules, DEFINE_PROPERTIES_TEMPLATE, contextProperties, bypassFilters, appliedFilters);
+            applyMandatoryUpdateFlag(evaluationResult, context, properties);
+            properties.putAll(applyMatchedFilters(rules, DEFINE_PROPERTIES_TEMPLATE, contextProperties, bypassFilters, appliedFilters));
         } else {
             rules.removeAll(ACTIVATION_VERSION);
-            map = applyMatchedFilters(rules, DEFINE_PROPERTIES_TEMPLATE, contextProperties, bypassFilters, appliedFilters);
+            properties.put(ConfigNames.MANDATORY_UPDATE, false);
+            properties.putAll(applyMatchedFilters(rules, DEFINE_PROPERTIES_TEMPLATE, contextProperties, bypassFilters, appliedFilters));
         }
 
-        firmwareConfig.putAll(map);
+        firmwareConfig.putAll(properties);
 
         // legacy: if protocol=tftp but ipv6 location is empty then read from round robing filter
         if (FirmwareConfig.DownloadProtocol.tftp.name().equals(firmwareConfig.getFirmwareDownloadProtocol())
@@ -408,6 +410,22 @@ public class EstbFirmwareRuleBase {
             appliedFilters.add(blockingFilter);
         }
         return blocked;
+    }
+
+    private void applyMandatoryUpdateFlag(EvaluationResult evaluationResult, EstbFirmwareContext context, Map<String, Object> properties) {
+        String currentFirmwareVersion = context.getFirmwareVersion();
+        if (StringUtils.isBlank(currentFirmwareVersion) && evaluationResult.getMatchedRule().getApplicableAction() instanceof RuleAction) {
+            return;
+        }
+        FirmwareRule matchedRule = evaluationResult.getMatchedRule();
+        RuleAction ruleAction = (RuleAction) matchedRule.getApplicableAction();
+        if (ruleAction.isFirmwareCheckRequired()
+                && CollectionUtils.isNotEmpty(ruleAction.getFirmwareVersions())
+                && !ruleAction.getFirmwareVersions().contains(currentFirmwareVersion)) {
+            properties.put(ConfigNames.MANDATORY_UPDATE, true);
+        } else {
+            properties.put(ConfigNames.MANDATORY_UPDATE, false);
+        }
     }
 
     /**

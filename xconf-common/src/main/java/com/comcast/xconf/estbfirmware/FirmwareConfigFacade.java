@@ -63,6 +63,7 @@ public class FirmwareConfigFacade {
         putIfPresent(map, ConfigNames.IPV6_FIRMWARE_LOCATION, firmwareConfig.getIpv6FirmwareLocation());
         putIfPresent(map, ConfigNames.UPGRADE_DELAY, firmwareConfig.getUpgradeDelay());
         putIfPresent(map, ConfigNames.REBOOT_IMMEDIATELY, firmwareConfig.getRebootImmediately());
+        putIfPresent(map, ConfigNames.MANDATORY_UPDATE, firmwareConfig.isMandatoryUpdate());
         putCustomProperties(customProperties, firmwareConfig.getProperties());
         properties = map;
     }
@@ -149,6 +150,16 @@ public class FirmwareConfigFacade {
         Object flag = properties.get(ConfigNames.REBOOT_IMMEDIATELY);
         return flag != null && flag instanceof Boolean ? (Boolean) flag : false;
     }
+
+    public Boolean getMandatoryUpdate() {
+        Object flag = properties.get(ConfigNames.MANDATORY_UPDATE);
+        return flag != null && flag instanceof Boolean ? (Boolean) flag : false;
+    }
+
+    public void setMandatoryUpdate(boolean mandatoryUpdate) {
+        properties.put(ConfigNames.MANDATORY_UPDATE, mandatoryUpdate);
+    }
+
 
     public Map<String, String> getCustomProperties() {
         return customProperties;

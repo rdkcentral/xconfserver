@@ -598,6 +598,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
 
         FirmwareConfig expectedResult = createDefaultFirmwareConfig();
         expectedResult.setRebootImmediately(true);
+        expectedResult.setMandatoryUpdate(true);
         verifyFirmwareConfig(expectedResult, actualResult);
     }
 
@@ -614,8 +615,10 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
         savePercentFilter(createPercentFilter(null, 0, Collections.singletonMap(envModelRuleBean.getName(), envModelPercentage)));
 
         String actualResult = mockMvc.perform(postContext("/xconf/swu/stb", context)).andReturn().getResponse().getContentAsString();
+        FirmwareConfig expectedConfig = envModelRuleBean.getFirmwareConfig();
+        expectedConfig.setMandatoryUpdate(true);
 
-        verifyFirmwareConfig(envModelRuleBean.getFirmwareConfig(), actualResult);
+        verifyFirmwareConfig(expectedConfig, actualResult);
     }
 
     @Test
@@ -1407,6 +1410,54 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
         return propertyValues;
     }
 
+    @Test
+    public void setMandatoryUpdateFlagToTrueIfPercentFilterAppliedAndFirmwareVersionIsNotInMinCheck() throws Exception {
+        PercentageBean percentageBean = createAndSavePercentageBean("percentageBean", defaultEnvironmentId.toUpperCase(), defaultModelId.toUpperCase(), defaultIpListId, defaultIpAddress, defaultFirmwareVersion, STB);
+        EstbFirmwareContext context = createDefaultContext();
+        context.setFirmwareVersion("notMinimumFirmwareVersion");
+
+        mockMvc.perform(postContext("/xconf/swu/stb", context))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mandatoryUpdate").value(true));
+    }
+
+    @Test
+    public void setMandatoryUpdateFlagToFalseIfPercentFilterAppliedAndFirmwareVersionIsInMinCheck() throws Exception {
+        PercentageBean percentageBean = createAndSavePercentageBean("percentageBean", defaultEnvironmentId.toUpperCase(), defaultModelId.toUpperCase(), defaultIpListId, defaultIpAddress, defaultFirmwareVersion, STB);
+        EstbFirmwareContext context = createDefaultContext();
+        context.setFirmwareVersion(defaultFirmwareVersion);
+
+        mockMvc.perform(postContext("/xconf/swu/stb", context))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mandatoryUpdate").value(false));
+    }
+
+    @Test
+    public void setMandatoryUpdateFlagToFalseIfPercentFilterIsNotApplied() throws Exception {
+        PercentageBean percentageBean = createAndSavePercentageBean("percentageBean", defaultEnvironmentId.toUpperCase(), defaultModelId.toUpperCase(), defaultIpListId, defaultIpAddress, defaultFirmwareVersion, STB);
+        String modelId = "AAAXXX-TEST";
+        String envId = "DEV-CUSTOM";
+
+        Rule rule = Rule.Builder.of(new Condition(RuleFactory.ENV, IS, FixedArg.from(envId)))
+                .and(new Condition(MODEL, IS, FixedArg.from(modelId)))
+                .build();
+
+        FirmwareRuleTemplate template = createFirmwareRuleTemplate("RULE_ACTION_TEMPLATE", rule, createRuleAction(ApplicableAction.Type.RULE_TEMPLATE, percentageBean.getLastKnownGood()));
+        firmwareRuleTemplateDao.setOne(template.getId(), template);
+        createAndSaveFirmwareRule("CUSTOM_FIRMWARE_RULE", template.getTemplateId(), createRuleAction(ApplicableAction.Type.RULE, percentageBean.getLastKnownGood()), rule);
+
+        EstbFirmwareContext context = createDefaultContext();
+        context.setModel(modelId);
+        context.setEnv(envId);
+        context.setFirmwareVersion(defaultFirmwareVersion);
+
+        mockMvc.perform(postContext("/xconf/swu/stb", context))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mandatoryUpdate").value(Boolean.FALSE));
+
+        firmwareRuleTemplateDao.deleteOne(template.getId());
+    }
+
     private PercentageBean createAndSaveUseAccountPercentageBean(FirmwareConfig lkgConfig) {
         PercentageBean useAccountBean = createPercentageBean("useAccountName", defaultEnvironmentId, defaultModelId, null, null, defaultFirmwareVersion, STB);
         useAccountBean.setUseAccountIdPercentage(true);
@@ -1635,7 +1686,7 @@ public class EstbFirmwareControllerTest extends BaseQueriesControllerTest {
 
     private void verifyFirmwareConfig(FirmwareConfig expectedConfig, String actualResult) throws Exception {
         nullifyRedundantFirmwareConfigFieldsBeforeAssert(expectedConfig);
-        JSONAssert.assertEquals(JsonUtil.toJson(expectedConfig), actualResult, true);
+        JSONAssert.assertEquals(JsonUtil.toJson(new FirmwareConfigFacade(expectedConfig)), actualResult, true);
     }
 
     private void verifyExplanationForDistributionRule(FirmwareRule expectedRule, String actualResult) {

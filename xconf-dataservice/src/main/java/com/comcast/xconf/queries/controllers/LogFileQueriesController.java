@@ -22,10 +22,9 @@
 
 package com.comcast.xconf.queries.controllers;
 
-import com.comcast.xconf.dcm.ruleengine.LogFileService;
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.xconf.dcm.ruleengine.LogFileService;
 import com.comcast.xconf.logupload.LogFile;
-import com.comcast.xconf.logupload.LogFilesGroup;
 import com.comcast.xconf.logupload.LogUploadSettings;
 import com.comcast.xconf.queries.QueryConstants;
 import com.google.common.base.Optional;
@@ -55,10 +54,7 @@ public class LogFileQueriesController {
     private CachedSimpleDao<String, LogUploadSettings> logUploadSettingsDAO;
 
     @Autowired
-    private CachedSimpleDao<String, LogFilesGroup> logFilesGroupDAO;
-
-    @Autowired
-    private LogFileService indexesLogFilesDAO;
+    private LogFileService logFileService;
 
     private static final Logger log = LoggerFactory.getLogger(LogFileQueriesController.class);
 
@@ -107,24 +103,12 @@ public class LogFileQueriesController {
     private void updateLogUploadSettingsAndLogFileGroups(LogFile logFile) {
         List<LogUploadSettings> listLogUploadSettings = logUploadSettingsDAO.getAll(Integer.MAX_VALUE/100);
         for (LogUploadSettings logUploadSettings : listLogUploadSettings) {
-            List<LogFile> indexesLogFiles = indexesLogFilesDAO.getAll(logUploadSettings.getId());
+            List<LogFile> indexesLogFiles = logFileService.getAll(logUploadSettings.getId());
             Iterator<LogFile> logFileIterator = indexesLogFiles.iterator();
             while(logFileIterator.hasNext()) {
                 LogFile item = logFileIterator.next();
                 if (item.getId().equals(logFile.getId())){
-                    indexesLogFilesDAO.setOne(logUploadSettings.getId(),logFile);
-                }
-            }
-        }
-
-        List<LogFilesGroup> listLogFilesGroups = logFilesGroupDAO.getAll(Integer.MAX_VALUE/100);
-        for (LogFilesGroup logFilesGroup : listLogFilesGroups) {
-            List<LogFile> indexesLogFiles = indexesLogFilesDAO.getAll(logFilesGroup.getId());
-            Iterator<LogFile> logFileIterator = indexesLogFiles.iterator();
-            while(logFileIterator.hasNext()) {
-                LogFile item = logFileIterator.next();
-                if (item.getId().equals(logFile.getId())){
-                    indexesLogFilesDAO.setOne(logFilesGroup.getId(),logFile);
+                    logFileService.setOne(logUploadSettings.getId(),logFile);
                 }
             }
         }

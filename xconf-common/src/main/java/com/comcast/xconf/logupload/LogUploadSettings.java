@@ -58,8 +58,8 @@ public class LogUploadSettings extends XMLPersistable implements Comparable<LogU
     private String logFilesGroupId;
     /**
      * We need this modeToGetLogFiles property to know where/(where from) we should to save/load list of log files
-     * modeToGetLogFiles = LogFiles : we should save/load log files from/to CF IndexesLogFiles associating to logUploadSettings.Id
-     * modeToGetLogFiles = LogFilesGroup : we should save/load log files from/to CF IndexesLogFiles associating to LogFilesGroup.Id
+     * modeToGetLogFiles = LogFiles : we should save/load log files from/to CF LogFileList associating to logUploadSettings.Id
+     * modeToGetLogFiles = LogFilesGroup : we should save/load log files from/to CF LogFileList associating to LogFilesGroup.Id
      * modeToGetLogFiles = AllLogFiles : we should load all log files from CF LogFiles
      */
     @NotBlank

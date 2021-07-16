@@ -23,28 +23,19 @@ package com.comcast.xconf.logupload;
 
 
 import com.comcast.apps.dataaccess.annotation.CF;
-import com.comcast.apps.dataaccess.annotation.CompositeCF;
 import com.comcast.hydra.astyanax.data.XMLPersistable;
 import com.comcast.xconf.CfNames;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
-import javax.annotation.Nullable;
-
 import org.apache.commons.collections.comparators.NullComparator;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Map;
 
 @CF(cfName = CfNames.LogUpload.LOG_FILE)
-@CompositeCF(
-        cfName = CfNames.LogUpload.INDEXED_LOG_FILES,
-        comparatorTypeAlias = "CompositeType(UTF8Type, UTF8Type)",
-        dao = "IndexesLogFilesDAO"
-)
 public class LogFile extends XMLPersistable implements Comparable<LogFile> {
     @NotBlank
     private String name;

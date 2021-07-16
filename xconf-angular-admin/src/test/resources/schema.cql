@@ -44,15 +44,11 @@ CREATE TABLE "FirmwareRuleTemplate" (key text,column1 text,value blob,PRIMARY KE
 
 CREATE TABLE "GenericXconfNamedList" (key text,column1 text,value blob,PRIMARY KEY ((key), column1)) WITH COMPACT STORAGE;
 
-CREATE TABLE "IndexedLogFiles" (key text,column1 text,column2 text,value blob,PRIMARY KEY ((key), column1, column2)) WITH COMPACT STORAGE;
-
 CREATE TABLE "IpAddressGroupExtended" (key text,column1 text,value blob,PRIMARY KEY ((key), column1)) WITH COMPACT STORAGE;
 
 CREATE TABLE "LogFile" (key text,column1 text,value blob,PRIMARY KEY ((key), column1)) WITH COMPACT STORAGE;
 
 CREATE TABLE "LogFileList" (key text,column1 text,value blob,PRIMARY KEY ((key), column1)) WITH COMPACT STORAGE;
-
-CREATE TABLE "LogFilesGroups" (key text,column1 text,value blob,PRIMARY KEY ((key), column1)) WITH COMPACT STORAGE;
 
 CREATE TABLE "LogUploadSettings2" (key text,column1 text,value blob,PRIMARY KEY ((key), column1)) WITH COMPACT STORAGE;
 

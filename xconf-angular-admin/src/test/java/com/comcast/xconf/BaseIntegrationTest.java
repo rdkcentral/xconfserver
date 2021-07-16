@@ -21,13 +21,13 @@
  */
 package com.comcast.xconf;
 
+import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.apps.dataaccess.cache.dao.ChangedKeysProcessingDaoImpl;
 import com.comcast.apps.dataaccess.dao.SimpleDao;
-import com.comcast.xconf.dcm.ruleengine.LogFileService;
-import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.contextconfig.TestContextConfig;
 import com.comcast.xconf.admin.service.telemetry.PermanentTelemetryProfileService;
+import com.comcast.xconf.dcm.ruleengine.LogFileService;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.Model;
 import com.comcast.xconf.estbfirmware.PercentageBeanService;
@@ -90,9 +90,6 @@ public class BaseIntegrationTest {
     protected CachedSimpleDao<String, LogFile> logFileDAO;
 
     @Autowired
-    protected CachedSimpleDao<String, LogFilesGroup> logFilesGroupDAO;
-
-    @Autowired
     protected CachedSimpleDao<String, DCMGenericRule> dcmRuleDAO;
 
     @Autowired
@@ -147,7 +144,7 @@ public class BaseIntegrationTest {
     protected CachedSimpleDao<String, SingletonFilterValue> singletonFilterValueDAO;
 
     @Autowired
-    protected LogFileService indexesLogFilesDAO;
+    protected LogFileService logFileService;
 
     @Autowired
     protected GenericNamespacedListQueriesService genericNamespacedListQueriesService;
@@ -199,7 +196,7 @@ public class BaseIntegrationTest {
     @After
     public void cleanData() {
         List<? extends CachedSimpleDao<String, ? extends IPersistable>> daoList = Arrays.asList(
-                modelDAO, environmentDAO, logFileDAO, logFilesGroupDAO, dcmRuleDAO, uploadRepositoryDAO,
+                modelDAO, environmentDAO, logFileDAO, dcmRuleDAO, uploadRepositoryDAO,
                 logUploadSettingsDAO, deviceSettingsDAO, firmwareRuleTemplateDao, firmwareConfigDAO,
                 firmwareRuleDao, vodSettingsDAO, permanentTelemetryDAO, telemetryRuleDAO, featureRuleDAO,
                 genericNamespacedListDAO, singletonFilterValueDAO, settingProfileDao, settingRuleDAO,

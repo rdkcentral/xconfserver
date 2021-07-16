@@ -42,9 +42,7 @@ public interface CfNames {
     }
     interface Common {
         String ENVIRONMENT = "Environment";
-        String IP_ADDRESS_GROUP = "IpAddressGroupExtended";
         String LOGS = "Logs2";
-        String NS_LIST = "XconfNamedList";
         String GENERIC_NS_LIST = "GenericXconfNamedList";
     }
 }

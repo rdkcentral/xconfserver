@@ -25,6 +25,7 @@ import com.comcast.apps.hesperius.ruleengine.domain.additional.data.IpAddress;
 import com.comcast.apps.hesperius.ruleengine.domain.additional.data.MacAddress;
 import com.comcast.xconf.Environment;
 import com.comcast.xconf.StbContext;
+import com.comcast.xconf.logupload.TimeZoneUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -383,7 +384,7 @@ public class EstbFirmwareContext {
 
         @JsonIgnore
         public boolean isUTC() {
-            return getTimeZone().equals(DateTimeZone.UTC);
+            return DateTimeZone.UTC.equals(getTimeZone());
         }
 
         public List<Capabilities> getCapabilities() {
@@ -451,7 +452,7 @@ public class EstbFirmwareContext {
             public DateTimeZone deserialize(JsonParser jp,
                                             DeserializationContext ctx) throws IOException,
                     JsonProcessingException {
-                return DateTimeZone.forID(jp.getText());
+                return TimeZoneUtils.parseDateTimeZone(jp.getText());
             }
         }
     }

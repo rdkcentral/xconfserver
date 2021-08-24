@@ -46,6 +46,15 @@ public class TimeZoneUtils {
         }
         return dateTimeZone.toTimeZone();
     }
+
+    public static DateTimeZone parseDateTimeZone(String dataTimeZone) {
+        try {
+            return DateTimeZone.forID(dataTimeZone);
+        } catch (IllegalArgumentException e) {
+            log.error("DateTimeZoneParsingException: ", e);
+            return null;
+        }
+    }
 }
 
 

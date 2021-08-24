@@ -552,8 +552,13 @@ public class EstbFirmwareContext {
      * been applied to this time.
      */
     public LocalDateTime getTime() {
-        String time = context.getFirst(StbContext.TIME);
-        return StringUtils.isNotBlank(time) ? LocalDateTime.parse(time, DATE_TIME_FORMATTER) : null;
+        String timeStr = context.getFirst(StbContext.TIME);
+        try {
+            return StringUtils.isNotBlank(timeStr) ? LocalDateTime.parse(timeStr, DATE_TIME_FORMATTER) : null;
+        } catch (Exception e) {
+            log.error("TimeParseException:", e);
+            return null;
+        }
     }
 
     public void setTime(LocalDateTime time) {

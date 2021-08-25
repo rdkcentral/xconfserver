@@ -52,6 +52,8 @@ import org.springframework.util.MultiValueMap;
 import java.io.IOException;
 import java.util.*;
 
+import static com.comcast.xconf.logupload.TimeZoneUtils.DATE_TIME_PATTERN;
+
 /**
  * Models the request from the eSTB. We need to handle anything in the request
  * or input from STB so it's all strings, but when evaluating rules we need more
@@ -420,7 +422,7 @@ public class EstbFirmwareContext {
             public void serialize(LocalDateTime value, JsonGenerator jgen, SerializerProvider provider)
                     throws IOException,
                     JsonProcessingException {
-                jgen.writeString(value.toString("MM/dd/yyyy HH:mm:ss"));
+                jgen.writeString(value.toString(DATE_TIME_PATTERN));
             }
         }
 
@@ -433,8 +435,7 @@ public class EstbFirmwareContext {
             public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt)
                     throws IOException,
                     JsonProcessingException {
-                return DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss")
-                        .parseLocalDateTime(jp.getText());
+                return TimeZoneUtils.parseLocalDateTime(jp.getText());
             }
         }
 

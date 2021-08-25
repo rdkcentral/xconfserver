@@ -24,6 +24,7 @@ package com.comcast.xconf.logupload;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +63,15 @@ public class TimeZoneUtils {
     public static LocalDateTime parseLocalDateTime(String dataTimeStr) {
         try {
             return DateTimeFormat.forPattern(DATE_TIME_PATTERN).parseLocalDateTime(dataTimeStr);
+        } catch (Exception e) {
+            log.error("LocalDataTimeParseException: ", e);
+            return null;
+        }
+    }
+
+    public static LocalDateTime parseLocalDateTime(String dataTimeStr, DateTimeFormatter formatter) {
+        try {
+            return LocalDateTime.parse(dataTimeStr, formatter);
         } catch (Exception e) {
             log.error("LocalDataTimeParseException: ", e);
             return null;

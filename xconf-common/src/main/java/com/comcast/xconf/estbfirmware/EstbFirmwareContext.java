@@ -554,12 +554,7 @@ public class EstbFirmwareContext {
      */
     public LocalDateTime getTime() {
         String timeStr = context.getFirst(StbContext.TIME);
-        try {
-            return StringUtils.isNotBlank(timeStr) ? LocalDateTime.parse(timeStr, DATE_TIME_FORMATTER) : null;
-        } catch (Exception e) {
-            log.error("TimeParseException:", e);
-            return null;
-        }
+        return StringUtils.isNotBlank(timeStr) ? TimeZoneUtils.parseLocalDateTime(timeStr, DATE_TIME_FORMATTER) : null;
     }
 
     public void setTime(LocalDateTime time) {

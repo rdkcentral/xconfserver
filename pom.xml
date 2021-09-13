@@ -24,7 +24,7 @@
     <name>XConf OSS</name>
     <groupId>com.comcast.coast.xconf.oss</groupId>
     <artifactId>xconf</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.3.12-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>

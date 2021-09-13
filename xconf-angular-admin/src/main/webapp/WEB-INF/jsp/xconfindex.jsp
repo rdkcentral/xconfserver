@@ -556,7 +556,7 @@
                         <ul class="nav navbar-nav nav-logout">
                             <div class="pull-right logout-container">
                                 <span ng-bind="currentUser.firstName"></span>
-                                <a class="ri-logout-box-r-line logout ri-lg ri-align" href='./ossLoginForm'></a>
+                                <a class="ri-logout-box-r-line logout ri-lg ri-align" href='./loginForm'></a>
                             </div>
                             <div class="date-time-container">
                                 <div class="data-container">

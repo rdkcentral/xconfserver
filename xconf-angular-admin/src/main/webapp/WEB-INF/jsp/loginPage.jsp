@@ -54,7 +54,7 @@
     <div class="panel-heading">Please enter your <strong>NT</strong> credentials</div>
     <div class="panel-body">
         <span class="error-label">${error}</span>
-        <form method="POST" action="./ossLoginForm">
+        <form method="POST" action="./loginForm">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input class="form-control" type="text" name="username" id="username" />

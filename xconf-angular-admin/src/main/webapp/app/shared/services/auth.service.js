@@ -32,6 +32,7 @@
                 dataType: 'json'
             }).done(function (data, status, header) {
                 result = data;
+                $rootScope.authProvider = header.getResponseHeader('authProvider');
             });
             return result;
         };

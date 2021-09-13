@@ -21,6 +21,7 @@
  */
 package com.comcast.xconf.admin.controller.rfc;
 
+import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.admin.controller.AbstractControllerTest;
 import com.comcast.xconf.admin.controller.ExportFileNames;
@@ -32,12 +33,13 @@ import com.comcast.xconf.rfc.FeatureExport;
 import org.junit.Test;
 import org.mockito.internal.matchers.Contains;
 import org.mockito.internal.matchers.EndsWith;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Collections;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 public class FeatureControllerTest extends AbstractControllerTest<Feature> {
 
@@ -99,5 +101,20 @@ public class FeatureControllerTest extends AbstractControllerTest<Feature> {
                 .andExpect(content().json(JsonUtil.toJson(Collections.singleton(new FeatureExport(entity)))))
                 .andExpect(header().string("Content-Disposition", new EndsWith(applicationTypeSuffix)))
                 .andExpect(header().string("Content-Disposition", new Contains(getAllEntitiesExportName())));
+    }
+
+    @Test
+    public void featureWithTheSameIdDoesNotOverrideAnExistingFeatureInOtherApplicationType() throws Exception {
+        Feature stbFeature = entityList.get(0);
+        performPostRequestAndVerify(getUrlMapping(), stbFeature);
+
+        Feature xHomeFeature = CloneUtil.clone(stbFeature);
+        xHomeFeature.setApplicationType(ApplicationType.XHOME);
+
+        mockMvc.perform(post("/" + FeatureController.URL_MAPPING)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(xHomeFeature)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Entity with id: " + stbFeature.getId() + " already exists in stb application"));
     }
 }

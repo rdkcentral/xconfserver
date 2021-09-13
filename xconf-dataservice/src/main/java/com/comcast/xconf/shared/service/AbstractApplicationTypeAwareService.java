@@ -71,8 +71,13 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
         String writeApplication = getPermissionService().getWriteApplication();
         if (StringUtils.isBlank(id)) {
             entity.setId(UUID.randomUUID().toString());
-        } else if (getEntityDAO().getOne(id, false) != null && ApplicationType.equals(getEntityDAO().getOne(id, false).getApplicationType(), writeApplication)) {
-            throw new EntityExistsException("Entity with id: " + id + " already exists");
+        } else {
+            T existingEntity = getEntityDAO().getOne(id, false);
+            if (existingEntity != null && !ApplicationType.equals(existingEntity.getApplicationType(), entity.getApplicationType())) {
+                throw new EntityExistsException("Entity with id: " + id + " already exists in " + existingEntity.getApplicationType() + " application");
+            } else if (existingEntity != null && ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
+                throw new EntityExistsException("Entity with id: " + id + " already exists");
+            }
         }
     }
 

@@ -42,10 +42,10 @@ public class LoginController {
 
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
-    public static final String URL_MAPPING = "/loginForm";
+    public static final String URL_MAPPING = "/ossLoginForm";
     private static final String DEFAULT_REDIRECT_TO = "/ux/";
 
-    private String LOGIN_PAGE = "loginPage";
+    private String LOGIN_PAGE = "ossLoginPage";
 
     @Autowired
     private LoginService loginService;

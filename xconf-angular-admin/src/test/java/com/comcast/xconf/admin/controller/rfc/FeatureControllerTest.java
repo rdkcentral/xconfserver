@@ -27,23 +27,19 @@ import com.comcast.xconf.admin.controller.AbstractControllerTest;
 import com.comcast.xconf.admin.controller.ExportFileNames;
 import com.comcast.xconf.admin.controller.rfc.feature.FeatureController;
 import com.comcast.xconf.admin.utils.TestDataBuilder;
-import com.comcast.xconf.dcm.ruleengine.TelemetryProfileService;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.rfc.Feature;
 import com.comcast.xconf.rfc.FeatureExport;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.internal.matchers.Contains;
 import org.mockito.internal.matchers.EndsWith;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 public class FeatureControllerTest extends AbstractControllerTest<Feature> {
 
@@ -108,7 +104,7 @@ public class FeatureControllerTest extends AbstractControllerTest<Feature> {
     }
 
     @Test
-    public void entityWithTheSameIdIsNotOverriddenInOtherApplicationTypeDuringCreating() throws Exception {
+    public void featureWithTheSameIdDoesNotOverrideAnExistingFeatureInOtherApplicationType() throws Exception {
         Feature stbFeature = entityList.get(0);
         performPostRequestAndVerify(getUrlMapping(), stbFeature);
 

@@ -73,10 +73,10 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
             entity.setId(UUID.randomUUID().toString());
         } else {
             T existingEntity = getEntityDAO().getOne(id, false);
-            if (existingEntity != null && ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
-                throw new EntityExistsException("Entity with id: " + id + " already exists");
-            } else if (existingEntity != null && !ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
+            if (existingEntity != null && !ApplicationType.equals(existingEntity.getApplicationType(), entity.getApplicationType())) {
                 throw new EntityExistsException("Entity with id: " + id + " already exists in " + existingEntity.getApplicationType() + " application");
+            } else if (existingEntity != null && ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
+                throw new EntityExistsException("Entity with id: " + id + " already exists");
             }
         }
     }

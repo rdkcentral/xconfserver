@@ -163,16 +163,4 @@ public class FirmwareRuleService extends AbstractApplicationTypeAwareService<Fir
         contextOptional.setApplicationTypeIfNotPresent(permissionService.getReadApplication());
         return firmwareRulePredicates.getPredicates(contextOptional);
     }
-
-    @Override
-    public void beforeUpdating(FirmwareRule firmwareRule) {
-        String id = firmwareRule.getId();
-        if (StringUtils.isBlank(id)) {
-            throw new ValidationRuntimeException("FirmwareRule id is empty");
-        }
-        FirmwareRule existedFirmwareRule = getOne(id);
-        if (existedFirmwareRule == null) {
-            throw new EntityNotFoundException("FirmwareRule with id: " + id + " does not exist");
-        }
-    }
 }

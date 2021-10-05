@@ -89,8 +89,11 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
         }
         T existingEntity = getEntityDAO().getOne(id, false);
         String writeApplication = getPermissionService().getWriteApplication();
+
         if (existingEntity == null || !ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
             throw new EntityNotFoundException("Entity with id: " + id + " does not exist");
+        } else if (existingEntity != null && !ApplicationType.equals(existingEntity.getApplicationType(), entity.getApplicationType())) {
+            throw new EntityExistsException("Entity with id: " + id + " already exists in " + existingEntity.getApplicationType() + " application");
         }
     }
 

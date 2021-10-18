@@ -22,6 +22,7 @@
 package com.comcast.xconf;
 
 import com.comcast.xconf.admin.controller.change.ChangeControllerTest;
+import com.comcast.xconf.admin.controller.change.TelemetryTwoChangeControllerTest;
 import com.comcast.xconf.admin.controller.common.EnvironmentControllerTest;
 import com.comcast.xconf.admin.controller.common.IpListControllerTest;
 import com.comcast.xconf.admin.controller.common.MacListControllerTest;
@@ -94,7 +95,10 @@ import java.io.IOException;
         ChangeValidatorTest.class,
 
         //utils
-        UrlValidatorTest.class
+        UrlValidatorTest.class,
+        
+        // controller/telemetrytwochange
+        TelemetryTwoChangeControllerTest.class,
 })
 public class CompleteTestSuite {
 

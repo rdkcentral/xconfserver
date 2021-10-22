@@ -43,14 +43,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToCreate;
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToDelete;
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToUpdate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.*;
 
 @Service
 @Component
@@ -162,6 +160,10 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
             if (rule.getBoundTelemetryIds().contains(id)) {
                 throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
             }
+        }
+        TelemetryTwoProfile profileToRemove = getOne(id);
+        if (CollectionUtils.isNotEmpty(pendingChangesService.getChangesByEntityId(id))) {
+            throw new EntityConflictException("There is change for " + profileToRemove.getName() + " telemetry 2.0 profile");
         }
     }
 }

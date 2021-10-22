@@ -207,7 +207,8 @@
                 if (utilsService.isMapEmpty(vm.errorMessageById)) {
                     showSuccessApproveRevertMessage();
                 } else {
-                    alertsService.showError({title: 'Errors occurred when trying to revert selected changes'});
+                    let actionType = vm.currentChangeType === vm.CHANGE_TYPE.PENDING ? 'apply' : 'revert';
+                    alertsService.showError({title: 'Error', message: `Errors occurred when trying to ${actionType} selected changes`});
                 }
                 getChangesByType(vm.currentChangeType);
                 cleanUpSelectedChanges(vm.changesForMultipleOperation, _.keys(vm.errorMessageById));
@@ -226,7 +227,6 @@
         }
 
         function cleanUpSelectedChanges(selectedChanges, changeIdsWithError) {
-            console.log(changeIdsWithError);
             _.each(selectedChanges, function(change) {
                 if (!changeIdsWithError.includes(change.id)) {
                     utilsService.removeItemFromListById(selectedChanges, change.id);

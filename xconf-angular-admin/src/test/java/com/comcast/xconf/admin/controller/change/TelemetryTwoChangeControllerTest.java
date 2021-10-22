@@ -24,10 +24,10 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
 import com.comcast.xconf.admin.controller.telemetry.TelemetryTwoProfileController;
+import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
 import com.comcast.xconf.admin.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
 import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoProfileChangeService;
-import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
 import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
 import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
@@ -144,7 +144,7 @@ public class TelemetryTwoChangeControllerTest extends BaseControllerTest {
     	TelemetryTwoProfile profile = createProfileChange();
         List<TelemetryTwoChange<TelemetryTwoProfile>> changesByEntityId = changeCrudService.getChangesByEntityId(profile.getId());
         telemetryProfileChangeService.approve(changesByEntityId.get(0).getId());
-        String newProfileName = "ProfileName";
+        String newProfileName = "Changed Telemetry2 profile name";
         TelemetryTwoProfile changedProfile = createTelemetryTwoProfile(profile.getId(), newProfileName);
 
         saveChangedProfile(changedProfile);
@@ -176,7 +176,7 @@ public class TelemetryTwoChangeControllerTest extends BaseControllerTest {
         approveChange(change.getId());
         assertNotNull(telemetryTwoProfileService.getEntityDAO().getOne(profile.getId()));
 
-        String newProfileName = "ProfileName";
+        String newProfileName = "Changed Telemetry2 profine name";
         TelemetryTwoProfile changedProfile = createTelemetryTwoProfile(profile.getId(), newProfileName);
 
         saveChangedProfile(changedProfile);

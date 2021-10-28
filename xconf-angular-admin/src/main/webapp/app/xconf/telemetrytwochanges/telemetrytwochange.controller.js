@@ -21,11 +21,11 @@
     'use strict';
 
     angular
-        .module('app.change')
-        .controller('ChangeController', controller);
+        .module('app.telemetrytwochange')
+        .controller('TelemetryTwoChangeController', controller);
 
-    controller.$inject=['$scope', '$rootScope', 'changeService', 'alertsService', 'CHANGE_TYPE', 'utilsService', 'dialogs', 'paginationService', 'CHANGE_OPERATION', 'ENTITY_TYPE', '$controller', 'authUtilsService'];
-    function controller($scope, $rootScope, changeService, alertsService, CHANGE_TYPE, utilsService, dialogs, paginationService, CHANGE_OPERATION, ENTITY_TYPE, $controller, authUtils) {
+    controller.$inject=['$scope', '$rootScope', 'telemetryTwoChangeService', 'alertsService', 'CHANGE_TYPE', 'utilsService', 'dialogs', 'paginationService', 'CHANGE_OPERATION', 'ENTITY_TYPE', '$controller', 'authUtilsService'];
+    function controller($scope, $rootScope, telemetryTwoChangeService, alertsService, CHANGE_TYPE, utilsService, dialogs, paginationService, CHANGE_OPERATION, ENTITY_TYPE, $controller, authUtils) {
         var vm = this;
 
         angular.extend(vm, $controller('MainController', {
@@ -70,8 +70,8 @@
         vm.cancel = cancel;
         vm.getChanges = getChanges;
         vm.getApprovedChanges = getApprovedChanges;
-        vm.getEntityView = changeService.getEntityView;
-        vm.getEntityName = changeService.getEntityName;
+        vm.getEntityView = telemetryTwoChangeService.getEntityView;
+        vm.getEntityName = telemetryTwoChangeService.getEntityName;
         vm.getSizeByType = getSizeByType;
         vm.getChangesByType = getChangesByType;
         vm.changePageSize = changePageSize;
@@ -101,9 +101,9 @@
             vm.searchParam = data.searchParam;
             var changePromise;
             if (vm.currentChangeType === CHANGE_TYPE.APPROVED) {
-                changePromise = changeService.getFilteredApprovedChanges(vm.pageSize, vm.pageNumber, vm.searchParam);
+                changePromise = telemetryTwoChangeService.getFilteredApprovedChanges(vm.pageSize, vm.pageNumber, vm.searchParam);
             } else {
-                changePromise = changeService.getFilteredChanges(vm.pageSize, vm.pageNumber, vm.searchParam);
+                changePromise = telemetryTwoChangeService.getFilteredChanges(vm.pageSize, vm.pageNumber, vm.searchParam);
             }
             changePromise.then(responseHandler, alertsService.errorHandler);
         });
@@ -111,7 +111,7 @@
         function getApprovedChanges() {
             cleanUpChangeIds(vm.currentChangeType, CHANGE_TYPE.APPROVED, vm.changesForMultipleOperation);
             vm.currentChangeType = CHANGE_TYPE.APPROVED;
-            changeService.getFilteredApprovedChanges(vm.pageSize, vm.pageNumber, vm.searchParam).then(
+            telemetryTwoChangeService.getFilteredApprovedChanges(vm.pageSize, vm.pageNumber, vm.searchParam).then(
                 responseHandler, alertsService.errorHandler
             );
         }
@@ -124,7 +124,7 @@
         function getChanges() {
             cleanUpChangeIds(vm.currentChangeType, CHANGE_TYPE.PENDING, vm.changesForMultipleOperation);
             vm.currentChangeType = CHANGE_TYPE.PENDING;
-            changeService.getFilteredChanges(vm.pageSize, vm.pageNumber, vm.searchParam).then(
+            telemetryTwoChangeService.getFilteredChanges(vm.pageSize, vm.pageNumber, vm.searchParam).then(
                 responseHandler, alertsService.errorHandler
             );
         }
@@ -132,7 +132,7 @@
         function cancel(change) {
             var dlg = dialogs.confirm('Cancel confirmation', '<span class="break-word-inline">Are you sure you want to cancel change of ' + vm.getEntityName(change) + " entity? </span>");
             dlg.result.then(function(btn) {
-                changeService.cancel(change.id).then(function (resp) {
+                telemetryTwoChangeService.cancel(change.id).then(function (resp) {
                     alertsService.showSuccessMessage({message: 'Change of ' + vm.getEntityName(change) + ' entity successfully canceled'});
                     utilsService.removeItemFromListById(vm.changes, change.id);
                     utilsService.removeItemFromListById(vm.changesForMultipleOperation, change.id);
@@ -198,9 +198,9 @@
             var changeIds = _.map(changes, function(change){return change.id});
             var changedPromise;
             if (vm.currentChangeType === vm.CHANGE_TYPE.PENDING) {
-                changedPromise = changeService.approveChanges(changeIds);
+                changedPromise = telemetryTwoChangeService.approveChanges(changeIds);
             } else {
-                changedPromise = changeService.revertChanges(changeIds);
+                changedPromise = telemetryTwoChangeService.revertChanges(changeIds);
             }
             changedPromise.then(function (resp) {
                 vm.errorMessageById = resp.data;
@@ -237,7 +237,7 @@
         function isAddedToMultipleOperation(change) {
             for(var i = 0; i < vm.changesForMultipleOperation.length; i++) {
                 if (angular.equals(vm.changesForMultipleOperation[i], change)) {
-                    return true
+                    return true;
                 }
             }
         }

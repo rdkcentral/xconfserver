@@ -27,7 +27,9 @@ import com.comcast.xconf.GenericNamespacedList;
 import com.comcast.xconf.IpAddressGroupExtended;
 import com.comcast.xconf.NamespacedList;
 import com.comcast.xconf.change.ApprovedChange;
+import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
 import com.comcast.xconf.change.Change;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.estbfirmware.*;
 import com.comcast.xconf.firmware.FirmwareRuleTemplate;
 import com.comcast.xconf.logupload.*;
@@ -199,5 +201,15 @@ public class DatastoreContext {
     @Bean
     CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO() {
         return daoFactory.createCachedSimpleDao(String.class, TelemetryTwoRule.class);
+    }
+    
+    @Bean
+    SimpleDao<String, TelemetryTwoChange> telemetryTwoChangeDao() {
+        return daoFactory.createSimpleDao(TelemetryTwoChange.class);
+    }
+
+    @Bean
+    SimpleDao<String, ApprovedTelemetryTwoChange> approvedTelemetryTwoChangeDao() {
+        return daoFactory.createSimpleDao(ApprovedTelemetryTwoChange.class);
     }
 }

@@ -21,7 +21,7 @@
     <h1 class="page-header">
         <div class="row">
             <div class="col-lg-6">
-                Telemetry Profile Changes
+                Telemetry 2.0 Profile Changes
             </div>
             <div class="col-lg-6">
                 <div class="form-group pull-right">
@@ -84,7 +84,7 @@
                                     <span ng-if="vm.currentChangeType === vm.CHANGE_TYPE.APPROVED" ng-bind="change.approvedUser"></span>
                                 </div>
                                 <div class="col-md-1"><span ng-bind="change.operation"></span></div>
-                                <div class="col-md-5"><pre line-diff left-obj="vm.getEntityView(change.oldEntity, change.newEntity)" right-obj="vm.getEntityView(change.newEntity, change.oldEntity)"></pre></div>
+                                <div class="col-md-5"><pre line-diff left-obj="vm.getEntityView(change.oldEntity, change.newEntity)" right-obj="vm.getEntityView(change.newEntity, change.oldEntity)" style="height: 18em;overflow-y: auto;"></pre></div>
                                 <div class="col-md-2 break-word">
                                     <span>{{change.updated | date:'MM/dd/yyyy h:mma UTC' : 'UTC'}}</span>
                                 </div>
@@ -94,8 +94,8 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12">
-                                    <span class="error-label" ng-bind="vm.errorMessageById[change.id]"></span>
+                                <div class="error-label">
+                                    <span ng-bind="vm.errorMessageById[change.id]"></span>
                                 </div>
                             </div>
                         </div>

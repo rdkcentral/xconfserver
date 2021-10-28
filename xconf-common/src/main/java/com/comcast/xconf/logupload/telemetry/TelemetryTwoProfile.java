@@ -21,16 +21,17 @@
  */
 package com.comcast.xconf.logupload.telemetry;
 
-import org.apache.commons.collections.comparators.NullComparator;
-import org.hibernate.validator.constraints.NotBlank;
-
 import com.comcast.apps.dataaccess.annotation.CF;
 import com.comcast.hydra.astyanax.data.XMLPersistable;
 import com.comcast.xconf.Applicationable;
 import com.comcast.xconf.firmware.ApplicationType;
+import org.apache.commons.collections.comparators.NullComparator;
+import org.hibernate.validator.constraints.NotBlank;
+
+import java.util.Objects;
 
 @CF(cfName = "TelemetryTwoProfiles", keyType = String.class)
-public class TelemetryTwoProfile extends XMLPersistable implements Comparable<TelemetryTwoProfile>, Applicationable{
+public class TelemetryTwoProfile extends XMLPersistable implements Comparable<TelemetryTwoProfile>, Applicationable {
 
     private String id;
 
@@ -80,24 +81,13 @@ public class TelemetryTwoProfile extends XMLPersistable implements Comparable<Te
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
         TelemetryTwoProfile that = (TelemetryTwoProfile) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (name != null ? !jsonconfig.equals(that.jsonconfig) : that.jsonconfig != null) return false;
-        return applicationType != null ? applicationType.equals(that.applicationType) : that.applicationType == null;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(jsonconfig, that.jsonconfig) && Objects.equals(applicationType, that.applicationType);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (jsonconfig != null ? jsonconfig.hashCode() : 0);
-        result = 31 * result + (applicationType != null ? applicationType.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, jsonconfig, applicationType);
     }
 
     @Override

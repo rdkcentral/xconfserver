@@ -59,7 +59,7 @@
     </div>
 </h1>
 <div class="row" ng-if="!vm.telemetryTwoProfiles.length == 0">
-    <div class="col-md-12" style="margin-top: 3em">
+    <div class="col-md-12">
         <div ng-if="vm.startParse()" class="panel-default panel">
             <table class="table">
                 <colgroup width="10%" />
@@ -73,16 +73,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="profile in vm.telemetryTwoProfiles">
+                <tr ng-repeat="profile in vm.telemetryTwoProfiles" ng-class="{'alert alert-info': vm.hasPendingChange(profile.id)}">
                     <td>
-                        <div>
-                            <button type="button" class="btn btn-default"
-                                    ng-click="vm.viewTelemetryTwoProfile(profile)"
-                                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)"
-                                    title="View">
-                                <i class=ri-eye-fill></i>
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-default"
+                                ng-click="vm.viewTelemetryTwoProfile(profile)"
+                                ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)"
+                                title="View">
+                            <i class=ri-eye-fill></i>
+                        </button>
                     </td>
                     <td class="break-word">{{profile.name}}</td>
                     <td>

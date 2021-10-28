@@ -39,6 +39,8 @@
             exportAll: exportAll,
             getAll: getAll,
             getTelemetryTwoProfilesByIdList: getTelemetryTwoProfilesByIdList,
+            getProfileView: getProfileView,
+            getProfileName: getProfileName,
             updateSyncEntities: updateSyncEntities,
             createSyncEntities: createSyncEntities
         };
@@ -80,6 +82,41 @@
             return $http.post(API_URL + "byIdList", idList);
         }
 
+        function getProfileView(profile1, profile2) {
+            var profile = getProfileChanges(profile1, profile2);
+            if (!profile) {
+                return '';
+            }
+            var view = '';
+            if (profile['name']) {
+                view += 'NAME: ' + profile['name'] + '\n';
+            }
+            if (profile['jsonconfig']) {
+                view += 'JSON_CONFIG: ' + profile['jsonconfig'] + '\n';
+            }
+            return view;
+        }
+
+        function getProfileChanges(profile1, profile2) {
+            var oldProfileChanges = {};
+            if (!profile1) {
+                profile1 = {};
+            }
+            if (!profile2) {
+                profile2 = {};
+            }
+            if (!angular.equals(profile1['name'], profile2['name'])) {
+                oldProfileChanges['name'] = profile1['name'];
+            }
+            if (!angular.equals(profile1['jsonconfig'], profile2['jsonconfig'])) {
+                oldProfileChanges['jsonconfig'] = profile1['jsonconfig'];
+            }
+            return oldProfileChanges;
+        }
+
+        function getProfileName(profile) {
+            return profile['name'];
+        }
         function updateSyncEntities(telemetryTwoProfiles) {
             var requests = utilsService.generateRequestList(telemetryTwoProfiles, {url: API_URL + 'entities', method: 'PUT'});
             return requests && requests.length ? syncHttpService.http(requests) : null;

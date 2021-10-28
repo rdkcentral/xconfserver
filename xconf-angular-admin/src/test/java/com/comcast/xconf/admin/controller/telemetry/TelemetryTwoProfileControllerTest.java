@@ -18,29 +18,85 @@
  *******************************************************************************/
 package com.comcast.xconf.admin.controller.telemetry;
 
+import com.comcast.apps.dataaccess.dao.SimpleDao;
 import com.comcast.apps.dataaccess.util.JsonUtil;
+import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
+import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeCrudService;
+import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.search.SearchFields;
 import com.google.common.collect.Lists;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
 
+    private static final String TELEMETRY_2_CONFIG_TO_UPDATE = "{\n" +
+            "    \"Description\": \"Telemetry 2.0 test - CHANGED\",\n" +
+            "    \"Version\": \"0.2\",\n" +
+            "    \"Protocol\": \"HTTP\",\n" +
+            "    \"EncodingType\": \"JSON\",\n" +
+            "    \"ReportingInterval\": 180,\n" +
+            "    \"TimeReference\": \"0001-01-01T00:00:00Z\",\n" +
+            "    \"Parameter\": [{\n" +
+            "        \"type\": \"dataModel\",\n" +
+            "        \"name\": \"TestMac\",\n" +
+            "        \"reference\": \"Device.ABC\"\n" +
+            "    }],\n" +
+            "    \"HTTP\": {\n" +
+            "        \"URL\": \"https://test.com/\",\n" +
+            "        \"Compression\": \"None\",\n" +
+            "        \"Method\": \"POST\",\n" +
+            "        \"RequestURIParameter\": [{\n" +
+            "            \"Name\": \"profileName\",\n" +
+            "            \"Reference\": \"Test.Name\"\n" +
+            "        }, {\n" +
+            "            \"Name\": \"testVersion\",\n" +
+            "            \"Reference\": \"Test.Version\"\n" +
+            "        }]\n" +
+            "    },\n" +
+            "    \"JSONEncoding\": {\n" +
+            "        \"ReportFormat\": \"NameValuePair\",\n" +
+            "        \"ReportTimestamp\": \"None\"\n" +
+            "    }\n" +
+            "}";
+	
+    @Autowired
+    protected SimpleDao<String, TelemetryTwoChange> changeDao;
+
+    @Autowired
+    protected SimpleDao<String, ApprovedTelemetryTwoChange> approvedDao;
+
+    @Autowired
+    private TelemetryTwoChangeCrudService<TelemetryTwoProfile> changeCrudService;
+
+    @Before
+    @After
+    public void cleanChangeData() {
+        List<SimpleDao<String, ? extends TelemetryTwoChange>> daoList = Arrays.asList(changeDao, approvedDao);
+        for (SimpleDao<String, ? extends IPersistable> dao : daoList) {
+            for (IPersistable iPersistable : dao.getAll()) {
+                dao.deleteOne(iPersistable.getId());
+            }
+        }
+    }
+    
     @Test
     public void create() throws Exception {
         TelemetryTwoProfile telemetryTwoProfile = createTelemetryTwoProfile();
@@ -48,6 +104,9 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .content(JsonUtil.toJson(telemetryTwoProfile)))
                 .andExpect(status().isCreated())
                 .andExpect(content().json(JsonUtil.toJson(telemetryTwoProfile)));
+        
+        List<TelemetryTwoChange<TelemetryTwoProfile>> changesByEntityId = changeCrudService.getChangesByEntityId(telemetryTwoProfile.getId());
+        assertEquals(changesByEntityId.get(0).getNewEntity().getId(),telemetryTwoProfile.getId());
     }
 
     @Test
@@ -63,40 +122,15 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
         TelemetryTwoProfile telemetryProfile = createTelemetryTwoProfile();
         telemetryTwoProfileDAO.setOne(telemetryProfile.getId(), telemetryProfile);
         telemetryProfile = createTelemetryTwoProfile();
-        telemetryProfile.setJsonconfig("{\n" +
-                "    \"Description\": \"Telemetry 2.0 test\",\n" +
-                "    \"Version\": \"0.2\",\n" +
-                "    \"Protocol\": \"HTTP\",\n" +
-                "    \"EncodingType\": \"JSON\",\n" +
-                "    \"ReportingInterval\": 180,\n" +
-                "    \"TimeReference\": \"0001-01-01T00:00:00Z\",\n" +
-                "    \"Parameter\": [{\n" +
-                "        \"type\": \"dataModel\",\n" +
-                "        \"name\": \"TestMac\",\n" +
-                "        \"reference\": \"Device.ABC\"\n" +
-                "    }],\n" +
-                "    \"HTTP\": {\n" +
-                "        \"URL\": \"https://test.com/\",\n" +
-                "        \"Compression\": \"None\",\n" +
-                "        \"Method\": \"POST\",\n" +
-                "        \"RequestURIParameter\": [{\n" +
-                "            \"Name\": \"profileName\",\n" +
-                "            \"Reference\": \"Test.Name\"\n" +
-                "        }, {\n" +
-                "            \"Name\": \"testVersion\",\n" +
-                "            \"Reference\": \"Test.Version\"\n" +
-                "        }]\n" +
-                "    },\n" +
-                "    \"JSONEncoding\": {\n" +
-                "        \"ReportFormat\": \"NameValuePair\",\n" +
-                "        \"ReportTimestamp\": \"None\"\n" +
-                "    }\n" +
-                "}");
+        telemetryProfile.setJsonconfig(TELEMETRY_2_CONFIG_TO_UPDATE);
 
         mockMvc.perform(put("/" + TelemetryTwoProfileController.URL_MAPPING)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(telemetryProfile)))
                 .andExpect(status().isOk());
+        
+        List<TelemetryTwoChange<TelemetryTwoProfile>> changesByEntityId = changeCrudService.getChangesByEntityId(telemetryProfile.getId());
+        assertEquals(changesByEntityId.get(0).getNewEntity().getId(),telemetryProfile.getId());
     }
 
     @Test
@@ -137,6 +171,24 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
                 .andExpect(status().isConflict());
 
         assertNotNull(telemetryTwoProfileDAO.getOne(boundProfileId));
+    }
+
+    @Test
+    public void deleteTelemetryProfileIfThereIsChangeForIt() throws Exception {
+        TelemetryTwoProfile telemetryProfile = createTelemetryTwoProfile();
+        telemetryTwoProfileDAO.setOne(telemetryProfile.getId(), telemetryProfile);
+        telemetryProfile = createTelemetryTwoProfile();
+        telemetryProfile.setJsonconfig(TELEMETRY_2_CONFIG_TO_UPDATE);
+
+        mockMvc.perform(put("/" + TelemetryTwoProfileController.URL_MAPPING)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(telemetryProfile)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete("/" + TelemetryTwoProfileController.URL_MAPPING + "/" + telemetryProfile.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("There is change for " + telemetryProfile.getName() + " telemetry 2.0 profile"));
     }
 
     @Test

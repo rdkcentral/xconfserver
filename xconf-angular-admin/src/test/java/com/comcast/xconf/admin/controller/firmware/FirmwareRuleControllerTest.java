@@ -22,15 +22,14 @@
 
 package com.comcast.xconf.admin.controller.firmware;
 
+import com.comcast.apps.dataaccess.util.CloneUtil;
+import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
 import com.comcast.apps.hesperius.ruleengine.main.api.Relation;
 import com.comcast.apps.hesperius.ruleengine.main.api.RuleValidationException;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
-import com.comcast.xconf.exception.EntityConflictException;
-import com.comcast.xconf.exception.EntityNotFoundException;
-import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.ConfigNames;
 import com.comcast.xconf.GenericNamespacedList;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
@@ -39,6 +38,7 @@ import com.comcast.xconf.estbfirmware.Model;
 import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.estbfirmware.factory.TemplateFactory;
+import com.comcast.xconf.exception.EntityNotFoundException;
 import com.comcast.xconf.firmware.*;
 import com.comcast.xconf.search.SearchFields;
 import com.google.common.collect.Lists;
@@ -53,6 +53,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.*;
 
+import static com.comcast.xconf.firmware.ApplicationType.STB;
+import static com.comcast.xconf.firmware.ApplicationType.XHOME;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -152,13 +154,36 @@ public class FirmwareRuleControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void updateWithoutId() throws Exception {
+    public void updateFirmwareRuleWithoutId() throws Exception {
         FirmwareRule firmwareRule = createFirmwareRule();
         firmwareRule.setId(null);
-        mockMvc.perform(put("/" + FirmwareRuleController.URL_MAPPING).contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.toJson(firmwareRule)))
+
+        mockMvc.perform(put("/" + FirmwareRuleController.URL_MAPPING)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(firmwareRule)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").value("FirmwareRule id is empty"));
+                .andExpect(jsonPath("message").value("Entity id is empty"));
+    }
+
+    @Test
+    public void updateWithWrongApplicationType() throws Exception {
+        String templateId = "testTemplateId";
+        Model model = createModel();
+        modelDAO.setOne(model.getId(), model);
+
+        FirmwareRuleTemplate firmwareRuleTemplate = createFirmwareRuleTemplate(templateId);
+        firmwareRuleTemplateDao.setOne(firmwareRuleTemplate.getId(), firmwareRuleTemplate);
+
+        FirmwareRule firmwareRule = createFirmwareRule(firmwareRuleTemplate, null, STB);
+        firmwareRuleDao.setOne(firmwareRule.getId(), firmwareRule);
+
+        FirmwareRule updatedFirmwareRule = CloneUtil.clone(firmwareRule);
+        updatedFirmwareRule.setApplicationType(XHOME);
+
+        mockMvc.perform(put("/" + FirmwareRuleController.URL_MAPPING).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.toJson(updatedFirmwareRule)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("message").value("Entity with id: " + firmwareRule.getId() + " already exists in stb application"));
     }
 
     @Test

@@ -46,54 +46,58 @@
         <div class="col-lg-4">
             <div class="form-inline pull-right">
                 <div class="form-group" ng-show="vm.canWriteChangeAndTelemetry() && vm.changesForMultipleOperation.length > 0 && vm.currentChangeType === vm.CHANGE_TYPE.PENDING">
-                    <button class="btn btn-default pull-right"
+                    <button class="btn btn-default"
                             ng-click="vm.applySelectedChanges(vm.CHANGE_OPERATION.APPROVE)">Approve selected changes</button>
                 </div>
                 <div class="form-group" ng-show="vm.canWriteChangeAndTelemetry() && vm.changesForMultipleOperation.length > 0 && vm.currentChangeType === vm.CHANGE_TYPE.APPROVED">
-                    <button class="btn btn-default pull-right"
+                    <button class="btn btn-default"
                             ng-click="vm.applySelectedChanges(vm.CHANGE_OPERATION.REVERT)">Revert selected changes</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
+    <div>
+        <div>
             <div ng-show="!vm.isNullOrUndefinedOrEmptyObject(vm.changes)">
                     <div class="row row-title">
-                        <div class="col-lg-1" ng-show="vm.canWriteChangeAndTelemetry()"></div>
-                        <div class="col-lg-1">Entity</div>
-                        <div class="col-lg-1">
+                        <div class="col-md-1" ng-show="vm.canWriteChangeAndTelemetry()"></div>
+                        <div class="col-md-1">Entity</div>
+                        <div class="col-md-1">
                             <span>User</span>
                         </div>
-                        <div class="col-lg-1">Action</div>
-                        <div class="col-lg-5">Diff</div>
-                        <div class="col-lg-2 change-date">
+                        <div class="col-md-1">Action</div>
+                        <div class="col-md-5">Diff</div>
+                        <div class="col-md-2 change-date">
                             <span ng-if="vm.currentChangeType == vm.CHANGE_TYPE.PENDING">Updated</span>
                             <span ng-if="vm.currentChangeType === vm.CHANGE_TYPE.APPROVED">Approved</span></div>
-                        <div class="col-lg-1"></div>
+                        <div class="col-md-1"></div>
                     </div>
-                    <div class="row border-top" ng-repeat="(key, values) in vm.changes">
-                        <div class="row" ng-repeat="change in values">
+                    <div ng-repeat="(key, values) in vm.changes">
+                        <div class="border-top" ng-repeat="change in values">
                             <div class="row">
-                                <div class="col-lg-1" ng-show="vm.canWriteChangeAndTelemetry()">
+                                <div class="col-md-1" ng-show="vm.canWriteChangeAndTelemetry()">
                                     <input type="checkbox" class="checkbox" ng-model="checked" ng-change="vm.updateChangeList(checked, change)" ng-init="checked = vm.isAddedToMultipleOperation(change)"/>
                                 </div>
-                                <div class="col-lg-1 break-word"><span ng-bind="vm.getEntityName(change)"></span></div>
-                                <div class="col-lg-1">
+                                <div class="col-md-1 break-word"><span ng-bind="vm.getEntityName(change)"></span></div>
+                                <div class="col-md-1">
                                     <span ng-if="vm.currentChangeType == vm.CHANGE_TYPE.PENDING" ng-bind="change.author"></span>
                                     <span ng-if="vm.currentChangeType === vm.CHANGE_TYPE.APPROVED" ng-bind="change.approvedUser"></span>
                                 </div>
-                                <div class="col-lg-1"><span ng-bind="change.operation"></span></div>
-                                <div class="col-lg-5"><pre line-diff left-obj="vm.getEntityView(change.oldEntity, change.newEntity)" right-obj="vm.getEntityView(change.newEntity, change.oldEntity)"></pre></div>
-                                <div class="col-lg-2 break-word">
+                                <div class="col-md-1"><span ng-bind="change.operation"></span></div>
+                                <div class="col-md-5"><pre line-diff left-obj="vm.getEntityView(change.oldEntity, change.newEntity)" right-obj="vm.getEntityView(change.newEntity, change.oldEntity)"></pre></div>
+                                <div class="col-md-2 break-word">
                                     <span>{{change.updated | date:'MM/dd/yyyy h:mma UTC' : 'UTC'}}</span>
                                 </div>
-                                <div class="col-lg-1">
-                                    <button ng-if="vm.currentChangeType == vm.CHANGE_TYPE.PENDING" type="button" class="btn btn-default pull-right"
+                                <div class="col-md-1">
+                                    <button ng-if="vm.currentChangeType == vm.CHANGE_TYPE.PENDING" type="button" class="btn btn-default"
                                             ng-click="vm.cancel(change)" ng-show="authUtils.canWriteChangesByApplication($root.applicationType)">Cancel</button>
                                 </div>
                             </div>
-                            <div class="row error-label"><span ng-bind="vm.errorMessageById[change.id]"></span></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span class="error-label" ng-bind="vm.errorMessageById[change.id]"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
             </div>

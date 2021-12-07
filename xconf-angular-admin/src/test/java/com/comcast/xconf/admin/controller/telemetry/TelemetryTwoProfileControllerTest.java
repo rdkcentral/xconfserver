@@ -71,6 +71,13 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
             "            \"Reference\": \"Test.Version\"\n" +
             "        }]\n" +
             "    },\n" +
+            "   \"TriggerCondition\": [{\n" +
+            "       \"type\":\"dataModel\",\n" +
+            "       \"operator\":\"lt\",\n" +
+            "       \"threshold\":14,\n" +
+            "       \"minThresholdDuration\":12,\n" +
+            "       \"reference\":\"test reference\"\n" +
+            "   }]," +
             "    \"JSONEncoding\": {\n" +
             "        \"ReportFormat\": \"NameValuePair\",\n" +
             "        \"ReportTimestamp\": \"None\"\n" +

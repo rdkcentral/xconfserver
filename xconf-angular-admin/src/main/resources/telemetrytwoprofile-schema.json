@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "https://github.comcast.com/cfry002/telemetry2/schemas/t2_reportProfileSchema.schema.json",
   "title":"Telemetry 2.0 Report Profile Description",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "object",
   "description": "<b>Telemetry 2.0 Report Profile Description</b><p>A Telemetry 2.0 Report Profile is a configuration, authored in JSON, that can be sent to any RDK device which supports Telemetry 2.0.  A Report Profile contains properties that are interpreted by the CPE in order to generate and upload a telemetry report. These properties define the details of a generated report, including: <br/>&bull;&nbsp;&nbsp;Scheduling (how often the report should be generated) <br/>&bull;&nbsp;&nbsp;Parameters (what key/value pairs should be in the report) <br/>&bull;&nbsp;&nbsp;Encoding (the format of the generated report) <br/>&bull;&nbsp;&nbsp;Protocol (protocol to use to send generated report)</p>",
 
@@ -111,13 +111,25 @@
       "title":"Definition of properties for the Profile",
       "properties": {
 
-
-
+      }
+    },
+    "conditionDefinitions": {
+      "type":"object",
+      "properties":{
+        "dataModel": {
+          "type": "object",
+          "properties": {
+            "type":      { "type": "string", "enum": [ "dataModel" ]  },
+            "operator":  { "type": "string", "enum": [ "any", "lt", "gt", "eq" ]  },
+            "threshold": {"type":"integer"},
+            "minThresholdDuration": {"type":"integer"},
+            "reference":  { "type": "string" }
+          },
+          "required": ["type", "operator", "reference"]
+        }
       }
     }
   },
-
-
 
   "properties": {
     "Description": {
@@ -155,6 +167,12 @@
         ]
       },
       "description": "An array of objects which defines the data to be included in the generated report. Each object defines the type of data, the source of the data and an optional name to be used as the name (marker) for this data in the generated report. "
+    },
+    "TriggerCondition": {
+      "type":"array",
+      "maxItems":50,
+      "items":
+      { "$ref": "#/definitions/conditionDefinitions/properties/dataModel"}
     },
     "HTTP": { "$ref": "#/definitions/protocolDefinitions/properties/HTTP"},
     "JSONEncoding": {"$ref": "#/definitions/encodingDefinitions/properties/JSONEncodingDefinition"}

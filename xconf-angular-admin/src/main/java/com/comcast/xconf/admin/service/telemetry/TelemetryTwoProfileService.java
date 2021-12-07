@@ -43,6 +43,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToCreate;
+import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToDelete;
+import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToUpdate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

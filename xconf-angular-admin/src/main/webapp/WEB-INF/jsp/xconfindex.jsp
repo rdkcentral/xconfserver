@@ -51,6 +51,7 @@
             <link href="<c:url value="/app/shared/styles/shared.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/directives/custom-viewer-panel/custom-viewer-panel.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/directives/editable-map/editable-map.css"/>" rel="stylesheet" />
+            <link href="<c:url value="/app/shared/directives/tagautocomplete/tagautocomplete.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/changelog/changelog.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/shared/statistics/statistics.css"/>" rel="stylesheet" />
             <link href="<c:url value="/app/xconf/styles/rules.css"/>" rel="stylesheet" />
@@ -108,6 +109,8 @@
             <script src="<c:url value="/app/shared/directives/simplesearch/simplesearch.directive.js"/>"></script>
             <script src="<c:url value="/app/shared/directives/custom-viewer-panel/custom-viewer-panel.directive.js"/>"></script>
             <script src="<c:url value="/app/shared/directives/custom-progressbar/custom-progressbar.directive.js"/>"></script>
+            <script src="<c:url value="/app/shared/directives/tagautocomplete/tagautocomplete.directive.js"/>"></script>
+            <script src="<c:url value="/app/shared/directives/tagautocomplete/tagautocomplete-modal.controller.js"/>"></script>
 
             <script src="<c:url value="/app/shared/changelog/changelog.module.js"/>"></script>
             <script src="<c:url value="/app/shared/changelog/changelog.service.js"/>"></script>

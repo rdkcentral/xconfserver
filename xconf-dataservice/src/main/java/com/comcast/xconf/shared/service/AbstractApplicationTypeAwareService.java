@@ -24,6 +24,7 @@ package com.comcast.xconf.shared.service;
 import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.Applicationable;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.exception.EntityExistsException;
 import com.comcast.xconf.exception.EntityNotFoundException;
 import com.comcast.xconf.firmware.ApplicationType;
@@ -88,10 +89,13 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
             throw new ValidationRuntimeException("Entity id is empty");
         }
         T existingEntity = getEntityDAO().getOne(id, false);
-        String writeApplication = getPermissionService().getWriteApplication();
 
-        if (existingEntity == null || !ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
+        String writeApplication = getWriteApplicationType(entity);
+
+        if (existingEntity == null) {
             throw new EntityNotFoundException("Entity with id: " + id + " does not exist");
+        } else if (!ApplicationType.equals(existingEntity.getApplicationType(), writeApplication)) {
+            throw new EntityConflictException(String.format("[%s] - current applicationType [%s] does not match with write applicationType [%s]", entity.getId(), ApplicationType.get(existingEntity.getApplicationType()), writeApplication));
         } else if (existingEntity != null && !ApplicationType.equals(existingEntity.getApplicationType(), entity.getApplicationType())) {
             throw new EntityExistsException("Entity with id: " + id + " already exists in " + existingEntity.getApplicationType() + " application");
         }
@@ -103,6 +107,10 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
             entity.setApplicationType(getPermissionService().getWriteApplication());
         }
         super.beforeSaving(entity);
+    }
+
+    protected String getWriteApplicationType(T entity) {
+        return getPermissionService().getWriteApplication();
     }
 
     public String getApplicationTypeSuffix() {

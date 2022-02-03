@@ -44,16 +44,11 @@ import com.comcast.xconf.dcm.ruleengine.SettingsDAO;
 import com.comcast.xconf.estbfirmware.*;
 import com.comcast.xconf.estbfirmware.converter.PercentageBeanConverter;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
-import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.firmware.*;
 import com.comcast.xconf.logupload.*;
 import com.comcast.xconf.logupload.settings.SettingProfile;
 import com.comcast.xconf.logupload.settings.SettingRule;
-import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryRule;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
-import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
+import com.comcast.xconf.logupload.telemetry.*;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.queries.beans.DownloadLocationFilterWrapper;
 import com.comcast.xconf.rfc.Feature;
@@ -945,7 +940,7 @@ public abstract class BaseQueriesControllerTest {
         Map<String, String> properties = new HashMap<>();
         properties.put("firmwareLocation", "http://1.1.1.1");
         properties.put("firmwareDownloadProtocol", "http");
-        properties.put("ipv6FirmwareLocation", "");
+        properties.put("ipv6FirmwareLocation", "520d:30b1:fd61:064a:dd7b:f7e7:00fb:56ef"); // random ipv6
         action.setProperties(properties);
         return action;
     }

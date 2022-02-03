@@ -124,6 +124,11 @@ public class FirmwareRuleDataService extends FirmwareRuleService {
         return normalizedMap;
     }
 
+    @Override
+    protected String getWriteApplicationType(FirmwareRule firmwareRule) {
+        return firmwareRule.getApplicationType();
+    }
+
     private Map<String, String> getCustomContextKeys() {
         Map<String, String> contextKeys = new HashMap<>();
         contextKeys.put("applicationType", SearchFields.APPLICATION_TYPE);

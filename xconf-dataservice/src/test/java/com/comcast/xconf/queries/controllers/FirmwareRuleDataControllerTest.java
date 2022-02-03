@@ -19,14 +19,16 @@
 
 package com.comcast.xconf.queries.controllers;
 
+import com.comcast.apps.dataaccess.util.CloneUtil;
+import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
+import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.Model;
 import com.comcast.xconf.estbfirmware.TemplateNames;
-import com.comcast.xconf.firmware.ApplicableAction;
-import com.comcast.xconf.firmware.FirmwareRule;
-import com.comcast.xconf.firmware.FirmwareRuleTemplate;
-import com.comcast.xconf.firmware.RuleAction;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.*;
 import com.comcast.xconf.service.firmware.FirmwareRuleDataService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -120,6 +122,48 @@ public class FirmwareRuleDataControllerTest extends BaseQueriesControllerTest {
 
         performPostAndVerifyResponse(FirmwareRuleDataController.API_URL + "/importAll", Collections.singletonList(envModelFirmwareRule), expectedResult);
         assertNotNull(percentageBeanQueriesService.getOne(envModelFirmwareRule.getId()));
+    }
+
+    @Test
+    public void updateFirmwareRuleUnderXhomeApplicationType() throws Exception {
+        Model model = createAndSaveModel("TEST_MODEL_ID");
+        Rule rule = Rule.Builder.of(new Condition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model.getId()))).build();
+        FirmwareRuleTemplate template = createAndSaveFirmwareRuleTemplate("TEST_FIRMWARE_RULE_TEMPLATE", rule, createDefinePropertiesTemplateAction(), 1);
+        FirmwareRule firmwareRule = createFirmwareRule(UUID.randomUUID().toString(), template.getId(), createDefinePropertiesAction(), rule);
+        firmwareRule.setApplicationType(ApplicationType.XHOME);
+
+        firmwareRuleDao.setOne(firmwareRule.getId(), firmwareRule);
+
+        ArrayList<FirmwareRule> firmwareRulesToUpdate = Lists.newArrayList(firmwareRule);
+
+        Map<String, List<String>> expectedResult = new HashMap<>();
+        expectedResult.put(IMPORTED, getNames(firmwareRulesToUpdate));
+        expectedResult.put(NOT_IMPORTED, new ArrayList<>());
+
+        performPostAndVerifyResponse(FirmwareRuleDataController.API_URL + "/importAll", firmwareRulesToUpdate, expectedResult);
+
+        firmwareRuleTemplateDao.deleteOne(template.getId());
+    }
+
+    @Test
+    public void updateFirmwareRuleWithNotCorrespondingApplicationType() throws Exception {
+        Model model = createAndSaveModel("TEST_MODEL_ID");
+        Rule rule = Rule.Builder.of(new Condition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model.getId()))).build();
+        FirmwareRuleTemplate template = createAndSaveFirmwareRuleTemplate("TEST_FIRMWARE_RULE_TEMPLATE", rule, createDefinePropertiesTemplateAction(), 1);
+        FirmwareRule firmwareRule = createAndSaveFirmwareRule(UUID.randomUUID().toString(), template.getId(), createDefinePropertiesAction(), rule);
+
+        FirmwareRule firmwareRuleToChange = CloneUtil.clone(firmwareRule);
+        firmwareRuleToChange.setApplicationType(ApplicationType.XHOME);
+
+        ArrayList<FirmwareRule> firmwareRulesToUpdate = Lists.newArrayList(firmwareRuleToChange);
+
+        Map<String, List<String>> expectedResult = new HashMap<>();
+        expectedResult.put(IMPORTED, new ArrayList<>());
+        expectedResult.put(NOT_IMPORTED, getNames(firmwareRulesToUpdate));
+
+        performPostAndVerifyResponse(FirmwareRuleDataController.API_URL + "/importAll", firmwareRulesToUpdate, expectedResult);
+
+        firmwareRuleTemplateDao.deleteOne(template.getId());
     }
 
     private void prepareEnvModelRule(String environmentId, String modelId, String macListId, String firmwareConfigId) {

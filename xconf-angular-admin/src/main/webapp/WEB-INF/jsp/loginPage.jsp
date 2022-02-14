@@ -51,7 +51,7 @@
 </head>
 <body>
 <div class="panel panel-default login-form">
-    <div class="panel-heading">Please enter your <strong>NT</strong> credentials</div>
+    <div class="panel-heading">Please enter your credentials</div>
     <div class="panel-body">
         <span class="error-label">${error}</span>
         <form method="POST" action="./loginForm">

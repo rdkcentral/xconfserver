@@ -288,7 +288,7 @@
                             return {
                                 selectedTags: angular.copy(values),
                                 data: data,
-                                disableAutocomplete: data ? false : true,
+                                disableAutocomplete: data && _.size(data) > 0 ? false : true,
                                 onSave: function(ids) {
                                     scope.fixedArgValue = ids;
                                     scope.changeFixedArgValue();

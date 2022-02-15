@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "https://github.comcast.com/cfry002/telemetry2/schemas/t2_reportProfileSchema.schema.json",
   "title":"Telemetry 2.0 Report Profile Description",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "type": "object",
   "description": "<b>Telemetry 2.0 Report Profile Description</b><p>A Telemetry 2.0 Report Profile is a configuration, authored in JSON, that can be sent to any RDK device which supports Telemetry 2.0.  A Report Profile contains properties that are interpreted by the CPE in order to generate and upload a telemetry report. These properties define the details of a generated report, including: <br/>&bull;&nbsp;&nbsp;Scheduling (how often the report should be generated) <br/>&bull;&nbsp;&nbsp;Parameters (what key/value pairs should be in the report) <br/>&bull;&nbsp;&nbsp;Encoding (the format of the generated report) <br/>&bull;&nbsp;&nbsp;Protocol (protocol to use to send generated report)</p>",
 
@@ -12,6 +12,12 @@
       "enum": [ "count", "absolute", "csv" ],
       "default": "absolute",
       "example":"\"use\":\"count\""
+    },
+    "dataModelMethod": {
+      "type":  "string",
+      "enum": [ "get", "subscribe" ],
+      "default": "get",
+      "example":"\"method\":\"subscribe\""
     },
     "parmDefinitions": {
       "title":"Definitions for the different Parameter types",
@@ -28,6 +34,7 @@
             "use":     { "$ref":    "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received, in the case of events, or found in the log file, in the case of greps.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received, in the case of events, or found in the log file, in the case of greps. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."},
             "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"}
           },
+          "additionalProperties": false,
           "required": ["type", "marker", "search", "logFile"],
           "description": "A grep parameter defines report data that comes from searching a log file for a particular string.",
           "example":"{ \"type\": \"grep\", \"marker\": \"T2_btime_dsLock_split\", \"search\": \"Downstream Lock Success=\", \"logFile\": \"BootTime.log\", \"use\": \"absolute\"}"
@@ -43,6 +50,7 @@
             "use":        { "$ref": "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received, in the case of events, or found in the log file, in the case of greps.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received, in the case of events, or found in the log file, in the case of greps. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."},
             "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"}
           },
+          "additionalProperties": false,
           "required": ["type", "eventName", "component"],
           "description": "An event parameter defines data that will come from a component event.",
           "example": "{ \"type\": \"event\", \"name\": \"XH_RSSI_1_split\", \"eventName\":\"xh_rssi_3_split\",\"component\": \"ccsp-wifi-agent\", \"use\":\"absolute\" }, "
@@ -54,8 +62,11 @@
             "type":      { "type": "string", "const": "dataModel", "description": "Defines a data model parameter, e.g., TR-181 data."  },
             "name":      { "type": "string", "description": "Optional: The key name to be used for this data in the generated report." },
             "reference":  { "type": "string", "description": "The data model object or property name whose value is to be in the generated report, e.g., \"Device.DeviceInfo.HardwareVersion\"" },
-            "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"}
+            "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"},
+            "method":     { "$ref": "#/definitions/dataModelMethod", "description": "How should the value for this parameter be retrieved?  \"get\" will do a parameter GET; \"subscribe\" will subscribe for changes on the event indicated by \"reference\"." },
+            "use":        { "$ref": "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."}
           },
+          "additionalProperties": false,
           "description":"A dataModel parameter defines data that will come from the CPE data model, e.g., TR-181",
           "example":"",
           "required": ["type", "reference"]
@@ -80,14 +91,39 @@
                 "type":"object",
                 "properties": {
                   "Name": {"type":"string", "description": "Value to be used as the Name in the query parameter name/value pair."} ,
-                  "Reference": {"type":"string", "description": "Value ot be used as the Value in the query paramter name/value pair.  Must be a data model reference."}
-                }
+                  "Reference": {"type":"string", "description": "Value to be used as the Value in the query parameter name/value pair.  Must be a data model reference."}
+                },
+                "required": ["Name", "Reference"]
               },
               "description": "Optional: Query parameters to be included in the report's upload HTTP URL."
             }
           },
+          "additionalProperties": false,
           "required": ["URL", "Compression", "Method"],
           "description": "HTTP Protocol details that will be used when Protocol=\"HTTP\"."
+        },
+        "RBUS_METHOD": {
+          "title": "RBUS_METHOD Definition",
+          "type": "object",
+          "properties": {
+            "Method": {"type":"string", "description": "The name of the method to invoke via rbus. This is the method name that the provider component registers with rbus."},
+            "Parameters": {
+              "title":"Parameters to send to the provider method",
+              "type":"array",
+              "items": {
+                "type":"object",
+                "properties": {
+                  "name": {"type":"string", "description": "Value to be used as the name in the method input parameter name/value pair."} ,
+                  "value": {"type":"string", "description": "Value to be used as the value in the method input parameter name/value pair."}
+                },
+                "required": ["name", "value"]
+
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": ["Method", "Parameters"],
+          "description": "RBUS_METHOD Protocol details that will be used when Protocol=\"RBUS_METHOD\".  These method and parameters to pass to RBUS for transport of generated report."
         }
       }
     },
@@ -107,12 +143,6 @@
         }
       }
     },
-    "profileDefinitions":{
-      "title":"Definition of properties for the Profile",
-      "properties": {
-
-      }
-    },
     "conditionDefinitions": {
       "type":"object",
       "properties":{
@@ -123,13 +153,17 @@
             "operator":  { "type": "string", "enum": [ "any", "lt", "gt", "eq" ]  },
             "threshold": {"type":"integer"},
             "minThresholdDuration": {"type":"integer"},
-            "reference":  { "type": "string" }
+            "reference":  { "type": "string" },
+            "report":     { "type":"boolean", "default":"true", "description": "Should this dataModel event be included in the generated report if this condition caused report generation?"}
           },
+          "additionalProperties": false,
           "required": ["type", "operator", "reference"]
         }
       }
     }
   },
+
+
 
   "properties": {
     "Description": {
@@ -145,7 +179,7 @@
     "Protocol": {
       "title":"Protocol",
       "type":"string",
-      "enum":["HTTP"],
+      "enum":["HTTP", "RBUS_METHOD"],
       "description":"The protocol to be used for the upload of report generated by this profile."
     },
     "EncodingType": { "title":"EncodingType","type":"string", "enum":["JSON"], "description": "The encoding type to be used in the report generated by this profile." },
@@ -175,7 +209,24 @@
       { "$ref": "#/definitions/conditionDefinitions/properties/dataModel"}
     },
     "HTTP": { "$ref": "#/definitions/protocolDefinitions/properties/HTTP"},
+    "RBUS_METHOD": { "$ref": "#/definitions/protocolDefinitions/properties/RBUS_METHOD"},
     "JSONEncoding": {"$ref": "#/definitions/encodingDefinitions/properties/JSONEncodingDefinition"}
   },
-  "required": ["Protocol", "EncodingType","Parameter"]
+  "required": ["Protocol", "EncodingType","Parameter"],
+  "anyOf": [
+    {
+      "properties": {
+        "Protocol": { "const": "HTTP" }
+      },
+      "required": ["HTTP"]
+    },
+    {
+      "properties": {
+        "Protocol": { "const": "RBUS_METHOD" }
+      },
+      "required": ["RBUS_METHOD"]
+    }
+  ]
+
+
 }

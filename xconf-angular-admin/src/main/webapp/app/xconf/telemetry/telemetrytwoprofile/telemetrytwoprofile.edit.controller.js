@@ -34,7 +34,9 @@
 			stateParameters: null
 		}));
 
-		vm.telemetryTwoProfile = null;
+		vm.telemetryTwoProfile = {
+			applicationType: $rootScope.applicationType
+		};
 		vm.isNewTelemetryProfile = null;
 
 		vm.save = save;
@@ -53,9 +55,9 @@
 			}
 			else{
 				vm.isNewTelemetryProfile = true
-				vm.telemetryTwoProfile = {}
-				vm.applicationType = $rootScope.applicationType
-
+				vm.telemetryTwoProfile = {
+					applicationType: $rootScope.applicationType
+				}
 			}
 		}
 

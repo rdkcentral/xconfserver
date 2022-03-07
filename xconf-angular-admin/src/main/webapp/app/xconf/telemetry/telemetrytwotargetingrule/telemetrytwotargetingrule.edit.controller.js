@@ -35,7 +35,7 @@
         }));
 
         vm.targetingRule = {
-            "rule": {
+            rule: {
                 applicationType: $rootScope.applicationType,
                 name:'',
                 boundTelemetryIds: []

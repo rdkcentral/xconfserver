@@ -23,8 +23,8 @@ package com.comcast.xconf.admin.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.xconf.admin.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
+import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders;
 import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeCrudService;
-import com.comcast.xconf.admin.validator.telemetry.TelemetryTwoProfileValidator;
 import com.comcast.xconf.auth.AuthService;
 import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.change.TelemetryTwoChange;
@@ -37,22 +37,20 @@ import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.TelemetryTwoProfilePredicates;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
+import com.comcast.xconf.validators.telemetry.TelemetryTwoProfileValidator;
 import com.google.common.base.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToCreate;
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToDelete;
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToUpdate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.*;
+import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToCreate;
+import static com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders.buildToUpdate;
 
 @Service
 @Component
@@ -146,14 +144,14 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
     public TelemetryTwoProfile writeDeleteChange(String id) {
         beforeRemoving(id);
         TelemetryTwoProfile profile = getOne(id);
-        pendingChangesService.create(buildToDelete(profile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+        pendingChangesService.create(TelemetryTwoChangeBuilders.buildToDelete(profile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
         return profile;
     }
     
     @Override
     public TelemetryTwoProfile delete(String id) {
         TelemetryTwoProfile delete = super.delete(id);
-        approvedChangeCrudService.saveToApproved(buildToDelete(delete, EntityType.TELEMETRY_TWO_PROFILE, permissionService.getWriteApplication(), authService.getUserNameOrUnknown()));
+        approvedChangeCrudService.saveToApproved(TelemetryTwoChangeBuilders.buildToDelete(delete, EntityType.TELEMETRY_TWO_PROFILE, permissionService.getWriteApplication(), authService.getUserNameOrUnknown()));
         return delete;
     }
 

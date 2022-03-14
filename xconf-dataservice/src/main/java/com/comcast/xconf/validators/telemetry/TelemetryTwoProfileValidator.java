@@ -16,20 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.comcast.xconf.admin.validator.telemetry;
+package com.comcast.xconf.validators.telemetry;
 
-import org.everit.json.schema.Schema;
-import org.everit.json.schema.loader.SchemaLoader;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.permissions.PermissionHelper;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.validators.IValidator;
 import org.apache.commons.lang.StringUtils;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

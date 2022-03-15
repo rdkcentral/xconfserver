@@ -6,17 +6,30 @@ import com.comcast.xconf.service.telemetry.TelemetryProfileDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 import static com.comcast.xconf.queries.controllers.TelemetryProfileDataController.TELEMETRY_PROFILE_URL;
 
-@RestController(TELEMETRY_PROFILE_URL)
+@Controller
+@RequestMapping(TELEMETRY_PROFILE_URL)
 public class TelemetryProfileDataController extends BaseQueriesController {
 
     public static final String TELEMETRY_PROFILE_URL = "/telemetry/profile";
 
     @Autowired
     private TelemetryProfileDataService telemetryProfileDataService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity getAll() {
+        List<PermanentTelemetryProfile> profiles = telemetryProfileDataService.getAll();
+        return new ResponseEntity(profiles, HttpStatus.OK);
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity get(@PathVariable String id) {
@@ -27,7 +40,7 @@ public class TelemetryProfileDataController extends BaseQueriesController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity create(@RequestBody PermanentTelemetryProfile profile) {
         PermanentTelemetryProfile createdProfile = telemetryProfileDataService.create(profile);
-        return new ResponseEntity<>(profile, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdProfile, HttpStatus.CREATED);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
@@ -42,16 +55,15 @@ public class TelemetryProfileDataController extends BaseQueriesController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/entry/add")
-    public ResponseEntity addTelemetryEntry(@RequestBody TelemetryProfile.TelemetryElement entry) {
-        telemetryProfileDataService.addEntry(entry);
-        return new ResponseEntity(HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.PUT, value = "/entry/add/{id}")
+    public ResponseEntity addTelemetryEntry(@PathVariable String id, @RequestBody TelemetryProfile.TelemetryElement entry) {
+        PermanentTelemetryProfile updatedProfile = telemetryProfileDataService.addEntry(id, entry);
+        return new ResponseEntity(updatedProfile, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/entry/remove")
-    public ResponseEntity removeTelemetryEntry() {
-        return new ResponseEntity(HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.PUT, value = "/entry/remove/{id}")
+    public ResponseEntity removeTelemetryEntry(@PathVariable String id, @RequestBody TelemetryProfile.TelemetryElement entry) {
+        PermanentTelemetryProfile updatedProfile = telemetryProfileDataService.removeEntry(id, entry);
+        return new ResponseEntity(updatedProfile, HttpStatus.OK);
     }
-
-
 }

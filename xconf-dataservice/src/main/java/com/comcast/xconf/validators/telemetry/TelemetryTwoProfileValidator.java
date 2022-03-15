@@ -71,7 +71,7 @@ public class TelemetryTwoProfileValidator implements IValidator<TelemetryTwoProf
         }
     }
 
-    private void validateApplicationType(TelemetryTwoProfile telemetryProfile) {
+    protected void validateApplicationType(TelemetryTwoProfile telemetryProfile) {
         PermissionHelper.validateWrite(telemetryTwoProfileService, telemetryProfile.getApplicationType());
     }
 

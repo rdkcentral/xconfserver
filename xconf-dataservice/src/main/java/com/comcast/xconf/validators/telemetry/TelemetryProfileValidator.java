@@ -92,7 +92,7 @@ public class TelemetryProfileValidator implements IValidator<PermanentTelemetryP
         }
     }
 
-    private void validateApplicationType(PermanentTelemetryProfile telemetryProfile) {
+    protected void validateApplicationType(PermanentTelemetryProfile telemetryProfile) {
         PermissionHelper.validateWrite(permissionService, telemetryProfile.getApplicationType());
     }
 }

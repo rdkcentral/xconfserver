@@ -19,8 +19,6 @@
 package com.comcast.xconf.admin.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.admin.service.change.ApprovedChangeCrudService;
-import com.comcast.xconf.admin.service.change.ChangeCrudService;
 import com.comcast.xconf.auth.AuthService;
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.change.EntityType;
@@ -32,6 +30,8 @@ import com.comcast.xconf.permissions.PermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.PermanentProfilePredicates;
+import com.comcast.xconf.service.change.ApprovedChangeCrudService;
+import com.comcast.xconf.service.change.ChangeCrudService;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
 import com.comcast.xconf.validators.telemetry.TelemetryProfileValidator;

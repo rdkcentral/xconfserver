@@ -22,9 +22,7 @@
 package com.comcast.xconf.admin.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.admin.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
 import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeBuilders;
-import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.auth.AuthService;
 import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.change.TelemetryTwoChange;
@@ -35,6 +33,8 @@ import com.comcast.xconf.permissions.PermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.TelemetryTwoProfilePredicates;
+import com.comcast.xconf.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
+import com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
 import com.comcast.xconf.validators.telemetry.TelemetryTwoProfileValidator;

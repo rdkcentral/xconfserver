@@ -23,7 +23,13 @@ package com.comcast.xconf.queries.controllers;
 
 import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.apps.dataaccess.util.JsonUtil;
+import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
+import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
+import com.comcast.xconf.estbfirmware.Model;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -37,7 +43,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class TelemetryTwoDataControllerTest extends BaseQueriesControllerTest {
+public class TelemetryProfileTwoDataControllerTest extends BaseQueriesControllerTest {
 
     private static final String TELEMETRY_2_CONFIG_TO_UPDATE = "{\n" +
             "    \"Description\": \"Telemetry 2.0 test - CHANGED\",\n" +
@@ -140,6 +146,23 @@ public class TelemetryTwoDataControllerTest extends BaseQueriesControllerTest {
         assertNull(telemetryTwoProfileDAO.getOne(profile.getId()));
     }
 
+    @Test
+    public void profileIsNotRemovedIfUsedByRule() throws Exception {
+        TelemetryTwoProfile profile = createTelemetryTwoProfile();
+        telemetryTwoProfileDAO.setOne(profile.getId(), profile);
+
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+
+        Condition condition = new Condition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model.getId()));
+        TelemetryTwoRule telemetryTwoRule = createTelemetryTwoRule(profile.getId(), condition);
+        telemetryTwoRuleDAO.setOne(telemetryTwoRule.getId(), telemetryTwoRule);
+
+        mockMvc.perform(delete(TelemetryProfileTwoDataController.TELEMETRY_TWO_PROFILE_API + "/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("\"Can't delete profile as it's used in telemetry rule: " + telemetryTwoRule.getName() + "\""));
+    }
+
     protected TelemetryTwoProfile createTelemetryTwoProfile() {
         TelemetryTwoProfile telemetryTwoProfile = new TelemetryTwoProfile();
         telemetryTwoProfile.setId(UUID.randomUUID().toString());
@@ -175,5 +198,16 @@ public class TelemetryTwoDataControllerTest extends BaseQueriesControllerTest {
                 "}");
         telemetryTwoProfile.setApplicationType(STB);
         return telemetryTwoProfile;
+    }
+
+    private TelemetryTwoRule createTelemetryTwoRule(String profileId, Condition condition) {
+        TelemetryTwoRule telemetryTwoRule = new TelemetryTwoRule();
+        telemetryTwoRule.setId(UUID.randomUUID().toString());
+        telemetryTwoRule.setName("Test Telemetry 2.0 Rule");
+        telemetryTwoRule.setApplicationType(STB);
+        telemetryTwoRule.setBoundTelemetryIds(Lists.newArrayList(profileId));
+
+        telemetryTwoRule.setCondition(condition);
+        return telemetryTwoRule;
     }
 }

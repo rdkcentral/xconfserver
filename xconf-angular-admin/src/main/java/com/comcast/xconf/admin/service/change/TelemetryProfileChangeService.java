@@ -24,6 +24,7 @@ import com.comcast.xconf.admin.service.telemetry.PermanentTelemetryProfileServic
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
+import com.comcast.xconf.service.change.AbstractChangeService;
 import com.comcast.xconf.shared.service.CrudService;
 import com.comcast.xconf.shared.utils.ChangeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class TelemetryProfileChangeService extends AbstractChangeService<PermanentTelemetryProfile>{
+public class TelemetryProfileChangeService extends AbstractChangeService<PermanentTelemetryProfile> {
 
     @Autowired
     private PermanentTelemetryProfileService profileService;

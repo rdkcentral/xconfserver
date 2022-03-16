@@ -21,15 +21,20 @@
 package com.comcast.xconf.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.permissions.PermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.TelemetryTwoProfilePredicates;
+import com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
 import com.comcast.xconf.validators.telemetry.TelemetryTwoProfileDataValidator;
+import com.google.common.base.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +58,11 @@ public class TelemetryProfileTwoDataService extends AbstractApplicationTypeAware
     @Autowired
     private TelemetryTwoProfileDataValidator telemetryTwoProfileDataValidator;
 
+    @Autowired
+    private TelemetryTwoChangeCrudService<TelemetryTwoProfile> pendingChangesService;
+
+    @Autowired
+    private CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO;
 
     @Override
     protected PermissionService getPermissionService() {
@@ -86,6 +96,20 @@ public class TelemetryProfileTwoDataService extends AbstractApplicationTypeAware
                 .stream()
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected void validateUsage(String id) {
+        Iterable<TelemetryTwoRule> all = Optional.presentInstances(telemetryTwoRuleDAO.asLoadingCache().asMap().values());
+        for (TelemetryTwoRule rule : all) {
+            if (rule.getBoundTelemetryIds().contains(id)) {
+                throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
+            }
+        }
+        TelemetryTwoProfile profileToRemove = getOne(id);
+        if (CollectionUtils.isNotEmpty(pendingChangesService.getChangesByEntityId(id))) {
+            throw new EntityConflictException("There is change for " + profileToRemove.getName() + " telemetry 2.0 profile");
+        }
     }
 
     @Override

@@ -1,22 +1,29 @@
 package com.comcast.xconf.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryRule;
 import com.comcast.xconf.permissions.PermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.PermanentProfilePredicates;
+import com.comcast.xconf.service.change.ChangeCrudService;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
 import com.comcast.xconf.validators.telemetry.TelemetryProfileDataValidator;
+import com.google.common.base.Optional;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -34,6 +41,12 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
 
     @Autowired
     private PermanentProfilePredicates telemetryProfilePredicates;
+
+    @Autowired
+    private ChangeCrudService<PermanentTelemetryProfile> pendingChangesService;
+
+    @Autowired
+    private CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
 
     @Override
     protected PermissionService getPermissionService() {
@@ -77,6 +90,20 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
         validateUsage(id);
     }
 
+    @Override
+    protected void validateUsage(String id) {
+        Iterable<TelemetryRule> all = Optional.presentInstances(telemetryRuleDAO.asLoadingCache().asMap().values());
+        for (TelemetryRule rule : all) {
+            if (StringUtils.equals(rule.getBoundTelemetryId(), id)) {
+                throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
+            }
+        }
+        PermanentTelemetryProfile profileToRemove = getOne(id);
+        if (CollectionUtils.isNotEmpty(pendingChangesService.getChangesByEntityId(id))) {
+            throw new EntityConflictException("There is change for " + profileToRemove.getName() + " telemetry profile");
+        }
+    }
+
     public PermanentTelemetryProfile addEntry(String id, TelemetryProfile.TelemetryElement entry) {
         PermanentTelemetryProfile profile = getOne(id);
         if (Objects.nonNull(profile) && Objects.nonNull(profile.getTelemetryProfile())) {
@@ -95,4 +122,15 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
         return update(profile);
     }
 
+    @Override
+    protected void normalizeOnSave(PermanentTelemetryProfile profile) {
+        if (profile != null && CollectionUtils.isEmpty(profile.getTelemetryProfile())) {
+            return;
+        }
+        for (TelemetryProfile.TelemetryElement telemetryElement : profile.getTelemetryProfile()) {
+            if (StringUtils.isBlank(telemetryElement.getId())) {
+                telemetryElement.setId(UUID.randomUUID().toString());
+            }
+        }
+    }
 }

@@ -21,10 +21,10 @@ package com.comcast.xconf.admin.validator.change;
 
 import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
-import com.comcast.xconf.admin.validator.ChangeValidator;
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.exception.EntityExistsException;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
+import com.comcast.xconf.validators.change.ChangeValidator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-package com.comcast.xconf.admin.service.telemetrytwochange;
+package com.comcast.xconf.service.change;
 
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.auth.AuthService;
-import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
+import com.comcast.xconf.change.ApprovedChange;
+import com.comcast.xconf.change.Change;
 import com.comcast.xconf.change.ChangeOperation;
-import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.shared.service.CrudService;
 import org.slf4j.Logger;
@@ -35,33 +35,33 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable & Comparable> {
+public abstract class AbstractChangeService<T extends IPersistable & Comparable> {
 
     @Autowired
-    private TelemetryTwoChangeCrudService<T> changeCrudService;
+    private ChangeCrudService<T> changeCrudService;
 
     @Autowired
-    private ApprovedTelemetryTwoChangeCrudService<T> approvedChangeCrudService;
+    private ApprovedChangeCrudService<T> approvedChangeCrudService;
 
     @Autowired
     private AuthService authService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractTelemetryTwoChangeService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractChangeService.class);
 
     public abstract CrudService<T> getEntityService();
 
     public abstract boolean equalPendingEntities(T oldEntity, T newEntity);
 
-    public abstract List<String> getEntityNames(List<TelemetryTwoChange<T>> changes);
+    public abstract List<String> getEntityNames(List<Change<T>> changes);
 
-    public abstract T applyUpdateChange(T updateMergeResult, TelemetryTwoChange<T> change);
+    public abstract T applyUpdateChange(T updateMergeResult, Change<T> change);
 
     public Map<String, String>  approveChanges(List<String> changeIds) {
-        List<TelemetryTwoChange<T>> changesToApprove = changeCrudService.getChangesByEntityIds(changeIds);
+        List<Change<T>> changesToApprove = changeCrudService.getChangesByEntityIds(changeIds);
         Map<String, String> errorMessages = new HashMap<>();
         Map<String, T> mergedUpdateChangesByEntityId = new HashMap<>();
         List<String> entityToByCancelChange = new ArrayList<>();
-        for (TelemetryTwoChange<T> change : changesToApprove) {
+        for (Change<T> change : changesToApprove) {
             try {
                 switch(change.getOperation()) {
                     case CREATE:
@@ -90,7 +90,7 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
 
     private void cancelApprovedChangesByEntityId(List<String> entityIdsToByCancelChanges, Set<String> changeIdsToBeExcluded) {
         for (String entityId : entityIdsToByCancelChanges) {
-            for (TelemetryTwoChange<T> changeByEntityId : changeCrudService.getChangesByEntityId(entityId)) {
+            for (Change<T> changeByEntityId : changeCrudService.getChangesByEntityId(entityId)) {
                 if (!changeIdsToBeExcluded.contains(changeByEntityId.getId())) {
                     changeCrudService.delete(changeByEntityId.getId());
                     logger.info("Automatically canceled change by {}: {}", authService.getUserName(), changeByEntityId);
@@ -99,20 +99,20 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
         }
     }
 
-    private void saveToApprovedAndCleanUpChange(TelemetryTwoChange<T> change) {
-        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.saveToApproved(change);
+    private void saveToApprovedAndCleanUpChange(Change<T> change) {
+        ApprovedChange<T> approvedChange = approvedChangeCrudService.saveToApproved(change);
         changeCrudService.delete(change.getId());
         logger.info("Change approved by {}: {}", authService.getUserName(), approvedChange);
     }
 
     public Map<String, String> revertChanges(List<String> changeIds) {
-        List<ApprovedTelemetryTwoChange<T>> changesToRevert = new ArrayList<>();
+        List<ApprovedChange<T>> changesToRevert = new ArrayList<>();
         for (String changeId : changeIds) {
             changesToRevert.add(approvedChangeCrudService.getOne(changeId));
         }
         Collections.sort(changesToRevert);
         Map<String, String> errorMessages = new HashMap<>();
-        for (ApprovedTelemetryTwoChange<T> approvedChange : changesToRevert) {
+        for (ApprovedChange<T> approvedChange : changesToRevert) {
             try {
                 revert(approvedChange.getId());
             } catch(Exception e) {
@@ -123,12 +123,12 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
         return errorMessages;
     }
 
-    public ApprovedTelemetryTwoChange<T> approve(String id) {
-        TelemetryTwoChange<T> change = changeCrudService.getOne(id);
+    public ApprovedChange<T> approve(String id) {
+        Change<T> change = changeCrudService.getOne(id);
         if (ChangeOperation.CREATE.equals(change.getOperation())) {
             T newEntity = change.getNewEntity();
             getEntityService().create(newEntity);
-            ApprovedTelemetryTwoChange approved = approvedChangeCrudService.saveToApproved(change);
+            ApprovedChange approved = approvedChangeCrudService.saveToApproved(change);
             changeCrudService.delete(id);
             return approved;
         }
@@ -136,11 +136,11 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
         return updateDeleteEntity(change);
     }
 
-    private ApprovedTelemetryTwoChange<T> updateDeleteEntity(TelemetryTwoChange<T> change) {
+    private ApprovedChange<T> updateDeleteEntity(Change<T> change) {
         T currentEntity = change.getOldEntity();
         T entityToChange = getEntityService().getOne(change.getEntityId());
         if (entityToChange != null && equalPendingEntities(currentEntity, entityToChange)) {
-            ApprovedTelemetryTwoChange<T> approvedChange;
+            ApprovedChange<T> approvedChange;
             change.setApprovedUser(authService.getUserNameOrUnknown());
             if (ChangeOperation.DELETE.equals(change.getOperation())) {
                 getEntityService().delete(change.getOldEntity().getId());
@@ -157,7 +157,7 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
     }
 
     public void revert(String approvedId) {
-        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(approvedId);
+        ApprovedChange<T> approvedChange = approvedChangeCrudService.getOne(approvedId);
         if (ChangeOperation.DELETE.equals(approvedChange.getOperation())) {
             revertDelete(approvedId);
         } else {
@@ -167,20 +167,20 @@ public abstract class AbstractTelemetryTwoChangeService<T extends IPersistable &
     }
 
     public void cancel(String changeId) {
-        TelemetryTwoChange canceledChange = changeCrudService.delete(changeId);
+        Change canceledChange = changeCrudService.delete(changeId);
         logger.info("Change has been canceled by {}: {}", authService.getUserName(), canceledChange);
     }
 
-    private TelemetryTwoChange<T> revertDelete(String changeId) {
-        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(changeId);
+    private Change<T> revertDelete(String changeId) {
+        ApprovedChange<T> approvedChange = approvedChangeCrudService.getOne(changeId);
         getEntityService().create(approvedChange.getOldEntity());
         approvedChangeCrudService.delete(changeId);
         return approvedChange;
     }
 
-    private TelemetryTwoChange<T> revertCreateOrUpdateChange(String changeId, String entityId) {
+    private Change<T> revertCreateOrUpdateChange(String changeId, String entityId) {
         T entityToRevert = getEntityService().getOne(entityId);
-        ApprovedTelemetryTwoChange<T> approvedChange = approvedChangeCrudService.getOne(changeId);
+        ApprovedChange<T> approvedChange = approvedChangeCrudService.getOne(changeId);
         if (equalPendingEntities(approvedChange.getNewEntity(), entityToRevert)) {
             if (ChangeOperation.CREATE.equals(approvedChange.getOperation())) {
                 getEntityService().delete(entityToRevert.getId());

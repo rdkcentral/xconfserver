@@ -22,9 +22,16 @@ package com.comcast.xconf.queries.controllers;
 
 import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.apps.dataaccess.util.JsonUtil;
+import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
+import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
+import com.comcast.xconf.estbfirmware.Model;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
+import com.comcast.xconf.logupload.telemetry.TelemetryRule;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
@@ -34,9 +41,10 @@ import java.util.Optional;
 import static com.comcast.xconf.queries.controllers.TelemetryProfileDataController.TELEMETRY_PROFILE_URL;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class TelemetryDataControllerTest extends BaseQueriesControllerTest {
+public class TelemetryProfileDataControllerTest extends BaseQueriesControllerTest {
 
     @Test
     public void getTelemetryProfiles() throws Exception {
@@ -121,6 +129,7 @@ public class TelemetryDataControllerTest extends BaseQueriesControllerTest {
                 .findFirst();
 
         assertTrue(addedEntry.isPresent());
+        assertTrue(StringUtils.isNotBlank(addedEntry.get().getId()));
     }
 
     @Test
@@ -145,6 +154,23 @@ public class TelemetryDataControllerTest extends BaseQueriesControllerTest {
                 .findFirst();
 
         assertFalse(removedEntry.isPresent());
+    }
+
+    @Test
+    public void profileIsNotRemovedIfUsedByRule() throws Exception {
+        PermanentTelemetryProfile profile = createPermanentTelemetryProfile();
+        permanentTelemetryDAO.setOne(profile.getId(), profile);
+
+        Model model = createAndSaveModel(defaultModelId.toUpperCase());
+
+        Condition condition = new Condition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model.getId()));
+        TelemetryRule telemetryRule = createTelemetryRule(profile.getId(), condition);
+        telemetryRuleDAO.setOne(telemetryRule.getId(), telemetryRule);
+
+        mockMvc.perform(delete(TELEMETRY_PROFILE_URL + "/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("\"Can't delete profile as it's used in telemetry rule: " + telemetryRule.getName() + "\""));
     }
 
     private TelemetryProfile.TelemetryElement createTelemetryEntry() {

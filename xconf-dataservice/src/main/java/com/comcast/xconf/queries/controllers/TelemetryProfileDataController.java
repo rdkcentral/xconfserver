@@ -39,8 +39,8 @@ public class TelemetryProfileDataController extends BaseQueriesController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity create(@RequestBody PermanentTelemetryProfile profile) {
-        PermanentTelemetryProfile createdProfile = telemetryProfileDataService.create(profile);
-        return new ResponseEntity<>(createdProfile, HttpStatus.CREATED);
+        telemetryProfileDataService.create(profile);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
@@ -57,13 +57,13 @@ public class TelemetryProfileDataController extends BaseQueriesController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/entry/add/{id}")
     public ResponseEntity addTelemetryEntry(@PathVariable String id, @RequestBody TelemetryProfile.TelemetryElement entry) {
-        PermanentTelemetryProfile updatedProfile = telemetryProfileDataService.addEntry(id, entry);
-        return new ResponseEntity(updatedProfile, HttpStatus.OK);
+        telemetryProfileDataService.addEntry(id, entry);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/entry/remove/{id}")
     public ResponseEntity removeTelemetryEntry(@PathVariable String id, @RequestBody TelemetryProfile.TelemetryElement entry) {
-        PermanentTelemetryProfile updatedProfile = telemetryProfileDataService.removeEntry(id, entry);
-        return new ResponseEntity(updatedProfile, HttpStatus.OK);
+        telemetryProfileDataService.removeEntry(id, entry);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

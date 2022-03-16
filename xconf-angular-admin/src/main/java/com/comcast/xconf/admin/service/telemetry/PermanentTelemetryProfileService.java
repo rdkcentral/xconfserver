@@ -58,7 +58,7 @@ public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwa
     private CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
 
     @Autowired
-    private TelemetryProfileValidator validator;
+    private TelemetryProfileValidator telemetryProfileValidator;
 
     @Autowired
     private PermanentProfilePredicates permanentProfilePredicates;
@@ -87,7 +87,7 @@ public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwa
 
     @Override
     public IValidator<PermanentTelemetryProfile> getValidator() {
-        return validator;
+        return telemetryProfileValidator;
     }
 
     @Override

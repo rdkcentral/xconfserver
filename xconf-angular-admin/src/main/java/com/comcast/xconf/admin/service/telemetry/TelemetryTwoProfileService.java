@@ -69,7 +69,7 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
     private TelemetryTwoProfilePredicates telemetryTwoProfilePredicates;
 
     @Autowired
-    private TelemetryTwoProfileValidator validator;
+    private TelemetryTwoProfileValidator telemetryTwoProfileValidator;
     
     @Autowired
     private TelemetryTwoChangeCrudService<TelemetryTwoProfile> pendingChangesService;
@@ -99,7 +99,7 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
 
     @Override
     public IValidator<TelemetryTwoProfile> getValidator() {
-        return validator;
+        return telemetryTwoProfileValidator;
     }
 
     public List<TelemetryTwoProfile> getTelemetryTwoProfilesByIdList(List<String> telemetryTwoProfileIdList) {

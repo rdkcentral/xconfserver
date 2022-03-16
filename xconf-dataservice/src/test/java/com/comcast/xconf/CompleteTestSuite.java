@@ -88,7 +88,8 @@ import java.io.IOException;
         FirmwareRuleTemplateDataControllerTest.class,
         GenericNamespacedListQueriesServiceTest.class,
         FeatureDataControllerTest.class, FeatureRuleDataControllerTest.class,
-        ActivationVersionDataControllerTest.class
+        ActivationVersionDataControllerTest.class,
+        TelemetryProfileControllerTest.class, TelemetryTwoDataControllerTest.class
 })
 public class CompleteTestSuite {
 

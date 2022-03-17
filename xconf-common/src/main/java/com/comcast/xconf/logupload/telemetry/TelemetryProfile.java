@@ -144,6 +144,17 @@ public class TelemetryProfile extends XMLPersistable implements Comparable<Telem
                     Objects.equals(component, that.component);
         }
 
+        public boolean equalTelemetryData(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TelemetryElement that = (TelemetryElement) o;
+            return Objects.equals(header, that.header) &&
+                    Objects.equals(content, that.content) &&
+                    Objects.equals(type, that.type) &&
+                    Objects.equals(pollingFrequency, that.pollingFrequency) &&
+                    Objects.equals(component, that.component);
+        }
+
         @Override
         public int hashCode() {
             return Objects.hash(id, header, content, type, pollingFrequency, component);

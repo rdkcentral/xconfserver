@@ -19,11 +19,11 @@
 
 package com.comcast.xconf.admin.controller.change;
 
-import com.comcast.xconf.admin.service.change.ApprovedChangeCrudService;
-import com.comcast.xconf.admin.service.change.ChangeCrudService;
 import com.comcast.xconf.admin.service.change.TelemetryProfileChangeService;
 import com.comcast.xconf.change.ApprovedChange;
 import com.comcast.xconf.change.Change;
+import com.comcast.xconf.service.change.ApprovedChangeCrudService;
+import com.comcast.xconf.service.change.ChangeCrudService;
 import com.comcast.xconf.shared.utils.ChangeUtils;
 import com.comcast.xconf.shared.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;

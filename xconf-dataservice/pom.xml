@@ -183,6 +183,11 @@
 			<artifactId>commons-validator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.github.erosb</groupId>
+			<artifactId>everit-json-schema-jdk6</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk16</artifactId>
 			<exclusions>

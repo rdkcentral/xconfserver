@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-package com.comcast.xconf.admin.validator;
+package com.comcast.xconf.validators.change;
 
 import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
-import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
+import com.comcast.xconf.change.ApprovedChange;
+import com.comcast.xconf.change.Change;
 import com.comcast.xconf.change.ChangeOperation;
-import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.exception.EntityExistsException;
 import com.comcast.xconf.validators.IValidator;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TelemetryTwoChangeValidator<T extends TelemetryTwoChange> implements IValidator<T> {
+public class ChangeValidator<T extends Change> implements IValidator<T> {
 
     @Override
-    public void validate(TelemetryTwoChange change) {
+    public void validate(Change change) {
         if (change == null) {
             throw new ValidationRuntimeException("Change is empty");
         }
@@ -54,7 +54,7 @@ public class TelemetryTwoChangeValidator<T extends TelemetryTwoChange> implement
                 && change.getOldEntity() == null) {
             throw new ValidationRuntimeException("Old entity is empty");
         }
-        if (change instanceof ApprovedTelemetryTwoChange && StringUtils.isBlank(change.getApprovedUser())) {
+        if (change instanceof ApprovedChange && StringUtils.isBlank(change.getApprovedUser())) {
             throw new ValidationRuntimeException("Approved user is empty");
         }
     }

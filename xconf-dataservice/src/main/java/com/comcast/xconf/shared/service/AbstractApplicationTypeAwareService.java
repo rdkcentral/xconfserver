@@ -69,7 +69,7 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
     @Override
     protected void beforeCreating(T entity) {
         String id = entity.getId();
-        String writeApplication = getPermissionService().getWriteApplication();
+        String writeApplication = getWriteApplicationType(entity);
         if (StringUtils.isBlank(id)) {
             entity.setId(UUID.randomUUID().toString());
         } else {
@@ -104,7 +104,7 @@ public abstract class AbstractApplicationTypeAwareService<T extends IPersistable
     @Override
     protected void beforeSaving(T entity) {
         if (entity != null && StringUtils.isBlank(entity.getApplicationType())) {
-            entity.setApplicationType(getPermissionService().getWriteApplication());
+            entity.setApplicationType(getWriteApplicationType(entity));
         }
         super.beforeSaving(entity);
     }

@@ -23,9 +23,9 @@ import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
 import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
+import com.comcast.xconf.service.telemetrytwochange.AbstractTelemetryTwoChangeService;
 import com.comcast.xconf.shared.service.CrudService;
 import com.comcast.xconf.shared.utils.TelemetryTwoChangeUtils;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class TelemetryTwoProfileChangeService extends AbstractTelemetryTwoChangeService<TelemetryTwoProfile>{
+public class TelemetryTwoProfileChangeService extends AbstractTelemetryTwoChangeService<TelemetryTwoProfile> {
 
     @Autowired
     private TelemetryTwoProfileService profileService;

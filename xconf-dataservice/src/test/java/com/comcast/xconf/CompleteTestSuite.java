@@ -42,8 +42,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import java.io.IOException;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         DCMTestCaseFrom1To3.class, DCMTestCaseFrom4To7.class,
@@ -88,7 +86,8 @@ import java.io.IOException;
         FirmwareRuleTemplateDataControllerTest.class,
         GenericNamespacedListQueriesServiceTest.class,
         FeatureDataControllerTest.class, FeatureRuleDataControllerTest.class,
-        ActivationVersionDataControllerTest.class
+        ActivationVersionDataControllerTest.class,
+        TelemetryProfileDataControllerTest.class, TelemetryProfileTwoDataControllerTest.class
 })
 public class CompleteTestSuite {
 
@@ -96,7 +95,7 @@ public class CompleteTestSuite {
     public static final long timeToWaitExpiration = telemetryProfileServiceExpireTimeMs + 500L;
 
     @BeforeClass
-    public static void setUpProperties() throws IOException {
+    public static void setUpProperties() {
         TelemetryProfileService.expireTime = telemetryProfileServiceExpireTimeMs;
     }
 }

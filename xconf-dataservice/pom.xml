@@ -24,7 +24,7 @@
 	<parent>
 		<groupId>com.comcast.coast.xconf.oss</groupId>
 		<artifactId>xconf</artifactId>
-		<version>1.3.21-SNAPSHOT</version>
+		<version>1.3.23-SNAPSHOT</version>
 	</parent>
 
 	<name>xconf-dataservice</name>
@@ -181,6 +181,11 @@
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.erosb</groupId>
+			<artifactId>everit-json-schema-jdk6</artifactId>
+			<version>1.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>

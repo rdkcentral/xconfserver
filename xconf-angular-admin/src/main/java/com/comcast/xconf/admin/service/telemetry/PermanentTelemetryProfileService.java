@@ -19,9 +19,6 @@
 package com.comcast.xconf.admin.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
-import com.comcast.xconf.admin.service.change.ApprovedChangeCrudService;
-import com.comcast.xconf.admin.service.change.ChangeCrudService;
-import com.comcast.xconf.admin.validator.telemetry.TelemetryProfileValidator;
 import com.comcast.xconf.auth.AuthService;
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.change.EntityType;
@@ -33,8 +30,11 @@ import com.comcast.xconf.permissions.PermissionService;
 import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.search.ContextOptional;
 import com.comcast.xconf.search.telemetry.PermanentProfilePredicates;
+import com.comcast.xconf.service.change.ApprovedChangeCrudService;
+import com.comcast.xconf.service.change.ChangeCrudService;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
+import com.comcast.xconf.validators.telemetry.TelemetryProfileValidator;
 import com.google.common.base.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -58,7 +58,7 @@ public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwa
     private CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
 
     @Autowired
-    private TelemetryProfileValidator validator;
+    private TelemetryProfileValidator telemetryProfileValidator;
 
     @Autowired
     private PermanentProfilePredicates permanentProfilePredicates;
@@ -87,7 +87,7 @@ public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwa
 
     @Override
     public IValidator<PermanentTelemetryProfile> getValidator() {
-        return validator;
+        return telemetryProfileValidator;
     }
 
     @Override

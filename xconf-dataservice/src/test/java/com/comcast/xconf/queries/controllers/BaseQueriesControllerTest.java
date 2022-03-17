@@ -240,7 +240,7 @@ public abstract class BaseQueriesControllerTest {
                 genericNamespacedListDAO, logFileDAO, logFileListDAO,
                 firmwareRuleDao, singletonFilterValueDAO, featureRuleDAO, featureDAO,
                 uploadRepositoryDAO, settingProfileDao, settingRuleDAO,
-                permanentTelemetryDAO, telemetryRuleDAO
+                permanentTelemetryDAO, telemetryRuleDAO, telemetryTwoProfileDAO
         );
         for (CachedSimpleDao<String, ? extends IPersistable> dao : daoList) {
             for (String key : dao.asLoadingCache().asMap().keySet()) {
@@ -1154,12 +1154,16 @@ public abstract class BaseQueriesControllerTest {
     }
 
     protected PermanentTelemetryProfile createPermanentTelemetryProfile() {
-        PermanentTelemetryProfile telemetryProfile = new PermanentTelemetryProfile();
-        telemetryProfile.setId(UUID.randomUUID().toString());
-        telemetryProfile.setName("telemetryProfileName");
-        telemetryProfile.setApplicationType(STB);
-        telemetryProfile.setTelemetryProfile(createTelemetryElements());
-        return telemetryProfile;
+        PermanentTelemetryProfile profile = new PermanentTelemetryProfile();
+        profile.setId(UUID.randomUUID().toString());
+        profile.setName("telemetryProfileName");
+        profile.setApplicationType(STB);
+        profile.setSchedule("1 1 1 1 1");
+        profile.setExpires(100l);
+        profile.setUploadProtocol(UploadProtocol.HTTPS);
+        profile.setUploadRepository("https://test.com/");
+        profile.setTelemetryProfile(createTelemetryElements());
+        return profile;
     }
 
     private List<TelemetryProfile.TelemetryElement> createTelemetryElements() {

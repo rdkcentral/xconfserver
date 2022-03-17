@@ -20,14 +20,13 @@
 package com.comcast.xconf.admin.controller.change;
 
 
-import com.comcast.xconf.admin.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
-import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.admin.service.telemetrytwochange.TelemetryTwoProfileChangeService;
 import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
 import com.comcast.xconf.change.TelemetryTwoChange;
+import com.comcast.xconf.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
+import com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.shared.utils.PageUtils;
 import com.comcast.xconf.shared.utils.TelemetryTwoChangeUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

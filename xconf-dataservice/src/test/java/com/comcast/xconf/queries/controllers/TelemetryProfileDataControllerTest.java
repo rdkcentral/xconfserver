@@ -173,6 +173,38 @@ public class TelemetryProfileDataControllerTest extends BaseQueriesControllerTes
                 .andExpect(content().string("\"Can't delete profile as it's used in telemetry rule: " + telemetryRule.getName() + "\""));
     }
 
+    @Test
+    public void telemetryEntriesDuplicatesAreNotAllowed() throws Exception {
+        PermanentTelemetryProfile profile = createPermanentTelemetryProfile();
+        TelemetryProfile.TelemetryElement telemetryEntryToAdd = createTelemetryEntry();
+        profile.getTelemetryProfile().add(telemetryEntryToAdd);
+
+        permanentTelemetryDAO.setOne(profile.getId(), profile);
+
+        mockMvc.perform(put(TELEMETRY_PROFILE_URL + "/entry/add/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(telemetryEntryToAdd)))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("\"Telemetry entry already exists\""));
+    }
+
+    @Test
+    public void removingLatestTelemetryEntryIsNotAllowed() throws Exception {
+        PermanentTelemetryProfile profile = createPermanentTelemetryProfile();
+        TelemetryProfile.TelemetryElement telemetryEntryToRemove = createTelemetryEntry();
+        profile.setTelemetryProfile(Lists.newArrayList(telemetryEntryToRemove));
+
+        permanentTelemetryDAO.setOne(profile.getId(), profile);
+
+        mockMvc.perform(put(TELEMETRY_PROFILE_URL + "/entry/remove/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(telemetryEntryToRemove)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("\"Telemetry entry list should not be empty\""));
+    }
+
     private TelemetryProfile.TelemetryElement createTelemetryEntry() {
         TelemetryProfile.TelemetryElement entry = new TelemetryProfile.TelemetryElement();
         entry.setHeader("New Header");

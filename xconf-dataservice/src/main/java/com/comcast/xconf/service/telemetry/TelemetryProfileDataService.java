@@ -106,12 +106,20 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
 
     public PermanentTelemetryProfile addEntry(String id, TelemetryProfile.TelemetryElement entry) {
         PermanentTelemetryProfile profile = getOne(id);
-        if (Objects.nonNull(profile) && Objects.nonNull(profile.getTelemetryProfile())) {
-            profile.getTelemetryProfile().add(entry);
+        boolean telemetryEntriesAreNotEmpty = CollectionUtils.isNotEmpty(profile.getTelemetryProfile());
+
+        if (telemetryEntriesAreNotEmpty && doesEntryExist(entry, profile)) {
+            throw new EntityConflictException("Telemetry entry already exists");
         }
+        profile.getTelemetryProfile().add(entry);
 
         return update(profile);
+    }
 
+    private boolean doesEntryExist(TelemetryProfile.TelemetryElement entry, PermanentTelemetryProfile profile) {
+        return profile.getTelemetryProfile().stream().anyMatch(existingEntry -> Objects.nonNull(existingEntry)
+                && Objects.nonNull(entry)
+                && existingEntry.equalTelemetryData(entry));
     }
 
     public PermanentTelemetryProfile removeEntry(String id, final TelemetryProfile.TelemetryElement entryToRemove) {

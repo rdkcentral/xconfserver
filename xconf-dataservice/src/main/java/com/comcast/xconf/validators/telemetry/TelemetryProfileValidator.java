@@ -68,14 +68,25 @@ public class TelemetryProfileValidator implements IValidator<PermanentTelemetryP
     private String validateElements(List<TelemetryProfile.TelemetryElement> elements) {
         for (int i = 0; i < elements.size(); i++) {
             TelemetryProfile.TelemetryElement element = elements.get(i);
-
+            if (StringUtils.isBlank(element.getHeader())) {
+                return "Header should not be empty";
+            }
+            if (StringUtils.isBlank(element.getContent())) {
+                return "Content should not be empty";
+            }
+            if (StringUtils.isBlank(element.getType())) {
+                return "Type should not be empty";
+            }
+            if (StringUtils.isBlank(element.getPollingFrequency())) {
+                return "Pooling frequency should not be empty";
+            }
             if (!StringUtils.isNumeric(element.getPollingFrequency())) {
-                return "Polling frequency is not a number";
+                return "Polling frequency should be a number";
             }
 
             for (int j = i + 1; j < elements.size(); j++) {
-                if (element.equals(elements.get(j))) {
-                    return  "Profile entity has duplicate entries";
+                if (element.equalTelemetryData(elements.get(j))) {
+                    return  "Telemetry entries have duplicates";
                 }
             }
         }

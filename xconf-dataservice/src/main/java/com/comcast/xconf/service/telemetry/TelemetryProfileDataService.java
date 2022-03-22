@@ -2,6 +2,8 @@ package com.comcast.xconf.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.xconf.exception.EntityConflictException;
+import com.comcast.xconf.exception.EntityExistsException;
+import com.comcast.xconf.exception.EntityNotFoundException;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryProfile;
@@ -104,14 +106,14 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
         }
     }
 
-    public PermanentTelemetryProfile addEntry(String id, TelemetryProfile.TelemetryElement entry) {
+    public PermanentTelemetryProfile addEntry(String id, TelemetryProfile.TelemetryElement entryToAdd) {
         PermanentTelemetryProfile profile = getOne(id);
         boolean telemetryEntriesAreNotEmpty = CollectionUtils.isNotEmpty(profile.getTelemetryProfile());
 
-        if (telemetryEntriesAreNotEmpty && doesEntryExist(entry, profile)) {
-            throw new EntityConflictException("Telemetry entry already exists");
+        if (telemetryEntriesAreNotEmpty && doesEntryExist(entryToAdd, profile)) {
+            throw new EntityExistsException("Telemetry entry already exists");
         }
-        profile.getTelemetryProfile().add(entry);
+        profile.getTelemetryProfile().add(entryToAdd);
 
         return update(profile);
     }
@@ -124,6 +126,9 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
 
     public PermanentTelemetryProfile removeEntry(String id, final TelemetryProfile.TelemetryElement entryToRemove) {
         PermanentTelemetryProfile profile = getOne(id);
+        if (CollectionUtils.isNotEmpty(profile.getTelemetryProfile()) && !doesEntryExist(entryToRemove, profile)) {
+            throw new EntityNotFoundException("Telemetry entry does not exist");
+        }
         profile.getTelemetryProfile()
                 .removeIf(entry -> Objects.nonNull(entry) && entry.equalTelemetryData(entryToRemove));
 

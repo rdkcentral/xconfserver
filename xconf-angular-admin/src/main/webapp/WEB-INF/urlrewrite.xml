@@ -53,5 +53,8 @@
         <from>^/((firmwarerule|firmwareruletemplate|amv|feature|featurerule)(|/.*))$</from>
         <to>/dataService/$1</to>
     </rule>
-
+    <rule match-type="regex">
+        <from>^/((telemetry|telemetrytwo)(|/.*))$</from>
+        <to>/dataService/$1</to>
+    </rule>
 </urlrewrite>

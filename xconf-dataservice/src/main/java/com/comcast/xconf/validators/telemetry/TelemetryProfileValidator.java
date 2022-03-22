@@ -59,7 +59,7 @@ public class TelemetryProfileValidator implements IValidator<PermanentTelemetryP
 
         List<TelemetryProfile.TelemetryElement> elements = entity.getTelemetryProfile();
         if (elements == null || elements.isEmpty()) {
-            return "Should contain at least one profile entry";
+            return "Telemetry entry list should not be empty";
         } else {
             return validateElements(elements);
         }

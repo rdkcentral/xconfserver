@@ -190,6 +190,22 @@ public class TelemetryProfileDataControllerTest extends BaseQueriesControllerTes
     }
 
     @Test
+    public void telemetryEntryShouldNotContainEmptyFields() throws Exception {
+        PermanentTelemetryProfile profile = createPermanentTelemetryProfile();
+        TelemetryProfile.TelemetryElement telemetryEntryToAdd = createTelemetryEntry();
+        telemetryEntryToAdd.setContent("");
+
+        permanentTelemetryDAO.setOne(profile.getId(), profile);
+
+        mockMvc.perform(put(TELEMETRY_PROFILE_URL + "/entry/add/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(telemetryEntryToAdd)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("\"Content should not be empty\""));
+    }
+
+    @Test
     public void removingLatestTelemetryEntryIsNotAllowed() throws Exception {
         PermanentTelemetryProfile profile = createPermanentTelemetryProfile();
         TelemetryProfile.TelemetryElement telemetryEntryToRemove = createTelemetryEntry();
@@ -203,6 +219,21 @@ public class TelemetryProfileDataControllerTest extends BaseQueriesControllerTes
                         .content(JsonUtil.toJson(telemetryEntryToRemove)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("\"Telemetry entry list should not be empty\""));
+    }
+
+    @Test
+    public void exceptionIsThrownIfEntryDoesNotExists() throws Exception {
+        PermanentTelemetryProfile profile = createPermanentTelemetryProfile();
+        TelemetryProfile.TelemetryElement telemetryEntryToRemove = createTelemetryEntry();
+
+        permanentTelemetryDAO.setOne(profile.getId(), profile);
+
+        mockMvc.perform(put(TELEMETRY_PROFILE_URL + "/entry/remove/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(telemetryEntryToRemove)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("\"Telemetry entry does not exist\""));
     }
 
     private TelemetryProfile.TelemetryElement createTelemetryEntry() {

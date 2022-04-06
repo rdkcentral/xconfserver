@@ -21,6 +21,7 @@
     "grunt-open": "^0.2.3",
     "grunt-shell": "^1.1.1",
     "grunt-shell-spawn": "^0.3.0",
+    "js-cookie": "3.0.1",
     "jshint-stylish": "^0.4.0",
     "matchdep": "^0.3.0",
     "remixicon": "^2.5.0"

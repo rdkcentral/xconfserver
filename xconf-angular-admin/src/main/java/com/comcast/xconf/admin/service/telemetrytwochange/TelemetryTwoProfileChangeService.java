@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TelemetryTwoProfileChangeService extends AbstractTelemetryTwoChangeService<TelemetryTwoProfile> {
@@ -79,16 +78,6 @@ public class TelemetryTwoProfileChangeService extends AbstractTelemetryTwoChange
         return mergeResult;
     }
     
-    
-
-    private boolean isNewElement(TelemetryTwoProfile telemetryElement) {
-        return StringUtils.isBlank(telemetryElement.getId()) && telemetryElement != null;
-    }
-
-    private boolean removedBefore(TelemetryTwoProfile old, TelemetryTwoProfile updated, TelemetryTwoProfile merged) {
-        return !Objects.equals(old, updated) && merged == null;
-    }
-
     private void applyTelemetryElementChange(TelemetryTwoProfile mergedElement, TelemetryTwoProfile oldElement, TelemetryTwoProfile newElement) {
         if (oldElement != null && mergedElement != null) {
             if (!StringUtils.equals(oldElement.getName(), newElement.getName())) {
@@ -98,25 +87,5 @@ public class TelemetryTwoProfileChangeService extends AbstractTelemetryTwoChange
                 mergedElement.setJsonconfig(newElement.getJsonconfig());
             }
         }
-    }
-
-
-    private List<String> getRemovedTelemetryElementIds(List<TelemetryTwoProfile> oldElements, List<TelemetryTwoProfile> newElements) {
-        List<String> removedElements = new ArrayList<>();
-        for (TelemetryTwoProfile oldElement : oldElements) {
-            if (findTelemetryElementById(oldElement.getId(), newElements) == null) {
-                removedElements.add(oldElement.getId());
-            }
-        }
-        return removedElements;
-    }
-
-    private TelemetryTwoProfile findTelemetryElementById(String id, List<TelemetryTwoProfile> telemetryElements) {
-        for (TelemetryTwoProfile telemetryElement : telemetryElements) {
-            if (StringUtils.equals(id, telemetryElement.getId())) {
-                return telemetryElement;
-            }
-        }
-        return null;
     }
 }

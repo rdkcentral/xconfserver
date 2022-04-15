@@ -157,10 +157,9 @@
                 }
             }]);
 
-    state.$inject = ['$httpProvider', '$stateProvider', '$urlRouterProvider', 'PERMISSION'];
+    state.$inject = ['$stateProvider', '$urlRouterProvider', 'PERMISSION'];
 
-    function state($httpProvider, $stateProvider, $urlRouterProvider, PERMISSION) {
-        $httpProvider.interceptors.push(addApplicationTypeInterceptor);
+    function state($stateProvider, $urlRouterProvider, PERMISSION) {
 
         $urlRouterProvider.otherwise(function($injector, $location) {
             var authUtilsService = $injector.get('authUtilsService');
@@ -983,35 +982,5 @@
 
                 }
             })
-    }
-    var addApplicationTypeInterceptor = function() {
-        return {
-            request: function(config) {
-                if (!config.url || config.url.includes('.html')) {
-                    return config;
-                }
-                let currentApplicationType = Cookies.get('applicationType');
-                let relativeRequestUrl = config.url;
-                if (relativeRequestUrl.includes('?')) {
-                    relativeRequestUrl += '&applicationType=' + currentApplicationType;
-                } else {
-                    relativeRequestUrl += '?applicationType=' + currentApplicationType;
-                }
-                config.url = relativeRequestUrl;
-                return config;
-            },
-
-            requestError: function(config) {
-                return config;
-            },
-
-            response: function(res) {
-                return res;
-            },
-
-            responseError: function(res) {
-                return res;
-            }
-        }
     }
 })();

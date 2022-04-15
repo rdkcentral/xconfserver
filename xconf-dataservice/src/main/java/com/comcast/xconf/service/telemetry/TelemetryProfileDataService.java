@@ -1,6 +1,9 @@
 package com.comcast.xconf.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
+import com.comcast.xconf.change.Change;
+import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.exception.EntityExistsException;
 import com.comcast.xconf.exception.EntityNotFoundException;
@@ -28,6 +31,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static com.comcast.xconf.service.change.ChangeBuilders.*;
 
 @Service
 public class TelemetryProfileDataService extends AbstractApplicationTypeAwareService<PermanentTelemetryProfile> {
@@ -100,39 +105,53 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
                 throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
             }
         }
-        PermanentTelemetryProfile profileToRemove = getOne(id);
-        if (CollectionUtils.isNotEmpty(pendingChangesService.getChangesByEntityId(id))) {
-            throw new EntityConflictException("There is change for " + profileToRemove.getName() + " telemetry profile");
-        }
     }
 
-    public PermanentTelemetryProfile addEntry(String id, TelemetryProfile.TelemetryElement entryToAdd) {
-        PermanentTelemetryProfile profile = getOne(id);
-        boolean telemetryEntriesAreNotEmpty = CollectionUtils.isNotEmpty(profile.getTelemetryProfile());
+    public PermanentTelemetryProfile addEntry(String id, List<TelemetryProfile.TelemetryElement> entriesToAdd) {
+        PermanentTelemetryProfile profile = addEntriesToProfile(id, entriesToAdd);
+        return update(profile);
+    }
 
-        if (telemetryEntriesAreNotEmpty && doesEntryExist(entryToAdd, profile)) {
-            throw new EntityExistsException("Telemetry entry already exists");
-        }
-        profile.getTelemetryProfile().add(entryToAdd);
+    public PermanentTelemetryProfile removeEntry(String id, final List<TelemetryProfile.TelemetryElement> entriesToRemove) {
+        PermanentTelemetryProfile profile = removeEntriesFromProfile(id, entriesToRemove);
 
         return update(profile);
+    }
+
+    private PermanentTelemetryProfile addEntriesToProfile(String profileId, final List<TelemetryProfile.TelemetryElement> entriesToAdd) {
+        PermanentTelemetryProfile profile = getOne(profileId);
+        if (CollectionUtils.isEmpty(entriesToAdd)) {
+            throw new ValidationRuntimeException("Telemetry entry list is empty");
+        }
+
+        for (TelemetryProfile.TelemetryElement entryToAdd : entriesToAdd) {
+            if (doesEntryExist(entryToAdd, profile)) {
+                throw new EntityExistsException("Telemetry entry already exists");
+            }
+            profile.getTelemetryProfile().add(entryToAdd);
+        }
+        return profile;
+    }
+
+    private PermanentTelemetryProfile removeEntriesFromProfile(String profileId, final List<TelemetryProfile.TelemetryElement> entriesToRemove) {
+        PermanentTelemetryProfile profile = getOne(profileId);
+        if (CollectionUtils.isEmpty(entriesToRemove)) {
+            throw new ValidationRuntimeException("Telemetry entry list is empty");
+        }
+        for (TelemetryProfile.TelemetryElement entryToRemove : entriesToRemove) {
+            if (CollectionUtils.isNotEmpty(profile.getTelemetryProfile()) && !doesEntryExist(entryToRemove, profile)) {
+                throw new EntityNotFoundException("Telemetry entry does not exist");
+            }
+            profile.getTelemetryProfile()
+                    .removeIf(entry -> Objects.nonNull(entry) && entry.equalTelemetryData(entryToRemove));
+        }
+        return profile;
     }
 
     private boolean doesEntryExist(TelemetryProfile.TelemetryElement entry, PermanentTelemetryProfile profile) {
-        return profile.getTelemetryProfile().stream().anyMatch(existingEntry -> Objects.nonNull(existingEntry)
+        return Objects.nonNull(profile.getTelemetryProfile()) && profile.getTelemetryProfile().stream().anyMatch(existingEntry -> Objects.nonNull(existingEntry)
                 && Objects.nonNull(entry)
                 && existingEntry.equalTelemetryData(entry));
-    }
-
-    public PermanentTelemetryProfile removeEntry(String id, final TelemetryProfile.TelemetryElement entryToRemove) {
-        PermanentTelemetryProfile profile = getOne(id);
-        if (CollectionUtils.isNotEmpty(profile.getTelemetryProfile()) && !doesEntryExist(entryToRemove, profile)) {
-            throw new EntityNotFoundException("Telemetry entry does not exist");
-        }
-        profile.getTelemetryProfile()
-                .removeIf(entry -> Objects.nonNull(entry) && entry.equalTelemetryData(entryToRemove));
-
-        return update(profile);
     }
 
     @Override
@@ -145,5 +164,42 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
                 telemetryElement.setId(UUID.randomUUID().toString());
             }
         }
+    }
+
+    public Change<PermanentTelemetryProfile> writeCreateChange(PermanentTelemetryProfile profile) {
+        beforeCreating(profile);
+        beforeSaving(profile);
+        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), getUserName()));
+    }
+
+    public Change<PermanentTelemetryProfile> writeUpdateChange(PermanentTelemetryProfile newProfile) {
+        beforeUpdating(newProfile);
+        beforeSaving(newProfile);
+        PermanentTelemetryProfile oldProfile = getOne(newProfile.getId());
+        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), getUserName()));
+    }
+
+    public Change<PermanentTelemetryProfile> writeDeleteChange(String id) {
+        beforeRemoving(id);
+        PermanentTelemetryProfile profile = getOne(id);
+        Change<PermanentTelemetryProfile> deleteChange = pendingChangesService.create(buildToDelete(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), getUserName()));
+        return deleteChange;
+    }
+
+    public Change<PermanentTelemetryProfile> addEntriesWithApproval(String id, final List<TelemetryProfile.TelemetryElement> entries) {
+        PermanentTelemetryProfile profile = addEntriesToProfile(id, entries);
+        return writeUpdateChange(profile);
+    }
+
+    public Change<PermanentTelemetryProfile> removeEntriesWithApproval(String id, final List<TelemetryProfile.TelemetryElement> entries) {
+        PermanentTelemetryProfile profile = removeEntriesFromProfile(id, entries);
+        return writeUpdateChange(profile);
+    }
+
+
+
+
+    protected String getUserName() {
+        return "dataService";
     }
 }

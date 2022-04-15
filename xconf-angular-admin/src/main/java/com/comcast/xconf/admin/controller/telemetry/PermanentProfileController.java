@@ -84,9 +84,9 @@ public class PermanentProfileController extends ApplicationTypeAwayController<Pe
     @Override
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity deleteOne(@PathVariable String id) {
-        PermanentTelemetryProfile entity = permanentProfileService.delete(id);
+        PermanentTelemetryProfile entity = permanentProfileService.writeDeleteChange(id);
         logger.info("Successfully deleted TelemetryProfile: {}", JsonUtil.toJson(entity));
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/migrate/createTelemetryId")

@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static com.comcast.xconf.admin.service.change.ChangeBuilders.*;
+import static com.comcast.xconf.service.change.ChangeBuilders.*;
 
 @Service
 public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwareService<PermanentTelemetryProfile> {
@@ -97,10 +97,6 @@ public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwa
             if (StringUtils.equals(rule.getBoundTelemetryId(), id)) {
                 throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
             }
-        }
-        PermanentTelemetryProfile profileToRemove = permanentTelemetryDAO.getOne(id);
-        if (CollectionUtils.isNotEmpty(pendingChangesService.getChangesByEntityId(id))) {
-            throw new EntityConflictException("There is change for " + profileToRemove.getName() + " telemetry profile");
         }
     }
 

@@ -2,6 +2,7 @@ package com.comcast.xconf.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
 import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
+import com.comcast.xconf.auth.AuthService;
 import com.comcast.xconf.change.Change;
 import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.exception.EntityConflictException;
@@ -41,7 +42,7 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
     private TelemetryPermissionService telemetryPermissionService;
 
     @Autowired
-    private CachedSimpleDao<String, PermanentTelemetryProfile> permanentTelemetryDAO;
+    private AuthService authService;
 
     @Autowired
     private TelemetryProfileDataValidator telemetryProfileDataValidator;
@@ -51,6 +52,9 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
 
     @Autowired
     private ChangeCrudService<PermanentTelemetryProfile> pendingChangesService;
+
+    @Autowired
+    private CachedSimpleDao<String, PermanentTelemetryProfile> permanentTelemetryDAO;
 
     @Autowired
     private CachedSimpleDao<String, TelemetryRule> telemetryRuleDAO;
@@ -169,20 +173,20 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
     public Change<PermanentTelemetryProfile> writeCreateChange(PermanentTelemetryProfile profile) {
         beforeCreating(profile);
         beforeSaving(profile);
-        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), getUserName()));
+        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
     }
 
     public Change<PermanentTelemetryProfile> writeUpdateChange(PermanentTelemetryProfile newProfile) {
         beforeUpdating(newProfile);
         beforeSaving(newProfile);
         PermanentTelemetryProfile oldProfile = getOne(newProfile.getId());
-        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), getUserName()));
+        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
     }
 
     public Change<PermanentTelemetryProfile> writeDeleteChange(String id) {
         beforeRemoving(id);
         PermanentTelemetryProfile profile = getOne(id);
-        Change<PermanentTelemetryProfile> deleteChange = pendingChangesService.create(buildToDelete(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), getUserName()));
+        Change<PermanentTelemetryProfile> deleteChange = pendingChangesService.create(buildToDelete(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), authService.getUserName()));
         return deleteChange;
     }
 
@@ -194,12 +198,5 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
     public Change<PermanentTelemetryProfile> removeEntriesWithApproval(String id, final List<TelemetryProfile.TelemetryElement> entries) {
         PermanentTelemetryProfile profile = removeEntriesFromProfile(id, entries);
         return writeUpdateChange(profile);
-    }
-
-
-
-
-    protected String getUserName() {
-        return "dataService";
     }
 }

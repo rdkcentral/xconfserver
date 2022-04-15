@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 import java.util.Map;
 
-import static com.comcast.xconf.queries.controllers.ChangeDataController.CHANGE_CONTROLLER;
+import static com.comcast.xconf.queries.controllers.ChangeDataController.CHANGE_URL;
 
 @Controller
-@RequestMapping(CHANGE_CONTROLLER)
+@RequestMapping(CHANGE_URL)
 public class ChangeDataController {
 
-    public static final String CHANGE_CONTROLLER = "/change";
+    public static final String CHANGE_URL = "/change";
 
     @Autowired
     private TelemetryProfileChangeDataService telemetryProfileChangeDataService;
@@ -34,8 +34,8 @@ public class ChangeDataController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/approve/byEntity/{entityId}")
     public ResponseEntity approveByEntityId(@PathVariable String entityId) {
-        telemetryProfileChangeDataService.approveByEntityId(entityId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Map<String, String> errorMessages = telemetryProfileChangeDataService.approveByEntityId(entityId);
+        return new ResponseEntity<>(errorMessages, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/cancel/{changeId}")

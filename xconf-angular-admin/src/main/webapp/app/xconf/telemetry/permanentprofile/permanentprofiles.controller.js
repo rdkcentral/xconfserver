@@ -101,7 +101,7 @@
                 var dialog = dialogs.confirm('Delete confirmation', '<span class="break-word-inline"> Are you sure you want to delete ' + profile['telemetryProfile:name'] + ' Permanent Profile? </span>');
                 dialog.result.then(function (btn) {
                     permanentProfileService.deleteProfile(profile.id).then(function(resp) {
-                            alertsService.showSuccessMessage({title: 'Success', message: profile['telemetryProfile:name'] + ' profile saved to pending changes'});
+                            alertsService.showSuccessMessage({title: 'Success', message: 'Delete change of ' + profile['telemetryProfile:name'] + ' profile saved to pending changes'});
                             getChangedEntityIds()
                         }, function(error) {
                             alertsService.showError({title: 'Error', message: error.data.message});

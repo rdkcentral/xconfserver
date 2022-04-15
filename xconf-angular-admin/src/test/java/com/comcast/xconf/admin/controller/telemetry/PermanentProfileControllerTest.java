@@ -19,19 +19,18 @@
 package com.comcast.xconf.admin.controller.telemetry;
 
 import com.comcast.apps.dataaccess.dao.SimpleDao;
-import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
 import com.comcast.xconf.change.ApprovedChange;
 import com.comcast.xconf.change.Change;
-import com.comcast.xconf.change.ChangeOperation;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.PermanentTelemetryProfile;
 import com.comcast.xconf.search.SearchFields;
 import com.comcast.xconf.service.change.ApprovedChangeCrudService;
 import com.comcast.xconf.service.change.ChangeCrudService;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +40,11 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class PermanentProfileControllerTest extends BaseControllerTest{
@@ -157,29 +158,10 @@ public class PermanentProfileControllerTest extends BaseControllerTest{
         permanentTelemetryDAO.setOne(telemetryProfile.getId(), telemetryProfile);
 
         mockMvc.perform(delete("/" + PermanentProfileController.URL_MAPPING + "/" + telemetryProfile.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
-        assertNull(permanentTelemetryDAO.getOne(telemetryProfile.getId()));
-        ApprovedChange<PermanentTelemetryProfile> profileDeleteChange = approvedChangeCrudService.getAll().get(0);
-        assertEquals(ChangeOperation.DELETE, profileDeleteChange.getOperation());
-        assertEquals(telemetryProfile.getId(), profileDeleteChange.getEntityId());
-    }
-
-    @Test
-    public void doNotRemoveProfileIfThereIsChangeForThisProfile() throws Exception {
-        PermanentTelemetryProfile profile = createTelemetryProfile();
-        permanentTelemetryDAO.setOne(profile.getId(), profile);
-
-        PermanentTelemetryProfile updatedProfile = CloneUtil.clone(profile);
-        updatedProfile.getTelemetryProfile().get(0).setHeader("CHANGED REMOVED HEADER");
-        telemetryProfileService.writeUpdateChange(updatedProfile);
-
-        mockMvc.perform(delete("/" + PermanentProfileController.URL_MAPPING + "/" + profile.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("There is change for " + profile.getName() + " telemetry profile"));
-        assertNotNull(permanentTelemetryDAO.getOne(profile.getId()));
+        assertTrue(CollectionUtils.isNotEmpty(changesCrudService.getChangesByEntityId(telemetryProfile.getId())));
     }
 
     @Test

@@ -155,7 +155,6 @@ public class PermanentTelemetryProfileService extends AbstractApplicationTypeAwa
     @Override
     public PermanentTelemetryProfile delete(String id) {
         PermanentTelemetryProfile delete = super.delete(id);
-        approvedChangeCrudService.saveToApproved(buildToDelete(delete, EntityType.TELEMETRY_PROFILE, permissionService.getWriteApplication(), authService.getUserNameOrUnknown()));
         return delete;
     }
 

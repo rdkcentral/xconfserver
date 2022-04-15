@@ -376,17 +376,18 @@ public class TelemetryProfileDataControllerTest extends BaseQueriesControllerTes
         assertEquals(1, changesByEntityId.size());
         assertEquals(profile, permanentTelemetryDAO.getOne(profile.getId()));
 
+        approveChangeByEntityId(profile.getId());
 
-        /*PermanentTelemetryProfile updatedProfile = permanentTelemetryDAO.getOne(profile.getId());
+        PermanentTelemetryProfile updatedProfile = permanentTelemetryDAO.getOne(profile.getId());
         Optional<TelemetryProfile.TelemetryElement> removedEntry = updatedProfile.getTelemetryProfile().stream()
                 .filter(entry -> entry.equalTelemetryData(telemetryEntryToRemove))
                 .findFirst();
 
-        assertFalse(removedEntry.isPresent());*/
+        assertFalse(removedEntry.isPresent());
     }
 
     private void approveChangeByEntityId(String entityId) throws Exception {
-        mockMvc.perform(get(ChangeDataController.CHANGE_CONTROLLER + "/approve/byEntity/" + entityId)
+        mockMvc.perform(get(ChangeDataController.CHANGE_URL + "/approve/byEntity/" + entityId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

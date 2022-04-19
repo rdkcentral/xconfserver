@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -240,7 +241,7 @@ public class ChangeControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.toJson(changeIds)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(JsonUtil.toJson(Collections.singletonMap(changeCrudService.getChangesByEntityId(profileId).get(0).getId(), "There is change for " + permanentTelemetryDAO.getOne(profileId).getName() + " telemetry profile"))));
+                .andExpect(content().json(JsonUtil.toJson(Collections.singletonMap(changeCrudService.getChangesByEntityId(profileId).get(0).getId(), "Entity with id: " + profileId + " does not exist"))));
     }
 
     @Test
@@ -341,8 +342,10 @@ public class ChangeControllerTest extends BaseControllerTest {
     public void removeProfileAndRevert() {
         String profileId = UUID.randomUUID().toString();
         createAndSaveProfile(profileId);
-        telemetryProfileService.delete(profileId);
-        assertNull(telemetryProfileService.getEntityDAO().getOne(profileId));
+        telemetryProfileService.writeDeleteChange(profileId);
+        assertNotNull(telemetryProfileService.getEntityDAO().getOne(profileId));
+        List<String> changeIds = changeCrudService.getChangesByEntityId(profileId).stream().map(Change::getId).collect(Collectors.toList());
+        telemetryProfileChangeService.approveChanges(changeIds);
         ApprovedChange<PermanentTelemetryProfile> change = approvedChangeCrudService.getAll().get(0);
         telemetryProfileChangeService.revert(change.getId());
         assertNotNull(telemetryProfileService.getOne(profileId));

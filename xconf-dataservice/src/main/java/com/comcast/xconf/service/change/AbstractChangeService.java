@@ -93,7 +93,7 @@ public abstract class AbstractChangeService<T extends IPersistable & Comparable>
             for (Change<T> changeByEntityId : changeCrudService.getChangesByEntityId(entityId)) {
                 if (!changeIdsToBeExcluded.contains(changeByEntityId.getId())) {
                     changeCrudService.delete(changeByEntityId.getId());
-                    logger.info("Automatically canceled change by {}: {}", authService.getUserName(), changeByEntityId);
+                    logger.info("Automatically canceled change by {}: {}", authService.getUserNameOrUnknown(), changeByEntityId);
                 }
             }
         }
@@ -102,7 +102,7 @@ public abstract class AbstractChangeService<T extends IPersistable & Comparable>
     private void saveToApprovedAndCleanUpChange(Change<T> change) {
         ApprovedChange<T> approvedChange = approvedChangeCrudService.saveToApproved(change);
         changeCrudService.delete(change.getId());
-        logger.info("Change approved by {}: {}", authService.getUserName(), approvedChange);
+        logger.info("Change approved by {}: {}", authService.getUserNameOrUnknown(), approvedChange);
     }
 
     public Map<String, String> revertChanges(List<String> changeIds) {
@@ -163,12 +163,12 @@ public abstract class AbstractChangeService<T extends IPersistable & Comparable>
         } else {
             revertCreateOrUpdateChange(approvedId, approvedChange.getEntityId());
         }
-        logger.info("Change has been reverted by {}: {}", authService.getUserName(), approvedChange);
+        logger.info("Change has been reverted by {}: {}", authService.getUserNameOrUnknown(), approvedChange);
     }
 
     public void cancel(String changeId) {
         Change canceledChange = changeCrudService.delete(changeId);
-        logger.info("Change has been canceled by {}: {}", authService.getUserName(), canceledChange);
+        logger.info("Change has been canceled by {}: {}", authService.getUserNameOrUnknown(), canceledChange);
     }
 
     private Change<T> revertDelete(String changeId) {

@@ -87,7 +87,8 @@ import org.junit.runners.Suite;
         GenericNamespacedListQueriesServiceTest.class,
         FeatureDataControllerTest.class, FeatureRuleDataControllerTest.class,
         ActivationVersionDataControllerTest.class,
-        TelemetryProfileDataControllerTest.class, TelemetryProfileTwoDataControllerTest.class
+        TelemetryProfileDataControllerTest.class, TelemetryProfileTwoDataControllerTest.class,
+        ChangeDataControllerTest.class
 })
 public class CompleteTestSuite {
 

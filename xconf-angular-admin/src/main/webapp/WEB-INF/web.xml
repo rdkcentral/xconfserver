@@ -59,8 +59,17 @@
         <url-pattern>/firmwarerule/*</url-pattern>
         <url-pattern>/firmwareruletemplate/*</url-pattern>
         <url-pattern>/amv/*</url-pattern>
+        <url-pattern>/dataService/amv/*</url-pattern>
         <url-pattern>/feature/*</url-pattern>
+        <url-pattern>/dataService/feature/*</url-pattern>
         <url-pattern>/featurerule/*</url-pattern>
+        <url-pattern>/dataService/featurerule/*</url-pattern>
+        <url-pattern>/telemetry/*</url-pattern>
+        <url-pattern>/telemetrytwo/*</url-pattern>
+        <url-pattern>/dataService/telemetry/*</url-pattern>
+        <url-pattern>/dataService/telemetrytwo/*</url-pattern>
+        <url-pattern>/change/*</url-pattern>
+        <url-pattern>/dataService/change/*</url-pattern>
     </filter-mapping>
 
     <filter>
@@ -117,8 +126,17 @@
         <url-pattern>/firmwarerule/*</url-pattern>
         <url-pattern>/firmwareruletemplate/*</url-pattern>
         <url-pattern>/amv/*</url-pattern>
+        <url-pattern>/dataService/amv/*</url-pattern>
         <url-pattern>/feature/*</url-pattern>
+        <url-pattern>/dataService/feature/*</url-pattern>
         <url-pattern>/featurerule/*</url-pattern>
+        <url-pattern>/dataService/featurerule/*</url-pattern>
+        <url-pattern>/telemetry/*</url-pattern>
+        <url-pattern>/telemetrytwo/*</url-pattern>
+        <url-pattern>/dataService/telemetry/*</url-pattern>
+        <url-pattern>/dataService/telemetrytwo/*</url-pattern>
+        <url-pattern>/change/*</url-pattern>
+        <url-pattern>/dataService/change/*</url-pattern>
     </filter-mapping>
 
     <filter>

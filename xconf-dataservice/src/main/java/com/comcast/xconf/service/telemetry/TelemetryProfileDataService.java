@@ -193,20 +193,20 @@ public class TelemetryProfileDataService extends AbstractApplicationTypeAwareSer
     public Change<PermanentTelemetryProfile> writeCreateChange(PermanentTelemetryProfile profile) {
         beforeCreating(profile);
         beforeSaving(profile);
-        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_PROFILE, getWriteApplicationType(profile), authService.getUserNameOrUnknown()));
     }
 
     public Change<PermanentTelemetryProfile> writeUpdateChange(PermanentTelemetryProfile newProfile) {
         beforeUpdating(newProfile);
         beforeSaving(newProfile);
         PermanentTelemetryProfile oldProfile = getOne(newProfile.getId());
-        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_PROFILE, getWriteApplicationType(newProfile), authService.getUserNameOrUnknown()));
     }
 
     public Change<PermanentTelemetryProfile> writeDeleteChange(String id) {
         beforeRemoving(id);
         PermanentTelemetryProfile profile = getOne(id);
-        Change<PermanentTelemetryProfile> deleteChange = pendingChangesService.create(buildToDelete(profile, EntityType.TELEMETRY_PROFILE, getPermissionService().getWriteApplication(), authService.getUserName()));
+        Change<PermanentTelemetryProfile> deleteChange = pendingChangesService.create(buildToDelete(profile, EntityType.TELEMETRY_PROFILE, getWriteApplicationType(profile), authService.getUserName()));
         return deleteChange;
     }
 

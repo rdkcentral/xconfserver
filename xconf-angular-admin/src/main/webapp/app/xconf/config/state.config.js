@@ -157,9 +157,10 @@
                 }
             }]);
 
-    state.$inject = ['$stateProvider', '$urlRouterProvider', 'PERMISSION'];
+    state.$inject = ['$httpProvider', '$stateProvider', '$urlRouterProvider', 'PERMISSION'];
 
-    function state($stateProvider, $urlRouterProvider, PERMISSION) {
+    function state($httpProvider, $stateProvider, $urlRouterProvider, PERMISSION) {
+        $httpProvider.interceptors.push(addApplicationTypeInterceptor);
 
         $urlRouterProvider.otherwise(function($injector, $location) {
             var authUtilsService = $injector.get('authUtilsService');
@@ -983,4 +984,37 @@
                 }
             })
     }
+
+    var addApplicationTypeInterceptor = function() {
+        let apiToExclude = ['api/model', 'api/environment', 'api/firmwareruletemplate', 'api/genericnamespacedlist'];
+
+        return {
+            request: function(config) {
+
+                if (!config.url
+                    || config.url.includes('.html')
+                    || containsAnyMatch(config.url, apiToExclude)) {
+                    return config;
+                }
+                let currentApplicationType = Cookies.get('applicationType');
+                let relativeRequestUrl = config.url;
+                if (relativeRequestUrl.includes('?')) {
+                    relativeRequestUrl += '&applicationType=' + currentApplicationType;
+                } else {
+                    relativeRequestUrl += '?applicationType=' + currentApplicationType;
+                }
+                config.url = relativeRequestUrl;
+                return config;
+            }
+        }
+    }
 })();
+
+function containsAnyMatch(url, apiToExcludeList) {
+    for (let apiToExclude of apiToExcludeList) {
+        if (url.includes(apiToExclude)) {
+            return true;
+        }
+    }
+    return false;
+}

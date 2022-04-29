@@ -85,6 +85,7 @@
             <script src='<c:url value="/bower_components/angular-ui-select/dist/select.js"/>'></script>
             <script src='<c:url value="/bower_components/google-diff-match-patch/diff_match_patch.js"/>'></script>
             <script src='<c:url value="/bower_components/angular-diff-match-patch/angular-diff-match-patch.js"/>'></script>
+            <script src='<c:url value="/node_modules/js-cookie/dist/js.cookie.min.js"/>'></script>
 
             <script src="<c:url value="/app/xconf/app.module.js"/>"></script>
 

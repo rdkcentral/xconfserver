@@ -79,7 +79,8 @@ module.exports = function (grunt) {
                     'node_modules/angular-file-saver/dist/angular-file-saver.bundle.js',
                     'bower_components/angular-ui-select/dist/select.js',
                     'bower_components/google-diff-match-patch/diff_match_patch.js',
-                    'bower_components/angular-diff-match-patch/angular-diff-match-patch.js'
+                    'bower_components/angular-diff-match-patch/angular-diff-match-patch.js',
+                    'node_modules/js-cookie/dist/js.cookie.min.js'
                 ]
             },
 

@@ -4,6 +4,8 @@
 * [Architecture](#architecture)
 * [Run application](#run-application)
     * [Local run](#local-run)
+* [Configuration](#configuration)
+    * [mTLS support](#mtls-support)
 * [Endpoints](#endpoints)
     * [XConf Primary API](#xconf-primary-api)
     * [Device Configuration Manager](#device-configuration-manager-dcm)
@@ -67,6 +69,22 @@ jetty:run -DappConfig=${path-to-service-properties} -f pom.xml
 
 NOTE: XConf UI is compiled using `frontend-maven-plugin` during `run` and `install` phase
 
+## Configuration
+### mTLS support
+To enable mTLS support to connect to cassandra endpoint following properties should be used:
+```
+cassandra.useSsl=true
+ssl.truststore.path=/path/to/your/truststore/file
+ssl.truststore=Base64 encoded truststore
+ssl.truststore.password=truststore-password
+ssl.keystore.path=/path/to/your/keystore/file
+ssl.keystore=Base64 encoded keystore
+ssl.keystore.password=keystore-password
+```
+`ssl.truststore.path` or `ssl.truststore` can be used at the same time. Priority is `ssl.truststore`.
+If `ssl.truststore` is set `ssl.truststore.path` is ignored.
+The same is applied for `ssl.keystore.path` and `ssl.keystore`. Priority is `ssl.keystore`.
+If `ssl.keystore` is set `ssl.keystore.path` is ignored.
 ## Endpoints
 
 ### XConf Primary API

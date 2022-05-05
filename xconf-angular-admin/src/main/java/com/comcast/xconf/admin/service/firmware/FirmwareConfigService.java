@@ -42,13 +42,14 @@ import com.comcast.xconf.service.firmware.FirmwareRuleService;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.util.RuleUtil;
 import com.comcast.xconf.validators.IValidator;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Predicate;
+
+import static com.comcast.xconf.validators.firmware.FirmwareConfigValidationUtils.configUsedInAction;
 
 @Service
 public class FirmwareConfigService extends AbstractApplicationTypeAwareService<FirmwareConfig> {
@@ -159,29 +160,6 @@ public class FirmwareConfigService extends AbstractApplicationTypeAwareService<F
                 }
             }
         }
-    }
-
-    public boolean configUsedInAction(FirmwareConfig firmwareConfig, FirmwareRule rule) {
-        String id = firmwareConfig.getId();
-        if (rule != null && rule.getApplicableAction() != null && (rule.getApplicableAction() instanceof RuleAction)) {
-            RuleAction action = (RuleAction) rule.getApplicableAction();
-            if (id.equals(action.getConfigId())) {
-                return true;
-            }
-            List<RuleAction.ConfigEntry> configEntries = action.getConfigEntries();
-            if (configEntries != null) {
-                for (RuleAction.ConfigEntry entry : configEntries) {
-                    if (id.equals(entry.getConfigId())) {
-                        return true;
-                    }
-                }
-            }
-            if (StringUtils.equals(id, action.getIntermediateVersion())
-                    || CollectionUtils.isNotEmpty(action.getFirmwareVersions()) && action.getFirmwareVersions().contains(firmwareConfig.getFirmwareVersion())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public FirmwareConfig getFirmwareConfigByEnvModelRuleName(String envModelRuleName) {

@@ -154,14 +154,7 @@ public class FirmwareConfigQueriesController extends BaseQueriesController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = QueryConstants.DELETE_FIRMWARES + "/{id}")
     public ResponseEntity deleteFirmwareConfig(@PathVariable String id) {
-        if (StringUtils.isBlank(id)) {
-            return new ResponseEntity<>("Id is empty", HttpStatus.BAD_REQUEST);
-        }
-
-        if (firmwareConfigDAO.getOne(id) != null) {
-            firmwareConfigDAO.deleteOne(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        firmwareConfigQueriesService.deleteOne(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

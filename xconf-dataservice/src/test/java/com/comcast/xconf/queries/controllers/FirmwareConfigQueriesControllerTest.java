@@ -20,13 +20,22 @@ package com.comcast.xconf.queries.controllers;
 
 import com.comcast.apps.dataaccess.util.CloneUtil;
 import com.comcast.apps.dataaccess.util.JsonUtil;
+import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
+import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.xconf.estbfirmware.FirmwareConfig;
 import com.comcast.xconf.estbfirmware.Model;
+import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.*;
 import com.comcast.xconf.queries.QueriesHelper;
 import com.comcast.xconf.queries.QueryConstants;
+import com.comcast.xconf.service.firmware.ActivationVersionDataService;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.*;
@@ -38,8 +47,7 @@ import static com.comcast.xconf.firmware.ApplicationType.XHOME;
 import static com.comcast.xconf.queries.QueriesHelper.nullifyUnwantedFields;
 import static com.comcast.xconf.queries.controllers.FirmwareConfigQueriesController.MAX_ALLOWED_NUMBER_OF_PROPERTIES;
 import static com.comcast.xconf.queries.controllers.FirmwareConfigQueriesController.MAX_ALLOWED_NUMBER_OF_PROPERTIES_ERR_MSG_TEMPLATE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -47,6 +55,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Class to verify firmware config API.
  */
 public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTest{
+
+
+
+    @Autowired
+    private ActivationVersionDataService activationVersionDataService;
 
     @Test
     public void testGetFirmwareConfigs() throws Exception {
@@ -176,6 +189,49 @@ public class FirmwareConfigQueriesControllerTest extends BaseQueriesControllerTe
                         .content(JsonUtil.toJson(firmwareConfig)))
                 .andExpect(status().isNoContent());
         assertEquals(null, firmwareConfigDAO.getOne(firmwareConfig.getId()));
+    }
+
+    @Test
+    public void deleteFirmwareConfigUsedByFirmwareRule() throws Exception {
+        FirmwareConfig firmwareConfig = createDefaultFirmwareConfig();
+        firmwareConfigDAO.setOne(firmwareConfig.getId(), firmwareConfig);
+
+        Model model = createAndSaveModel("TEST_MODEL");
+        Rule rule = Rule.Builder.of(new Condition(RuleFactory.MODEL, StandardOperation.IS, FixedArg.from(model.getId()))).build();
+
+        ApplicableAction ruleAction = new RuleAction(firmwareConfig.getId());
+
+        FirmwareRuleTemplate template = createFirmwareRuleTemplate("testTemplate", rule, ruleAction);
+        firmwareRuleTemplateDao.setOne(template.getId(), template);
+
+        FirmwareRule firmwareRule = createAndSaveFirmwareRule(UUID.randomUUID().toString(), template.getId(), ruleAction, rule);
+
+        mockMvc.perform(
+                        delete("/" + QueryConstants.DELETE_FIRMWARES + "/" + firmwareConfig.getId())
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("\"FirmwareConfig is used by " + firmwareRule.getName() + " FirmwareRule\""));
+
+        assertNotNull(firmwareConfigDAO.getOne(firmwareConfig.getId()));
+        firmwareRuleTemplateDao.deleteOne(template.getId());
+    }
+
+    @Test
+    public void deleteFirmwareConfigUsedByActivationMinimumVersion() throws Exception {
+        Model model = createAndSaveModel(defaultModelId);
+        FirmwareConfig firmwareConfig = createAndSaveFirmwareConfig(defaultFirmwareVersion, model.getId().toUpperCase(), FirmwareConfig.DownloadProtocol.http);
+        ActivationVersion activationVersion = createActivationVersion(defaultPartnerId,
+                Sets.newHashSet(firmwareConfig.getFirmwareVersion()), new HashSet<String>());
+
+        activationVersionDataService.create(activationVersion);
+
+        mockMvc.perform(
+                        delete("/" + QueryConstants.DELETE_FIRMWARES + "/" + firmwareConfig.getId())
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("\"FirmwareConfig is used by " + activationVersion.getDescription() + " Activation Version\""));
+
+        assertNotNull(firmwareConfigDAO.getOne(firmwareConfig.getId()));
     }
 
     @Test

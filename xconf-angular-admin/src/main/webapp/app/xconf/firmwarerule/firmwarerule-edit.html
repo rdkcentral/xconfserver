@@ -65,6 +65,25 @@
     </div>
 </div>
 <div class="panel panel-default">
+    <div class="panel-heading">
+        <label>CLIENT CONNECTION TYPE</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <div class="btn-group">
+                        <label ng-repeat="connectionType in vm.FIRMWARE_RULE_CONNECTION_TYPE" class="btn btn-default btn-radio" ng-class="{'active': vm.data.connectionType == connectionType.value}">
+                            <input type="radio" ng-value="connectionType.value" ng-model="vm.data.connectionType"/>
+                            <span ng-bind="connectionType.name"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
     <div class="panel-heading"><label>BUILD CONDITIONS</label></div>
     <div class="panel-body">
 

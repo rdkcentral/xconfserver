@@ -416,4 +416,11 @@ angular
     .constant('CHANGE_ENTITY_TYPE', {
         TELEMETRY_PROFILE: 'TELEMETRY_PROFILE',
         TELEMETRY_TWO_PROFILE: 'TELEMETRY_TWO_PROFILE'
+    })
+
+    .constant('FIRMWARE_RULE_CONNECTION_TYPE', {
+        ANY: {name: 'Any connection', value: 'ANY'},
+        HTTP: {name: 'HTTP', value: 'HTTP'},
+        HTTPS: {name: 'HTTPS', value: 'HTTPS'},
+        HTTPS_MTLS: {name: 'HTTPS-mTLS', value: 'HTTPS_MTLS'}
     });

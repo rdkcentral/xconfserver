@@ -35,6 +35,12 @@
                     <input class="form-control rule-name cursor-default" ng-value="vm.obj.name" disabled readonly/>
                 </div>
             </div>
+            <div id="clientConnection" class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Client Connection Type</div>
+                    <input class="form-control rule-name cursor-default" ng-value="vm.FIRMWARE_RULE_CONNECTION_TYPE[vm.obj.connectionType].name" disabled readonly/>
+                </div>
+            </div>
             <div id="rule" class="form-group">
                 <label>Rule</label>
                 <div>

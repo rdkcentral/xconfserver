@@ -21,8 +21,8 @@
  */
 package com.comcast.xconf.firmware;
 
-import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.apps.dataaccess.annotation.CF;
+import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
 import com.comcast.hydra.astyanax.data.XMLPersistable;
 import com.comcast.xconf.Applicationable;
 import com.comcast.xconf.CfNames;
@@ -40,6 +40,7 @@ public class FirmwareRule extends XMLPersistable implements Comparable<FirmwareR
     private ApplicableAction applicableAction;
     private String type;
     private boolean active = true;
+    private ClientConnectionType connectionType;
     private String applicationType = ApplicationType.STB;
 
     public String getName() {
@@ -127,6 +128,13 @@ public class FirmwareRule extends XMLPersistable implements Comparable<FirmwareR
         return true;
     }
 
+    public ClientConnectionType getConnectionType() {
+        return connectionType;
+    }
+
+    public void setConnectionType(ClientConnectionType connectionType) {
+        this.connectionType = connectionType;
+    }
 
     @Override
     public int compareTo(FirmwareRule o) {

@@ -23,8 +23,8 @@
         .module('app.firmwarerule')
         .controller('FirmwareRuleEditController', controller);
 
-    controller.$inject=['$rootScope','$scope', '$state', '$controller', 'alertsService', '$stateParams', 'firmwareRuleTemplateService', 'firmwareRuleService', 'firmwareConfigService', 'APPLICABLE_ACTION_TYPE', 'utilsService', 'firmwareRuleValidationService', 'ruleHelperService', 'FIRMWARE_FREE_ARG_AUTOCOMPLETE_VALUE', 'TIME_FREE_ARG_OPERATION_ARRAY', 'FREE_ARG_NAME', 'ruleValidationService', 'FIRMWARE_RULE_OPERATION_ARRAY', 'FIRMWARE_RULE_TYPE', '$q', 'authUtilsService', 'PERMISSION'];
-    function controller($rootScope, $scope, $state, $controller, alertsService, $stateParams, firmwareRuleTemplateService, firmwareRuleService, firmwareConfigService, APPLICABLE_ACTION_TYPE, utilsService, firmwareRuleValidationService, ruleHelperService, FIRMWARE_FREE_ARG_AUTOCOMPLETE_VALUE, TIME_FREE_ARG_OPERATION_ARRAY, FREE_ARG_NAME, ruleValidationService, FIRMWARE_RULE_OPERATION_ARRAY, FIRMWARE_RULE_TYPE, $q, authUtils, PERMISSION) {
+    controller.$inject=['$rootScope','$scope', '$state', '$controller', 'alertsService', '$stateParams', 'firmwareRuleTemplateService', 'firmwareRuleService', 'firmwareConfigService', 'APPLICABLE_ACTION_TYPE', 'utilsService', 'firmwareRuleValidationService', 'ruleHelperService', 'FIRMWARE_FREE_ARG_AUTOCOMPLETE_VALUE', 'TIME_FREE_ARG_OPERATION_ARRAY', 'FREE_ARG_NAME', 'ruleValidationService', 'FIRMWARE_RULE_OPERATION_ARRAY', 'FIRMWARE_RULE_TYPE', '$q', 'authUtilsService', 'PERMISSION', 'FIRMWARE_RULE_CONNECTION_TYPE'];
+    function controller($rootScope, $scope, $state, $controller, alertsService, $stateParams, firmwareRuleTemplateService, firmwareRuleService, firmwareConfigService, APPLICABLE_ACTION_TYPE, utilsService, firmwareRuleValidationService, ruleHelperService, FIRMWARE_FREE_ARG_AUTOCOMPLETE_VALUE, TIME_FREE_ARG_OPERATION_ARRAY, FREE_ARG_NAME, ruleValidationService, FIRMWARE_RULE_OPERATION_ARRAY, FIRMWARE_RULE_TYPE, $q, authUtils, PERMISSION, FIRMWARE_RULE_CONNECTION_TYPE) {
         var vm = this;
 
         angular.extend(vm, $controller('EditController', {
@@ -39,7 +39,8 @@
             "name": "",
             "rule": {},
             "applicableAction" : null,
-            "applicationType": $rootScope.applicationType
+            "applicationType": $rootScope.applicationType,
+            "connectionType": FIRMWARE_RULE_CONNECTION_TYPE.ANY.value
         };
         vm.disableValidation = true;
         vm.isNewEntity = $state.current.name === 'firmwarerule-add';
@@ -92,6 +93,7 @@
         vm.APPLICABLE_ACTION_TYPE = APPLICABLE_ACTION_TYPE;
         vm.FIRMWARE_RULE_TYPE = FIRMWARE_RULE_TYPE;
         vm.PERMISSION = PERMISSION;
+        vm.FIRMWARE_RULE_CONNECTION_TYPE = FIRMWARE_RULE_CONNECTION_TYPE;
 
         vm.validationFunction = ruleValidationService.validate;
         vm.actionValidator = firmwareRuleValidationService;

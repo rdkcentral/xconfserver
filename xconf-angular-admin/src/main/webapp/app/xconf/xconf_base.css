@@ -920,3 +920,9 @@ table.log-table >tbody>tr>th {
     padding-left: 0
 }
 
+.btn-radio > input[type=radio] {
+    position       : absolute;
+    clip           : rect(0, 0, 0, 0);
+    pointer-events : none;
+}
+

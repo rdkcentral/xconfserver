@@ -18,17 +18,18 @@
  *******************************************************************************/
 package com.comcast.xconf.validators.firmware;
 
+import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.api.FreeArg;
 import com.comcast.apps.hesperius.ruleengine.main.api.Operation;
 import com.comcast.apps.hesperius.ruleengine.main.api.RuleValidationException;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Rule;
-import com.comcast.apps.dataaccess.support.exception.ValidationRuntimeException;
 import com.comcast.xconf.ConditionInfo;
 import com.comcast.xconf.StbContext;
 import com.comcast.xconf.estbfirmware.TemplateNames;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.ClientConnectionType;
 import com.comcast.xconf.firmware.FirmwareRule;
 import com.comcast.xconf.permissions.FirmwarePermissionService;
 import com.comcast.xconf.permissions.PermissionHelper;
@@ -41,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.comcast.xconf.validators.CommonRuleValidator.getConditionInfos;
@@ -74,6 +76,14 @@ public class FirmwareRuleValidator extends BaseRuleValidator<FirmwareRule> {
         applicableActionValidator.validate(firmwareRule);
 
         validateApplicationType(firmwareRule);
+
+        validateClientConnectionType(firmwareRule.getConnectionType());
+    }
+
+    private void validateClientConnectionType(ClientConnectionType connectionType) {
+        if (Objects.isNull(connectionType)) {
+            throw new ValidationRuntimeException("Client Connection Type is empty");
+        }
     }
 
     @Override

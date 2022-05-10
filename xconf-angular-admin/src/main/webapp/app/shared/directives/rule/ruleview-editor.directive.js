@@ -55,8 +55,6 @@
             var $template = angular.element(template);
 
             scope.$watch('data', function() {
-                console.log('[watch: data] rule editor: ');
-                console.log(scope.data);
                 scope.rule = ruleHelperService.flattenRule(scope.data);
             });
 

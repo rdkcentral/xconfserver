@@ -23,16 +23,18 @@
         .module('app.firmwarerule')
         .controller('FirmwareRuleViewController', controller);
 
-    controller.$inject=['$uibModalInstance', 'obj', 'APPLICABLE_ACTION_TYPE', 'firmwareConfigService', 'alertsService', 'firmwareRuleTemplateService'];
+    controller.$inject=['$uibModalInstance', 'obj', 'APPLICABLE_ACTION_TYPE', 'firmwareConfigService', 'alertsService', 'firmwareRuleTemplateService', 'FIRMWARE_RULE_CONNECTION_TYPE'];
 
-    function controller($modalInstance, obj, APPLICABLE_ACTION_TYPE, firmwareConfigService, alertsService, firmwareRuleTemplateService) {
+    function controller($modalInstance, obj, APPLICABLE_ACTION_TYPE, firmwareConfigService, alertsService, firmwareRuleTemplateService, FIRMWARE_RULE_CONNECTION_TYPE) {
         var vm = this;
         vm.obj = obj;
         vm.dismiss = dismiss;
-        vm.APPLICABLE_ACTION_TYPE = APPLICABLE_ACTION_TYPE;
-        vm.blockingFilterTemplates = [];
 
+        vm.blockingFilterTemplates = [];
         vm.firmwareConfigs = {};
+
+        vm.APPLICABLE_ACTION_TYPE = APPLICABLE_ACTION_TYPE;
+        vm.FIRMWARE_RULE_CONNECTION_TYPE = FIRMWARE_RULE_CONNECTION_TYPE;
 
         init();
 

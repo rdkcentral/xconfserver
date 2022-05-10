@@ -422,5 +422,6 @@ angular
         ANY: {name: 'Any connection', value: 'ANY'},
         HTTP: {name: 'HTTP', value: 'HTTP'},
         HTTPS: {name: 'HTTPS', value: 'HTTPS'},
-        HTTPS_MTLS: {name: 'HTTPS-mTLS', value: 'HTTPS_MTLS'}
+        MTLS_SECURE: {name: 'mTLS secure', value: 'MTLS_SECURE'},
+        MTLS_RECOVERY: {name: 'mTLS recovery', value: 'MTLS_RECOVERY'}
     });

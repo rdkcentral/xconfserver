@@ -4,5 +4,6 @@ public enum ClientConnectionType {
     ANY,
     HTTP,
     HTTPS,
-    HTTPS_MTLS
+    MTLS_SECURE,
+    MTLS_RECOVERY
 }

@@ -26,6 +26,7 @@ import com.comcast.xconf.permissions.TelemetryPermissionService;
 import com.comcast.xconf.validators.IValidator;
 import org.apache.commons.lang.StringUtils;
 import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -76,7 +77,7 @@ public class TelemetryTwoProfileValidator implements IValidator<TelemetryTwoProf
     }
 
     private void validateJSONFormat(TelemetryTwoProfile entity) {
-        String errorMessage = "Please provide the valid Telemetry 2.0 Profile JSON config data.";
+        String errorMessage = "Please provide the valid Telemetry 2.0 Profile JSON config data: ";
         try {
             String resourceName = "/telemetrytwoprofile-schema.json";
             InputStream is = TelemetryTwoProfileValidator.class.getResourceAsStream(resourceName);
@@ -90,7 +91,7 @@ public class TelemetryTwoProfileValidator implements IValidator<TelemetryTwoProf
             Schema schema = loader.load().build();
             schema.validate(new JSONObject(entity.getJsonconfig()));
         } catch (Exception e) {
-            throw new ValidationRuntimeException(errorMessage.concat(e.getLocalizedMessage()));
+            throw new ValidationRuntimeException(errorMessage.concat((StringUtils.join(((ValidationException) e).getAllMessages(), ", "))));
         }
     }
 }

@@ -39,6 +39,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class FirmwareRuleTemplateValidator extends BaseRuleValidator<FirmwareRuleTemplate> {
@@ -70,6 +71,9 @@ public class FirmwareRuleTemplateValidator extends BaseRuleValidator<FirmwareRul
         ApplicableAction.Type type = applicableAction.getActionType();
         if (ApplicableAction.Type.DEFINE_PROPERTIES_TEMPLATE.equals(type)) {
             Map<String, DefinePropertiesTemplateAction.PropertyValue> properties = ((DefinePropertiesTemplateAction) applicableAction).getProperties();
+            if (Objects.isNull(properties)) {
+                return;
+            }
             for (Map.Entry<String, DefinePropertiesTemplateAction.PropertyValue> entry : properties.entrySet()) {
                 if (StringUtils.isBlank(entry.getKey())) {
                     throw new RuleValidationException("Properties key is blank");

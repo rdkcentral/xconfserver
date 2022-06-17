@@ -39,7 +39,7 @@ import static com.comcast.xconf.queries.controllers.TelemetryProfileTwoDataContr
 @RequestMapping(TELEMETRY_TWO_PROFILE_API)
 public class TelemetryProfileTwoDataController extends BaseQueriesController {
 
-    public static final String TELEMETRY_TWO_PROFILE_API = "/telemetrytwo/profile";
+    public static final String TELEMETRY_TWO_PROFILE_API = "/telemetry/v2/profile";
 
     @Autowired
     private TelemetryProfileTwoDataService telemetryProfileTwoDataService;

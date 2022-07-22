@@ -387,7 +387,7 @@ public class TelemetryProfileDataControllerTest extends BaseQueriesControllerTes
     }
 
     private void approveChangeByEntityId(String entityId) throws Exception {
-        mockMvc.perform(get(ChangeDataController.CHANGE_URL + "/approve/byEntity/" + entityId)
+        mockMvc.perform(get(TelemetryProfileChangeDataController.CHANGE_URL + "/approve/byEntity/" + entityId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

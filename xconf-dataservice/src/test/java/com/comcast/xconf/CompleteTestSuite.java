@@ -88,7 +88,7 @@ import org.junit.runners.Suite;
         FeatureDataControllerTest.class, FeatureRuleDataControllerTest.class,
         ActivationVersionDataControllerTest.class,
         TelemetryProfileDataControllerTest.class, TelemetryProfileTwoDataControllerTest.class,
-        ChangeDataControllerTest.class
+        TelemetryProfileChangeDataControllerTest.class
 })
 public class CompleteTestSuite {
 

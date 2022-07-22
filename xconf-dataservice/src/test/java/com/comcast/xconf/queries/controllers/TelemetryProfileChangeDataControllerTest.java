@@ -37,7 +37,7 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.comcast.xconf.queries.controllers.ChangeDataController.CHANGE_URL;
+import static com.comcast.xconf.queries.controllers.TelemetryProfileChangeDataController.CHANGE_URL;
 import static com.comcast.xconf.queries.controllers.TelemetryProfileDataController.TELEMETRY_PROFILE_URL;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ChangeDataControllerTest extends BaseQueriesControllerTest {
+public class TelemetryProfileChangeDataControllerTest extends BaseQueriesControllerTest {
 
     @Autowired
     protected SimpleDao<String, Change> changeDao;

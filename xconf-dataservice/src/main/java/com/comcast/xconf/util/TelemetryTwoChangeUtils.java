@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-package com.comcast.xconf.shared.utils;
+package com.comcast.xconf.util;
 
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.change.ChangeOperation;
 import com.comcast.xconf.change.TelemetryTwoChange;
-
 import org.apache.commons.collections.comparators.NullComparator;
 
 import java.util.Comparator;
@@ -37,12 +36,7 @@ public class TelemetryTwoChangeUtils {
     }
 
     public static Comparator<TelemetryTwoChange> ascByDateComparator() {
-        return new Comparator<TelemetryTwoChange>() {
-            @Override
-            public int compare(TelemetryTwoChange o1, TelemetryTwoChange o2) {
-                return new NullComparator()
-                        .compare(o2.getUpdated(), o1.getUpdated());
-            }
-        };
+        return (o1, o2) -> new NullComparator()
+                .compare(o2.getUpdated(), o1.getUpdated());
     }
 }

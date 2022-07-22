@@ -98,8 +98,8 @@
                     telemetryTwoProfileService.deleteTelemetryTwoProfile(profile.id)
                         .then(function() {
                             utilsService.removeItemFromArray(vm.telemetryTwoProfiles, profile);
-                            alertsService.successfullyDeleted(profile.id);
-                            shiftItems();
+                            alertsService.successfullySaved('Successfully saved delete change of ' + profile.name + ' profile');
+                            getTelemetryTwoChangedEntityIds();
                         }, function(error) {
                             alertsService.showError({title: 'Error', message: error.data.message});
                         });

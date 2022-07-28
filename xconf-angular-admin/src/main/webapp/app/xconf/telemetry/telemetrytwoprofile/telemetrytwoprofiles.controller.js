@@ -97,7 +97,6 @@
                 dialog.result.then(function (btn) {
                     telemetryTwoProfileService.deleteTelemetryTwoProfile(profile.id)
                         .then(function() {
-                            utilsService.removeItemFromArray(vm.telemetryTwoProfiles, profile);
                             alertsService.successfullySaved('Successfully saved delete change of ' + profile.name + ' profile');
                             getTelemetryTwoChangedEntityIds();
                         }, function(error) {

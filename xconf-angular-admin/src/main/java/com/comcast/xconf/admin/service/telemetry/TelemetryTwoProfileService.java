@@ -141,11 +141,11 @@ public class TelemetryTwoProfileService extends AbstractApplicationTypeAwareServ
         }
     }
 
-    public TelemetryTwoProfile writeDeleteChange(String id) {
+    public TelemetryTwoChange<TelemetryTwoProfile> writeDeleteChange(String id) {
         beforeRemoving(id);
         TelemetryTwoProfile profile = getOne(id);
-        pendingChangesService.create(TelemetryTwoChangeBuilders.buildToDelete(profile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
-        return profile;
+        TelemetryTwoChange<TelemetryTwoProfile> deleteChange = pendingChangesService.create(TelemetryTwoChangeBuilders.buildToDelete(profile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+        return deleteChange;
     }
     
     @Override

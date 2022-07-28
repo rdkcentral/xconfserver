@@ -241,14 +241,33 @@ public class TelemetryTwoChangeControllerTest extends BaseControllerTest {
 
 
     @Test
-    public void removeProfileAndRevert() {
+    public void removeProfileAndRevert() throws Exception {
         String profileId = UUID.randomUUID().toString();
         createAndSaveProfile(profileId);
-        telemetryTwoProfileService.delete(profileId);
-        assertNull(telemetryTwoProfileService.getEntityDAO().getOne(profileId));
+
+        assertEquals(0, changeCrudService.getAll().size());
+
+        telemetryTwoProfileService.writeDeleteChange(profileId);
+
+        assertEquals(1, changeCrudService.getAll().size());
+        assertNotNull(telemetryTwoProfileService.getEntityDAO().getOne(profileId));
+        assertEquals(0, approvedChangeCrudService.getAll().size());
+
+        TelemetryTwoChange<TelemetryTwoProfile> deleteChange = changeCrudService.getChangesByEntityId(profileId).get(0);
+
+        approveChange(deleteChange.getId());
+
+        assertNull(telemetryTwoProfileDAO.getOne(profileId));
+        assertEquals(1, approvedChangeCrudService.getAll().size());
+
         ApprovedTelemetryTwoChange<TelemetryTwoChange> change = approvedChangeCrudService.getAll().get(0);
-        telemetryProfileChangeService.revert(change.getId());
+
+        mockMvc.perform(get(TelemetryTwoChangeController.URL + "/revert/{changeId}", change.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
         assertNotNull(telemetryTwoProfileService.getOne(profileId));
+        assertEquals(0, approvedChangeCrudService.getAll().size());
     }
 
 

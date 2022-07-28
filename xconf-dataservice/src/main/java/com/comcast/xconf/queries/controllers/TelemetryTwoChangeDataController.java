@@ -42,7 +42,7 @@ import static com.comcast.xconf.queries.controllers.TelemetryTwoChangeDataContro
 @RequestMapping(URL_MAPPING)
 public class TelemetryTwoChangeDataController {
 
-    public static final String URL_MAPPING = "/v2/change";
+    public static final String URL_MAPPING = "/change/v2";
 
     private TelemetryTwoProfileChangeDataService telemetryTwoProfileChangeDataService;
 

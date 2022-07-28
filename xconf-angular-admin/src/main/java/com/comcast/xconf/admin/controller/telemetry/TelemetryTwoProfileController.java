@@ -21,6 +21,7 @@ package com.comcast.xconf.admin.controller.telemetry;
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.admin.controller.ExportFileNames;
 import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.shared.controller.ApplicationTypeAwayController;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
@@ -83,8 +84,8 @@ public class TelemetryTwoProfileController extends ApplicationTypeAwayController
     @Override
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity deleteOne(@PathVariable String id) {
-        telemetryTwoProfileService.writeDeleteChange(id);
+        TelemetryTwoChange<TelemetryTwoProfile> deleteChange = telemetryTwoProfileService.writeDeleteChange(id);
         logger.info("Successfully saved delete change of TelemetryTwoProfile by id: {}", id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(deleteChange, HttpStatus.OK);
     }
 }

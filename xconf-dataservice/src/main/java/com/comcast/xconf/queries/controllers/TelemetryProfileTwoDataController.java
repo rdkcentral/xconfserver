@@ -20,6 +20,7 @@
  */
 package com.comcast.xconf.queries.controllers;
 
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.service.telemetry.TelemetryProfileTwoDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +73,23 @@ public class TelemetryProfileTwoDataController extends BaseQueriesController {
     public ResponseEntity delete(@PathVariable String id) {
         telemetryProfileTwoDataService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/change")
+    public ResponseEntity createWithApproval(@RequestBody TelemetryTwoProfile profile) {
+        TelemetryTwoChange<TelemetryTwoProfile> createChange = telemetryProfileTwoDataService.writeCreateChange(profile);
+        return new ResponseEntity<>(createChange, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/change")
+    public ResponseEntity updateWithApproval(@RequestBody TelemetryTwoProfile profile) {
+        TelemetryTwoChange<TelemetryTwoProfile> updateChange = telemetryProfileTwoDataService.writeUpdateChange(profile);
+        return new ResponseEntity<>(updateChange, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/change/{id}")
+    public ResponseEntity deleteWithApproval(@PathVariable String id) {
+        TelemetryTwoChange<TelemetryTwoProfile> deleteChange = telemetryProfileTwoDataService.writeDeleteChange(id);
+        return new ResponseEntity<>(deleteChange, HttpStatus.OK);
     }
 }

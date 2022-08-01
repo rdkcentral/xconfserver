@@ -21,6 +21,9 @@
 package com.comcast.xconf.service.telemetry;
 
 import com.comcast.apps.dataaccess.cache.dao.CachedSimpleDao;
+import com.comcast.xconf.auth.AuthService;
+import com.comcast.xconf.change.EntityType;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.exception.EntityConflictException;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
@@ -34,7 +37,6 @@ import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import com.comcast.xconf.validators.IValidator;
 import com.comcast.xconf.validators.telemetry.TelemetryTwoProfileDataValidator;
 import com.google.common.base.Optional;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeBuilders.*;
 
 @Service
 public class TelemetryProfileTwoDataService extends AbstractApplicationTypeAwareService<TelemetryTwoProfile> {
@@ -60,6 +64,9 @@ public class TelemetryProfileTwoDataService extends AbstractApplicationTypeAware
 
     @Autowired
     private TelemetryTwoChangeCrudService<TelemetryTwoProfile> pendingChangesService;
+
+    @Autowired
+    private AuthService authService;
 
     @Autowired
     private CachedSimpleDao<String, TelemetryTwoRule> telemetryTwoRuleDAO;
@@ -106,16 +113,32 @@ public class TelemetryProfileTwoDataService extends AbstractApplicationTypeAware
                 throw new EntityConflictException("Can't delete profile as it's used in telemetry rule: " + rule.getName());
             }
         }
-        TelemetryTwoProfile profileToRemove = getOne(id);
-        if (CollectionUtils.isNotEmpty(pendingChangesService.getChangesByEntityId(id))) {
-            throw new EntityConflictException("There is change for " + profileToRemove.getName() + " telemetry 2.0 profile");
-        }
     }
 
     @Override
     protected void beforeRemoving(String id) {
-        TelemetryTwoProfile telemetryTwoProfile = getOne(id);
+        getOne(id); //to cause EntityNotFound exception if profile does not exist
 
         validateUsage(id);
+    }
+
+    public TelemetryTwoChange<TelemetryTwoProfile> writeCreateChange(TelemetryTwoProfile profile) {
+        beforeCreating(profile);
+        beforeSaving(profile);
+        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+    }
+
+    public TelemetryTwoChange<TelemetryTwoProfile> writeUpdateChange(TelemetryTwoProfile newProfile) {
+        beforeUpdating(newProfile);
+        beforeSaving(newProfile);
+        TelemetryTwoProfile oldProfile = getOne(newProfile.getId());
+        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+    }
+
+    public TelemetryTwoChange<TelemetryTwoProfile> writeDeleteChange(String id) {
+        beforeRemoving(id);
+        TelemetryTwoProfile profileToRemove = getOne(id);
+        return pendingChangesService.create(buildToDelete(profileToRemove, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+
     }
 }

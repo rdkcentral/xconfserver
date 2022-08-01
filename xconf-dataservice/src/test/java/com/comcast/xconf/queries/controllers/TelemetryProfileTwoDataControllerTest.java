@@ -26,26 +26,28 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.apps.hesperius.ruleengine.domain.standard.StandardOperation;
 import com.comcast.apps.hesperius.ruleengine.main.api.FixedArg;
 import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
+import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.estbfirmware.Model;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
+import com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.UUID;
 
 import static com.comcast.xconf.firmware.ApplicationType.STB;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class TelemetryProfileTwoDataControllerTest extends BaseQueriesControllerTest {
 
-    private static final String TELEMETRY_2_CONFIG_TO_UPDATE = "{\n" +
+    public static final String TELEMETRY_2_CONFIG_TO_UPDATE = "{\n" +
             "    \"Description\": \"Telemetry 2.0 test - CHANGED\",\n" +
             "    \"Version\": \"0.2\",\n" +
             "    \"Protocol\": \"HTTP\",\n" +
@@ -81,6 +83,9 @@ public class TelemetryProfileTwoDataControllerTest extends BaseQueriesController
             "        \"ReportTimestamp\": \"None\"\n" +
             "    }\n" +
             "}";
+
+    @Autowired
+    private TelemetryTwoChangeCrudService<TelemetryTwoProfile> changeCrudService;
 
     @Test
     public void getAll() throws Exception {
@@ -163,41 +168,79 @@ public class TelemetryProfileTwoDataControllerTest extends BaseQueriesController
                 .andExpect(content().string("\"Can't delete profile as it's used in telemetry rule: " + telemetryTwoRule.getName() + "\""));
     }
 
-    protected TelemetryTwoProfile createTelemetryTwoProfile() {
-        TelemetryTwoProfile telemetryTwoProfile = new TelemetryTwoProfile();
-        telemetryTwoProfile.setId(UUID.randomUUID().toString());
-        telemetryTwoProfile.setName("Test Telemetry 2.0 Profile");
-        telemetryTwoProfile.setJsonconfig("{\n" +
-                "    \"Description\": \"Telemetry 2.0 test\",\n" +
-                "    \"Version\": \"0.2\",\n" +
-                "    \"Protocol\": \"HTTP\",\n" +
-                "    \"EncodingType\": \"JSON\",\n" +
-                "    \"ReportingInterval\": 180,\n" +
-                "    \"TimeReference\": \"0001-01-01T00:00:00Z\",\n" +
-                "    \"Parameter\": [{\n" +
-                "        \"type\": \"dataModel\",\n" +
-                "        \"name\": \"TestMac\",\n" +
-                "        \"reference\": \"Device.ABC\"\n" +
-                "    }],\n" +
-                "    \"HTTP\": {\n" +
-                "        \"URL\": \"https://test.com/\",\n" +
-                "        \"Compression\": \"None\",\n" +
-                "        \"Method\": \"POST\",\n" +
-                "        \"RequestURIParameter\": [{\n" +
-                "            \"Name\": \"profileName\",\n" +
-                "            \"Reference\": \"Test.Name\"\n" +
-                "        }, {\n" +
-                "            \"Name\": \"testVersion\",\n" +
-                "            \"Reference\": \"Test.Version\"\n" +
-                "        }]\n" +
-                "    },\n" +
-                "    \"JSONEncoding\": {\n" +
-                "        \"ReportFormat\": \"NameValuePair\",\n" +
-                "        \"ReportTimestamp\": \"None\"\n" +
-                "    }\n" +
-                "}");
-        telemetryTwoProfile.setApplicationType(STB);
-        return telemetryTwoProfile;
+    @Test
+    public void createTelemetryTwoProfileWithApproval() throws Exception {
+        TelemetryTwoProfile profile = createTelemetryTwoProfile();
+
+        mockMvc.perform(post(TelemetryProfileTwoDataController.TELEMETRY_TWO_PROFILE_API + "/change")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(profile)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.entityId").value(profile.getId()))
+                .andExpect(jsonPath("$.entityType").value(EntityType.TELEMETRY_TWO_PROFILE.toString()))
+                .andExpect(jsonPath("$.newEntity").exists())
+                .andExpect(jsonPath("$.oldEntity").doesNotExist());
+
+        approveChangeByEntityId(profile.getId());
+
+        assertEquals(1, telemetryTwoProfileDAO.getAll().size());
+        assertEquals(profile, telemetryTwoProfileDAO.getAll().get(0));
+
+        assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
+    }
+
+    @Test
+    public void updateTelemetryTwoProfileWithApproval() throws Exception {
+        TelemetryTwoProfile profile = createTelemetryTwoProfile();
+        telemetryTwoProfileDAO.setOne(profile.getId(), profile);
+
+        TelemetryTwoProfile profileToUpdate = CloneUtil.clone(profile);
+        profileToUpdate.setJsonconfig(TELEMETRY_2_CONFIG_TO_UPDATE);
+
+        mockMvc.perform(put(TelemetryProfileTwoDataController.TELEMETRY_TWO_PROFILE_API + "/change")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.toJson(profileToUpdate)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.entityId").value(profile.getId()))
+                .andExpect(jsonPath("$.entityType").value(EntityType.TELEMETRY_TWO_PROFILE.toString()))
+                .andExpect(jsonPath("$.newEntity").exists())
+                .andExpect(jsonPath("$.oldEntity").exists());
+
+        approveChangeByEntityId(profileToUpdate.getId());
+
+        assertEquals(1, telemetryTwoProfileDAO.getAll().size());
+        assertEquals(TELEMETRY_2_CONFIG_TO_UPDATE, telemetryTwoProfileDAO.getOne(profileToUpdate.getId()).getJsonconfig());
+
+        assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
+    }
+
+    @Test
+    public void deleteTelemetryTwoProfileWithApproval() throws Exception {
+        TelemetryTwoProfile profile = createTelemetryTwoProfile();
+        telemetryTwoProfileDAO.setOne(profile.getId(), profile);
+
+        assertNotNull(telemetryTwoProfileDAO.getOne(profile.getId()));
+        assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
+
+        mockMvc.perform(delete(TelemetryProfileTwoDataController.TELEMETRY_TWO_PROFILE_API + "/change/" + profile.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.entityId").value(profile.getId()))
+                .andExpect(jsonPath("$.entityType").value(EntityType.TELEMETRY_TWO_PROFILE.toString()))
+                .andExpect(jsonPath("$.newEntity").doesNotExist())
+                .andExpect(jsonPath("$.oldEntity").exists());
+
+        assertNotNull(telemetryTwoProfileDAO.getOne(profile.getId()));
+        assertTrue(CollectionUtils.isNotEmpty(changeCrudService.getAll()));
+
+        approveChangeByEntityId(profile.getId());
+
+        assertNull(telemetryTwoProfileDAO.getOne(profile.getId()));
+        assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
     }
 
     private TelemetryTwoRule createTelemetryTwoRule(String profileId, Condition condition) {
@@ -209,5 +252,12 @@ public class TelemetryProfileTwoDataControllerTest extends BaseQueriesController
 
         telemetryTwoRule.setCondition(condition);
         return telemetryTwoRule;
+    }
+
+    private void approveChangeByEntityId(String entityId) throws Exception {
+        mockMvc.perform(get(TelemetryTwoChangeDataController.URL_MAPPING + "/approve/byEntity/" + entityId)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

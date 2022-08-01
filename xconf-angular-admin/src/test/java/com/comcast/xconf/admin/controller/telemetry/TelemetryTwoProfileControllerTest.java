@@ -23,6 +23,8 @@ import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.hydra.astyanax.data.IPersistable;
 import com.comcast.xconf.admin.controller.BaseControllerTest;
 import com.comcast.xconf.change.ApprovedTelemetryTwoChange;
+import com.comcast.xconf.change.ChangeOperation;
+import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
@@ -35,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -160,11 +163,19 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
         TelemetryTwoProfile telemetryProfile = createTelemetryTwoProfile();
         telemetryTwoProfileDAO.setOne(telemetryProfile.getId(), telemetryProfile);
 
+        assertEquals(0, changeCrudService.getAll().size());
+
         mockMvc.perform(delete("/" + TelemetryTwoProfileController.URL_MAPPING + "/" + telemetryProfile.getId())
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.entityType").value(EntityType.TELEMETRY_TWO_PROFILE.toString()))
+                .andExpect(jsonPath("$.operation").value(ChangeOperation.DELETE.toString()))
+                .andExpect(jsonPath("$.oldEntity").exists())
+                .andExpect(jsonPath("$.newEntity").doesNotExist());
 
-        assertNull(telemetryTwoProfileDAO.getOne(telemetryProfile.getId()));
+        assertNotNull(telemetryTwoProfileDAO.getOne(telemetryProfile.getId()));
+        assertEquals(1, changeCrudService.getAll().size());
     }
 
     @Test
@@ -187,15 +198,23 @@ public class TelemetryTwoProfileControllerTest extends BaseControllerTest{
         telemetryProfile = createTelemetryTwoProfile();
         telemetryProfile.setJsonconfig(TELEMETRY_2_CONFIG_TO_UPDATE);
 
+        assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
+
         mockMvc.perform(put("/" + TelemetryTwoProfileController.URL_MAPPING)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.toJson(telemetryProfile)))
                 .andExpect(status().isOk());
 
+        assertEquals(1, changeCrudService.getAll().size());
+
         mockMvc.perform(delete("/" + TelemetryTwoProfileController.URL_MAPPING + "/" + telemetryProfile.getId())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("There is change for " + telemetryProfile.getName() + " telemetry 2.0 profile"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.entityType").value(EntityType.TELEMETRY_TWO_PROFILE.toString()))
+                .andExpect(jsonPath("$.operation").value(ChangeOperation.DELETE.toString()))
+                .andExpect(jsonPath("$.oldEntity").exists())
+                .andExpect(jsonPath("$.newEntity").doesNotExist());
     }
 
     @Test

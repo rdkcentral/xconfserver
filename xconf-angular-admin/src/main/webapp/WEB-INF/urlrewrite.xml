@@ -58,7 +58,7 @@
         <to>/dataService/$1</to>
     </rule>
     <rule match-type="regex">
-        <from>^/((change)(|/.*))$</from>
+        <from>^/((change)/.*)$</from>
         <to>/dataService/$1</to>
     </rule>
 </urlrewrite>

@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TelemetryProfileChangeService extends AbstractChangeService<PermanentTelemetryProfile> {
@@ -45,7 +46,7 @@ public class TelemetryProfileChangeService extends AbstractChangeService<Permane
 
     @Override
     public boolean equalPendingEntities(PermanentTelemetryProfile oldEntity, PermanentTelemetryProfile newEntity) {
-        return true;
+        return Objects.equals(oldEntity, newEntity);
     }
 
     @Override

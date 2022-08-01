@@ -26,7 +26,7 @@ import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.service.telemetrytwochange.ApprovedTelemetryTwoChangeCrudService;
 import com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeCrudService;
 import com.comcast.xconf.shared.utils.PageUtils;
-import com.comcast.xconf.shared.utils.TelemetryTwoChangeUtils;
+import com.comcast.xconf.util.TelemetryTwoChangeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

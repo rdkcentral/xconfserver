@@ -1276,5 +1276,42 @@ public abstract class BaseQueriesControllerTest {
     public Rule createRule(Condition condition) {
         return Rule.Builder.of(condition).build();
     }
+
+    protected TelemetryTwoProfile createTelemetryTwoProfile() {
+        TelemetryTwoProfile telemetryTwoProfile = new TelemetryTwoProfile();
+        telemetryTwoProfile.setId(UUID.randomUUID().toString());
+        telemetryTwoProfile.setName("Test Telemetry 2.0 Profile");
+        telemetryTwoProfile.setJsonconfig("{\n" +
+                "    \"Description\": \"Telemetry 2.0 test\",\n" +
+                "    \"Version\": \"0.2\",\n" +
+                "    \"Protocol\": \"HTTP\",\n" +
+                "    \"EncodingType\": \"JSON\",\n" +
+                "    \"ReportingInterval\": 180,\n" +
+                "    \"TimeReference\": \"0001-01-01T00:00:00Z\",\n" +
+                "    \"Parameter\": [{\n" +
+                "        \"type\": \"dataModel\",\n" +
+                "        \"name\": \"TestMac\",\n" +
+                "        \"reference\": \"Device.ABC\"\n" +
+                "    }],\n" +
+                "    \"HTTP\": {\n" +
+                "        \"URL\": \"https://test.com/\",\n" +
+                "        \"Compression\": \"None\",\n" +
+                "        \"Method\": \"POST\",\n" +
+                "        \"RequestURIParameter\": [{\n" +
+                "            \"Name\": \"profileName\",\n" +
+                "            \"Reference\": \"Test.Name\"\n" +
+                "        }, {\n" +
+                "            \"Name\": \"testVersion\",\n" +
+                "            \"Reference\": \"Test.Version\"\n" +
+                "        }]\n" +
+                "    },\n" +
+                "    \"JSONEncoding\": {\n" +
+                "        \"ReportFormat\": \"NameValuePair\",\n" +
+                "        \"ReportTimestamp\": \"None\"\n" +
+                "    }\n" +
+                "}");
+        telemetryTwoProfile.setApplicationType(STB);
+        return telemetryTwoProfile;
+    }
 }
 

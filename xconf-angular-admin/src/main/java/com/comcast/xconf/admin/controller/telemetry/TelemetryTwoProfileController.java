@@ -21,16 +21,14 @@ package com.comcast.xconf.admin.controller.telemetry;
 import com.comcast.apps.dataaccess.util.JsonUtil;
 import com.comcast.xconf.admin.controller.ExportFileNames;
 import com.comcast.xconf.admin.service.telemetry.TelemetryTwoProfileService;
+import com.comcast.xconf.change.TelemetryTwoChange;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.shared.controller.ApplicationTypeAwayController;
 import com.comcast.xconf.shared.service.AbstractApplicationTypeAwareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -81,5 +79,13 @@ public class TelemetryTwoProfileController extends ApplicationTypeAwayController
             logger.info("Successfully updated: {}", JsonUtil.toJson(entity));
         }
         return ResponseEntity.ok(addedToPending);
+    }
+
+    @Override
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public ResponseEntity deleteOne(@PathVariable String id) {
+        TelemetryTwoChange<TelemetryTwoProfile> deleteChange = telemetryTwoProfileService.writeDeleteChange(id);
+        logger.info("Successfully saved delete change of TelemetryTwoProfile by id: {}", id);
+        return new ResponseEntity<>(deleteChange, HttpStatus.OK);
     }
 }

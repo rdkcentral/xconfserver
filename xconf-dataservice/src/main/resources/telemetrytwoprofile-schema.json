@@ -9,7 +9,7 @@
   "definitions": {
     "parmUse": {
       "type":  "string",
-      "enum": [ "count", "absolute", "csv" ],
+      "enum": [ "count", "absolute", "csv", "accumulate" ],
       "default": "absolute",
       "example":"\"use\":\"count\""
     },
@@ -235,3 +235,4 @@
 
 
 }
+

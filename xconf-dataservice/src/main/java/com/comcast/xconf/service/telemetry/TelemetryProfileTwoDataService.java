@@ -125,20 +125,19 @@ public class TelemetryProfileTwoDataService extends AbstractApplicationTypeAware
     public TelemetryTwoChange<TelemetryTwoProfile> writeCreateChange(TelemetryTwoProfile profile) {
         beforeCreating(profile);
         beforeSaving(profile);
-        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+        return pendingChangesService.create(buildToCreate(profile, EntityType.TELEMETRY_TWO_PROFILE, getWriteApplicationType(profile), authService.getUserNameOrUnknown()));
     }
 
     public TelemetryTwoChange<TelemetryTwoProfile> writeUpdateChange(TelemetryTwoProfile newProfile) {
         beforeUpdating(newProfile);
         beforeSaving(newProfile);
         TelemetryTwoProfile oldProfile = getOne(newProfile.getId());
-        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
+        return pendingChangesService.create(buildToUpdate(oldProfile, newProfile, EntityType.TELEMETRY_TWO_PROFILE, getWriteApplicationType(oldProfile), authService.getUserNameOrUnknown()));
     }
 
     public TelemetryTwoChange<TelemetryTwoProfile> writeDeleteChange(String id) {
         beforeRemoving(id);
         TelemetryTwoProfile profileToRemove = getOne(id);
-        return pendingChangesService.create(buildToDelete(profileToRemove, EntityType.TELEMETRY_TWO_PROFILE, getPermissionService().getWriteApplication(), authService.getUserNameOrUnknown()));
-
+        return pendingChangesService.create(buildToDelete(profileToRemove, EntityType.TELEMETRY_TWO_PROFILE, getWriteApplicationType(profileToRemove), authService.getUserNameOrUnknown()));
     }
 }

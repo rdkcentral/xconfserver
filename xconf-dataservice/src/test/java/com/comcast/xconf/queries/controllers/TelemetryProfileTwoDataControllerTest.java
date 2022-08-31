@@ -29,6 +29,7 @@ import com.comcast.apps.hesperius.ruleengine.main.impl.Condition;
 import com.comcast.xconf.change.EntityType;
 import com.comcast.xconf.estbfirmware.Model;
 import com.comcast.xconf.estbfirmware.factory.RuleFactory;
+import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoProfile;
 import com.comcast.xconf.logupload.telemetry.TelemetryTwoRule;
 import com.comcast.xconf.service.telemetrytwochange.TelemetryTwoChangeCrudService;
@@ -186,6 +187,34 @@ public class TelemetryProfileTwoDataControllerTest extends BaseQueriesController
 
         assertEquals(1, telemetryTwoProfileDAO.getAll().size());
         assertEquals(profile, telemetryTwoProfileDAO.getAll().get(0));
+
+        assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
+    }
+
+    @Test
+    public void createTelemetryTwoProfileWithApprovalRdkloudApplicationType() throws Exception {
+        TelemetryTwoProfile profile = createTelemetryTwoProfile();
+        profile.setApplicationType(ApplicationType.RDKCLOUD);
+
+        mockMvc.perform(post(TelemetryProfileTwoDataController.TELEMETRY_TWO_PROFILE_API + "/change")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON).content(JsonUtil.toJson(profile)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.entityId").value(profile.getId()))
+                .andExpect(jsonPath("$.applicationType").value(ApplicationType.RDKCLOUD))
+                .andExpect(jsonPath("$.entityType").value(EntityType.TELEMETRY_TWO_PROFILE.toString()))
+                .andExpect(jsonPath("$.newEntity").exists())
+                .andExpect(jsonPath("$.oldEntity").doesNotExist());
+
+        approveChangeByEntityId(profile.getId());
+
+        assertEquals(1, telemetryTwoProfileDAO.getAll().size());
+
+        TelemetryTwoProfile savedProfile = telemetryTwoProfileDAO.getAll().get(0);
+        assertEquals(profile, savedProfile);
+
+        assertEquals(ApplicationType.RDKCLOUD, savedProfile.getApplicationType());
 
         assertTrue(CollectionUtils.isEmpty(changeCrudService.getAll()));
     }

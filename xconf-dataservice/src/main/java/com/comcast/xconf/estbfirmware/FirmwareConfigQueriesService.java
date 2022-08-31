@@ -27,6 +27,7 @@ import com.comcast.xconf.exception.EntityNotFoundException;
 import com.comcast.xconf.firmware.ActivationVersion;
 import com.comcast.xconf.firmware.ApplicationType;
 import com.comcast.xconf.firmware.FirmwareRule;
+import com.comcast.xconf.search.SearchFields;
 import com.comcast.xconf.search.firmware.FirmwareConfigPredicates;
 import com.comcast.xconf.service.firmware.ActivationVersionDataService;
 import com.comcast.xconf.service.firmware.FirmwareRuleDataService;
@@ -124,7 +125,8 @@ public class FirmwareConfigQueriesService {
     public void validateUsage(String id) {
         if (StringUtils.isNotBlank(id)) {
             FirmwareConfig firmwareConfig = firmwareConfigDAO.getOne(id);
-            for (FirmwareRule entity : firmwareRuleDataService.getAll()) {
+            List<FirmwareRule> firmwareRulesByApplicationType = firmwareRuleDataService.findByContext(Collections.singletonMap(SearchFields.APPLICATION_TYPE, ApplicationType.get(firmwareConfig.getApplicationType())));
+            for (FirmwareRule entity : firmwareRulesByApplicationType) {
                 if (configUsedInAction(firmwareConfig, entity)) {
                     throw new EntityConflictException("FirmwareConfig is used by " + entity.getName() + " FirmwareRule");
                 }

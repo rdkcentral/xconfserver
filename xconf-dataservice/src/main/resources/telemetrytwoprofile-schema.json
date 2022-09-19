@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "https://github.comcast.com/cfry002/telemetry2/schemas/t2_reportProfileSchema.schema.json",
   "title":"Telemetry 2.0 Report Profile Description",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "type": "object",
   "description": "<b>Telemetry 2.0 Report Profile Description</b><p>A Telemetry 2.0 Report Profile is a configuration, authored in JSON, that can be sent to any RDK device which supports Telemetry 2.0.  A Report Profile contains properties that are interpreted by the CPE in order to generate and upload a telemetry report. These properties define the details of a generated report, including: <br/>&bull;&nbsp;&nbsp;Scheduling (how often the report should be generated) <br/>&bull;&nbsp;&nbsp;Parameters (what key/value pairs should be in the report) <br/>&bull;&nbsp;&nbsp;Encoding (the format of the generated report) <br/>&bull;&nbsp;&nbsp;Protocol (protocol to use to send generated report)</p>",
 
@@ -160,8 +160,19 @@
           "required": ["type", "operator", "reference"]
         }
       }
+    },
+    "ReportingAdjustments": {
+      "type":"object",
+      "properties":{
+        "ReportOnUpdate": {"title":"ReportOnUpdate","type":"boolean", "default": false, "description": "Indicates if a report should be generated and sent before a new version of this profile is activated."},
+        "FirstReportingInterval": {"title":"FirstReportingInterval","type":"integer", "default": 0, "description": "The number of seconds to wait after profile activation before generating a report once."},
+        "MaxUploadLatency": {"title":"ReportOnUpdate","type":"integer", "default": 0, "description": "If present, this value is used to randomize the upload time of a generated report. Only valid when TimeReference is not equal to the default value."}
+      },
+      "additionalProperties": false,
+      "minProperties": 1
     }
   },
+
 
 
 
@@ -186,7 +197,7 @@
     "ReportingInterval": {"title":"ReportingInterval","type":"integer", "description": "The interval, in seconds, at which this profile shall cause a report to be generated."},
     "ActivationTimeOut": {"title":"ActivationTimeOut","type":"integer", "description": "The amount of time, in seconds, that this profile shall remain active on the device.  This is the amount of time from which the profile is received until the CPE will consider the profile to be disabled. After this time, no further reports will be generated for this report."},
     "DeleteOnTimeOut": {"title":"DeleteOnTimeout","type":"boolean", "default":false, "description": "Indicates whether this profile should be removed from memory when the ActivationTimeOut is reached."},
-    "TimeReference": {"title":"TimeReference", "type":"string", "default":"0001-01-01T00:00:00Z", "description": "TBD.  Must be value of \"0001-01-01T00:00:00Z\" for Telemetry 2.0."},
+    "TimeReference": {"title":"TimeReference", "type":"string", "default":"0001-01-01T00:00:00Z", "description": "An absolute time reference in UTC that indicates when a report shall be sent."},
     "GenerateNow": {"title":"GenerateNow","type":"boolean", "default": false, "description": "When true, indicates that the report for this Report Profile should be generated immediately upon receipt of the profile."},
     "Parameter": {
       "title":"Parameter",
@@ -212,9 +223,11 @@
     "HTTP": { "$ref": "#/definitions/protocolDefinitions/properties/HTTP"},
     "RBUS_METHOD": { "$ref": "#/definitions/protocolDefinitions/properties/RBUS_METHOD"},
     "JSONEncoding": {"$ref": "#/definitions/encodingDefinitions/properties/JSONEncodingDefinition"},
-    "RootName": {  "title":"RootName","type":"string","default":"Report","description": "The name to be used for the root of the JSON report, e.g., \"searchResult\"." }
+    "RootName": {  "title":"RootName","type":"string","default":"Report","description": "The name to be used for the root of the JSON report, e.g., \"searchResult\"." },
+    "ReportingAdjustments": { "$ref":"#/definitions/ReportingAdjustments", "title": "ReportingAdjustments"}
   },
   "required": ["Protocol", "EncodingType","Parameter"],
+  "additionalProperties": false,
   "anyOf": [
     {
       "properties": {

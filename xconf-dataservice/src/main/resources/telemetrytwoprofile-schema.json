@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "https://github.comcast.com/cfry002/telemetry2/schemas/t2_reportProfileSchema.schema.json",
   "title":"Telemetry 2.0 Report Profile Description",
-  "version": "2.0.5",
+  "version": "2.0.8",
   "type": "object",
   "description": "<b>Telemetry 2.0 Report Profile Description</b><p>A Telemetry 2.0 Report Profile is a configuration, authored in JSON, that can be sent to any RDK device which supports Telemetry 2.0.  A Report Profile contains properties that are interpreted by the CPE in order to generate and upload a telemetry report. These properties define the details of a generated report, including: <br/>&bull;&nbsp;&nbsp;Scheduling (how often the report should be generated) <br/>&bull;&nbsp;&nbsp;Parameters (what key/value pairs should be in the report) <br/>&bull;&nbsp;&nbsp;Encoding (the format of the generated report) <br/>&bull;&nbsp;&nbsp;Protocol (protocol to use to send generated report)</p>",
 
@@ -18,6 +18,13 @@
       "enum": [ "get", "subscribe" ],
       "default": "get",
       "example":"\"method\":\"subscribe\""
+    },
+    "parmReportTimestamp":{
+      "type":"string",
+      "enum": ["Unix-Epoch","None"],
+      "default": "None",
+      "example":"\"reportTimestamp\":\"Unix-Epoch\""
+
     },
     "parmDefinitions": {
       "title":"Definitions for the different Parameter types",
@@ -48,7 +55,8 @@
             "eventName":  { "type": "string", "description": "The event name by which the component will report this data to Telemetry 2" },
             "component":  { "type": "string", "description": "The name of the component from which this data should be expected.  Telemetry 2 will use this name to register its interest with the component." },
             "use":        { "$ref": "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received, in the case of events, or found in the log file, in the case of greps.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received, in the case of events, or found in the log file, in the case of greps. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."},
-            "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"}
+            "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"},
+            "reportTimestamp": { "$ref": "#/definitions/parmReportTimestamp", "description": "This property indicates whether or not a timestamp should be encoded to indicate the time at which this parameter data was received."}
           },
           "additionalProperties": false,
           "required": ["type", "eventName", "component"],
@@ -64,12 +72,27 @@
             "reference":  { "type": "string", "description": "The data model object or property name whose value is to be in the generated report, e.g., \"Device.DeviceInfo.HardwareVersion\"" },
             "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"},
             "method":     { "$ref": "#/definitions/dataModelMethod", "description": "How should the value for this parameter be retrieved?  \"get\" will do a parameter GET; \"subscribe\" will subscribe for changes on the event indicated by \"reference\"." },
-            "use":        { "$ref": "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."}
+            "use":        { "$ref": "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."},
+            "reportTimestamp": { "$ref": "#/definitions/parmReportTimestamp", "description": "This property indicates whether or not a timestamp should be encoded to indicate the time at which this parameter data was received."}
           },
           "additionalProperties": false,
           "description":"A dataModel parameter defines data that will come from the CPE data model, e.g., TR-181",
           "example":"",
-          "required": ["type", "reference"]
+          "required": ["type", "reference"],
+          "anyOf": [
+            {
+              "properties": {
+                "reportTimestamp": { "const": "Unix-Epoch" },
+                "method":{ "const":"subscribe" }
+              },
+              "required": ["method"]
+            },
+            {
+              "properties": {
+                "reportTimestamp": { "const": "None" }
+              }
+            }
+          ]
         }
       }
     },

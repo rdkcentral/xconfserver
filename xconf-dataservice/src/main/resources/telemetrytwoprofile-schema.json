@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "https://github.comcast.com/cfry002/telemetry2/schemas/t2_reportProfileSchema.schema.json",
   "title":"Telemetry 2.0 Report Profile Description",
-  "version": "2.0.8",
+  "version": "2.0.10",
   "type": "object",
   "description": "<b>Telemetry 2.0 Report Profile Description</b><p>A Telemetry 2.0 Report Profile is a configuration, authored in JSON, that can be sent to any RDK device which supports Telemetry 2.0.  A Report Profile contains properties that are interpreted by the CPE in order to generate and upload a telemetry report. These properties define the details of a generated report, including: <br/>&bull;&nbsp;&nbsp;Scheduling (how often the report should be generated) <br/>&bull;&nbsp;&nbsp;Parameters (what key/value pairs should be in the report) <br/>&bull;&nbsp;&nbsp;Encoding (the format of the generated report) <br/>&bull;&nbsp;&nbsp;Protocol (protocol to use to send generated report)</p>",
 
@@ -39,7 +39,8 @@
             "search":  { "type": "string", "description": "The string for which to search within the log file." },
             "logFile": { "type": "string", "description": "The name of the log file to be searched."},
             "use":     { "$ref":    "#/definitions/parmUse", "description": "This property indicates how the data for this parameter should be gathered and reported.<br/>&bull;&nbsp;&nbsp;\"count\": Indicates that the value to report for this parameter is the number of times it has occurred during the reporting interval..<br/>&bull;&nbsp;&nbsp;\"absolute\": Indicates that the value to report for this parameter is the last actual value received, in the case of events, or found in the log file, in the case of greps.<br/>&bull;&nbsp;&nbsp;\"csv\": Indicates that the value to report for this parameter is a comma separated list of all the actual values received, in the case of events, or found in the log file, in the case of greps. <b>NOTE:</b> \"csv\" is not currently supported in Telemetry 2.0."},
-            "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"}
+            "reportEmpty": { "type": "boolean", "default":"false", "description": "Should this marker name be included in the generated report even if the search string was not found in the log file?"},
+            "firstSeekFromEOF": { "type": "integer", "description": "An offset, in bytes, backward from logFile EOF to where the grep for search must begin for the first report this profile generates.  See documentation."}
           },
           "additionalProperties": false,
           "required": ["type", "marker", "search", "logFile"],

@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  cassandra:
+    image: docker.io/cassandra:4.1.8
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(nodetool statusgossip) = running ]"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  initdb:
+    build:
+      context: .
+      target: initdb
+    restart: always
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/bin/healthcheck.sh"]
+      start_period: 60s
+  xconfangular:
+    build:
+      context: .
+      target: angular
+    ports:
+      - 19093:8080
+    restart: always
+    depends_on:
+      initdb:
+        condition: service_healthy
+  xconfdata:
+    build:
+      context: .
+      target: dataservice
+    ports:
+      - 19092:8080
+    restart: always
+    depends_on:
+      initdb:
+        condition: service_healthy

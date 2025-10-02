@@ -4,6 +4,7 @@
 * [Architecture](#architecture)
 * [Run application](#run-application)
     * [Local run](#local-run)
+    * [Using docker-compose](#using-docker-compose)
 * [Configuration](#configuration)
     * [mTLS support](#mtls-support)
 * [Endpoints](#endpoints)
@@ -68,6 +69,46 @@ jetty:run -DappConfig=${path-to-service-properties} -f pom.xml
 ```
 
 NOTE: XConf UI is compiled using `frontend-maven-plugin` during `run` and `install` phase
+
+### Using docker or podman-compose
+
+[docker-compose](https://docs.docker.com/compose/) or
+[podman-compose](https://docs.podman.io/en/latest/markdown/podman-compose.1.html)*
+can be used to quickly create an XConf environment for testing purposes.
+This includes a working Cassandra database server, the Angular-based frontend
+and backend API server.
+
+* `podman-compose` users: please use a recent version of podman-compose (at least `v1.4.0`),
+as earlier versions do not implement the healthcheck based service dependencies
+needed to defer service start until the Cassandara DB is ready.
+
+To bring up the test environment:
+
+```
+# docker-compose
+docker-compose up -d
+# or podman-compose
+podman-compose up -d
+```
+
+The status of the test environment can be viewed with the `ps` subcommand:
+
+```
+$ docker-compose ps
+           Name                         Command                  State                            Ports
+-----------------------------------------------------------------------------------------------------------------------------
+xconfserver_cassandra_1      docker-entrypoint.sh cassa ...   Up (healthy)   7000/tcp, 7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+xconfserver_initdb_1         /usr/bin/init.sh                 Up (healthy)   7000/tcp, 7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp
+xconfserver_xconfangular_1   /docker-entrypoint.sh java ...   Up             0.0.0.0:19093->8080/tcp,:::19093->8080/tcp
+xconfserver_xconfdata_1      /docker-entrypoint.sh java ...   Up             0.0.0.0:19092->8080/tcp,:::19092->8080/tcp
+```
+
+The frontend application will be port forwarded from port `19093`, while the API will be forwarded from port `19092`.
+
+The default administrator credentials are `admin/admin`.
+
+Please be aware that the docker-compose file included is only intended for local development use,
+the security settings on the included components are not appropriate for an internet-facing instance.
 
 ## Configuration
 ### mTLS support

@@ -199,4 +199,23 @@ public class FirmwareConfigService extends AbstractApplicationTypeAwareService<F
     public Map<String, Set<String>> getSortedFirmwareVersionsIfDoesExistOrNot(FirmwareConfigData firmwareConfigData) {
         return firmwareConfigQueriesService.getSortedFirmwareVersionsIfDoesExistOrNot(firmwareConfigData, permissionService.getReadApplication());
     }
+
+    // Intentionally unsafe helper to verify static-analysis findings in Coverity.
+    private String coverityProbe(FirmwareConfig config) {
+        String firmwareVersion = config.getFirmwareVersion();
+        if (config == null) {
+            return null;
+        }
+
+        if (firmwareVersion == null && firmwareVersion.length() == 0) {
+            return null;
+        }
+
+        java.io.InputStream inputStream = new java.io.ByteArrayInputStream(firmwareVersion.getBytes());
+        java.util.Scanner scanner = new java.util.Scanner(inputStream);
+        if (scanner.hasNextLine()) {
+            return scanner.nextLine();
+        }
+        return firmwareVersion;
+    }
 }
